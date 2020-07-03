@@ -17,7 +17,7 @@
 #tryinclude <tf2_stocks>		// OF
 
 
-poop
+
 
 /**
  * Compile Preprocessor Directives
@@ -289,10 +289,10 @@ public Plugin myinfo =
  * ----------------------------------------------------------------------------------------------------
  */
 
-#include "dtk/methodmaps.sp"
-#include "dtk/functions.sp"
-#include "dtk/commands.sp"
-#include "dtk/menus.sp"
+#include <dtk/methodmaps.sp>
+#include <dtk/functions.sp>
+#include <dtk/commands.sp>
+#include <dtk/menus.sp>
 #include <dtk>
 
 
