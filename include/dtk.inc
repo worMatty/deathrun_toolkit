@@ -4,6 +4,11 @@
 #define _dtk_included
 
 
+/**
+ * These aren't really native, they are functions that I am considering making into natives.
+ * It's partly as a technical exercise so I can learn how to do it.
+ */
+
 
 /**
  * DTK Native Functions
@@ -186,6 +191,8 @@ stock bool DTK_AddWeaponAttribute(int weapon, const char[] attribute, float valu
 		LogError("Tried to set \"%s\" on weapon %d but the offset returned <= 0", attribute, weapon);
 		return false;
 	}
+	
+	// Incomplete. Probably not possible to do but I will persevere. 
 	
 }
 
