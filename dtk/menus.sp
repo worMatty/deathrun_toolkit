@@ -21,6 +21,7 @@ stock void NewMenuFunction(int client, const char[] sMenu)
 	
 	Format(title, sizeof(title), "%s %s\n \n", PLUGIN_SHORTNAME, PLUGIN_VERSION);
 	
+	
 	/**
 	 * Show the main menu
 	 */
@@ -40,9 +41,11 @@ stock void NewMenuFunction(int client, const char[] sMenu)
 		//if (CheckAccess(GetUserAdmin(client), "", ADMFLAG_KICK, true))
 		{
 			menu.AddItem("menu_admincommands", "menu item admin commands");
+			menu.AddItem("menu_adminfunstuff", "menu item admin fun stuff");
 		}
 		
 	}
+	
 	
 	/**
 	 * Show the preferences menu
@@ -84,6 +87,7 @@ stock void NewMenuFunction(int client, const char[] sMenu)
 		 */
 	}
 	
+	
 	/**
 	 * Show the reset points menu
 	 */
@@ -93,6 +97,7 @@ stock void NewMenuFunction(int client, const char[] sMenu)
 		menu.AddItem("reset_yes", "menu item yes");
 		menu.AddItem("reset_no", "menu item no");
 	}
+	
 	
 	/**
 	 * Show the list points menu
@@ -127,6 +132,7 @@ stock void NewMenuFunction(int client, const char[] sMenu)
 		}
 	}
 	
+	
 	/**
 	 * Show the commands menu
 	 */
@@ -149,6 +155,7 @@ stock void NewMenuFunction(int client, const char[] sMenu)
 		 */
 	}
 	
+	
 	/**
 	 * Show the admin commands menu
 	 */
@@ -157,7 +164,18 @@ stock void NewMenuFunction(int client, const char[] sMenu)
 		menu.AddItem("admincommands_award", "menu item admin command award");
 		menu.AddItem("admincommands_setclass", "menu item admin command setclass");
 		menu.AddItem("admincommands_data", "menu item admin command drdata");
-		menu.AddItem("admincommands_scalehealth", "menu item admin command drscalehealth");		
+		//menu.AddItem("admincommands_scalehealth", "menu item admin command drscalehealth");		
+		menu.AddItem("menu_main", "menu item back");
+	}
+	
+	
+	/**
+	 * Show the admin fun stuff
+	 */
+	if (StrEqual(sMenu, "menu_adminfunstuff"))
+	{
+		menu.AddItem("adminfunstuff_scalehealth", "menu item admin fun stuff scale activator health");
+		menu.AddItem("adminfunstuff_jetpackgame", "menu item admin fun stuff jetpack game");
 		menu.AddItem("menu_main", "menu item back");
 	}
 	
@@ -236,9 +254,17 @@ public int NewMenuHandler(Menu menu, MenuAction action, int param1, int param2)
 			{
 				AdminCommand_PlayerData(param1, 0);
 			}
-			if (StrEqual(selection, "admincommands_scalehealth"))
+		}
+		
+		else if (StrContains(selection, "adminfunstuff_") == 0)
+		{
+			if (StrEqual(selection, "adminfunstuff_scalehealth"))
 			{
-				AdminCommand_ScaleHealth(param1, 0);
+				FunStuff_ScaleHealth();
+			}
+			if (StrEqual(selection, "adminfunstuff_jetpackgame"))
+			{
+				FunStuff_JetpackGame();
 			}
 		}
 		

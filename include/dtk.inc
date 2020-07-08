@@ -7,6 +7,7 @@
 /**
  * These aren't really native, they are functions that I am considering making into natives.
  * It's partly as a technical exercise so I can learn how to do it.
+ * Some of these aren't used and/or are incomplete.
  */
 
 
@@ -119,6 +120,7 @@ stock bool DTK_RemovePlayerAttribute(int client, const char[] attribute)
 {
 	return DTK_AddPlayerAttribute(client, attribute, _, _, true);
 }
+
 
 
 /**

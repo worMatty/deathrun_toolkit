@@ -289,10 +289,11 @@ public Plugin myinfo =
  * ----------------------------------------------------------------------------------------------------
  */
 
-#include <dtk/methodmaps.sp>
-#include <dtk/functions.sp>
-#include <dtk/commands.sp>
-#include <dtk/menus.sp>
+#include "dtk/methodmaps.sp"
+#include "dtk/functions.sp"
+#include "dtk/commands.sp"
+#include "dtk/menus.sp"
+#include "dtk/funstuff.sp" 
 #include <dtk>
 
 
@@ -354,8 +355,8 @@ public void OnPluginStart()
 	g_cRoundWaitTime 		= FindConVar("mp_enableroundwaittime"); 	// 1 - The time at the beginning of the round, while players are frozen.
 	g_cHumansMustJoinTeam 	= FindConVar("mp_humans_must_join_team");	// Forces players to join the specified team. Default is 'any'.
 	
-	if (g_iGame == Game_TF) g_cServerTeamMatePush = FindConVar("tf_avoidteammates_pushaway");	// Team mate collision ConVars...
 	if (g_iGame == Game_OF) g_cServerTeamMatePush = FindConVar("of_teamplay_collision");		// Optionally enabled when there are a specific number of runners remaining
+	else g_cServerTeamMatePush = FindConVar("tf_avoidteammates_pushaway");	// Team mate collision ConVars...
 	
 	// Register console variables
 	CreateConVar("dtk_version", PLUGIN_VERSION);
@@ -411,23 +412,17 @@ public void OnPluginStart()
 	
 	// Add some console commands
 	RegConsoleCmd("sm_drmenu", Command_NewMenu, "Opens the deathrun menu.");
-	//RegConsoleCmd("sm_dr", Command_Menu, "Opens the deathrun menu.");
 	RegConsoleCmd("sm_dr", Command_NewMenu, "Opens the deathrun menu.");
 	RegConsoleCmd("sm_drtoggle", Command_NewMenu, "Opens the deathrun menu.");
 	RegConsoleCmd("sm_points", Command_ShowPoints, "Show how many deathrun queue points you have.");
 	RegConsoleCmd("sm_pts", Command_ShowPoints, "Show how many deathrun queue points you have.");
 	RegConsoleCmd("sm_reset", Command_ResetPoints, "Reset your deathrun queue points.");
 	RegConsoleCmd("sm_prefs", Command_Preferences, "A shortcut command for setting your deathrun activator and points preference.");
-	//RegConsoleCmd("sm_english", Command_English, "Toggle forcing English language plugin phrases.");
-	//RegConsoleCmd("sm_drhelp", Command_Help, "Display a list of DTK commands.");
 	RegAdminCmd("sm_setclass", AdminCommand_SetClass, ADMFLAG_SLAY, "Change a player's class using DTK's built in functions, which also apply the correct attributes");
 	RegAdminCmd("sm_drdata", AdminCommand_PlayerData, ADMFLAG_SLAY, "Print to console the values in the prefs and points arrays.");
 	RegAdminCmd("sm_draward", AdminCommand_AwardPoints, ADMFLAG_SLAY, "Award a poor person some deathrun queue points.");
 	RegAdminCmd("sm_drresetdatabase", AdminCommand_ResetDatabase, ADMFLAG_CONVARS|ADMFLAG_CONFIG|ADMFLAG_RCON, "Reset the deathrun player database.");
 	RegAdminCmd("sm_drresetuser", AdminCommand_ResetUser, ADMFLAG_CONVARS|ADMFLAG_CONFIG|ADMFLAG_RCON, "Deletes a player's data from the deathrun database table. They will be treated as a new player.");
-	
-	// Testing commands
-	RegAdminCmd("sm_drscalehealth", AdminCommand_ScaleHealth, ADMFLAG_SLAY, "Scale the activator's health");
 	
 	g_hHealthText = CreateHudSynchronizer();
 	
@@ -517,36 +512,18 @@ public void OnMapStart()
 	GetCurrentMap(mapname, sizeof(mapname));
 	
 	if (StrContains(mapname, "dr_", false) != -1 || StrContains(mapname, "deathrun_", false) != -1)
-		{
-			// This is a deathrun map
-			g_cEnabled.SetBool(true);
-			LogMessage("Detected a deathrun map");
-			//if (g_bSteamTools) SetServerGameDescription();
-		}
-		else
-		{
-			// This is not a deathrun map
-			LogMessage("Not a deathrun map. Deathrun functions will not be available");
-			//if (g_bSteamTools) SetServerGameDescription();
-		}
-	
-	// Only runs if deathrun is enabled
-	if (g_cEnabled.BoolValue)
 	{
-		// Does the map have a tf_logic_arena?
-		if (FindEntityByClassname(-1, "tf_logic_arena") == -1)
-		{
-			PrintToServer("%s This map does not have a tf_logic_arena", SERVERMSG_PREFIX);
-			//g_cRoundWaitTime.SetInt(2);
-		}
-		
-		EventsAndListeners(true);			// Hook events and command listeners
-		SetServerCvars(true);				// Adjust server cvars for our player distribution functions to work smoothly
-		g_bWatchForPlayerChanges = true;	// Watch for players connecting after the map change
-			// This is necessary because the server doesn't fire a round reset or start event unless there are players
+		// This is a deathrun map
+		g_cEnabled.SetBool(true);
+		LogMessage("Detected a deathrun map");
+		//if (g_bSteamTools) SetServerGameDescription();
 	}
-	
-	g_bSettingsRead = false;	// Turned off now so players don't receive attributes next round until after settings have been read
+	else
+	{
+		// This is not a deathrun map
+		LogMessage("Not a deathrun map. Deathrun functions will not be available");
+		//if (g_bSteamTools) SetServerGameDescription();
+	}
 }
 
 
@@ -567,7 +544,7 @@ public int Steam_FullyLoaded()
 /**
  * OnConfigsExecuted
  *
- * Execute config_dr.cfg when all other configs have loaded.
+ * Execute config_deathrun.cfg when all other configs have loaded.
  */
 public void OnConfigsExecuted()
 {
@@ -588,18 +565,12 @@ public void OnMapEnd()
 {
 	// Always run
 	delete g_db;
-
-	// If DTK was never enabled, no need to unhook events or change cvars
-	if (!g_cEnabled.BoolValue)
-		return;
 	
-	// Unhook events and restore cvars when the map switches
-	EventsAndListeners(false);
-	SetServerCvars(false);
-	g_cEnabled.SetBool(false);	// DTK is now disabled
-		// Can we put the event hooking and cvar changing into the enable/disable cvar change?
-	
-	LogMessage("The deathrun map has come to an end. Restoring some cvars to their default values");
+	if (g_cEnabled.BoolValue)
+	{
+		g_cEnabled.SetBool(false);
+		LogMessage("The map has come to an end. Restoring some cvars to their default values");
+	}
 }
 
 
@@ -615,9 +586,7 @@ public void OnPluginEnd()
 	
 	PrintToChatAll("%t %s has been unloaded", "prefix_strong", PLUGIN_SHORTNAME);
 
-	if (g_cEnabled.BoolValue)
-		SetServerCvars(false);
-		// No need to unhook events as this is done on plugin unload
+	if (g_cEnabled.BoolValue) g_cEnabled.BoolValue = false;
 	
 	LogMessage("Plugin has been unloaded");
 }
@@ -719,6 +688,18 @@ void Event_RoundRestart(Event event, const char[] name, bool dontBroadcast)
 	{
 		GetEntPropString(i, Prop_Data, "m_iName", sBranchName, sizeof(sBranchName));
 		if (StrEqual("dtk_enabled", sBranchName))
+		{
+			SetEntProp(i, Prop_Data, "m_bInValue", 1, 1);
+			i = -1;
+			break;
+		}
+	}
+	
+	i = -1;
+	while ((i = FindEntityByClassname(i, "logic_branch")) != -1)
+	{
+		GetEntPropString(i, Prop_Data, "m_iName", sBranchName, sizeof(sBranchName));
+		if (StrEqual("deathrun_enabled", sBranchName))
 		{
 			SetEntProp(i, Prop_Data, "m_bInValue", 1, 1);
 			i = -1;
@@ -848,6 +829,7 @@ void Event_PlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 		RequestFrame(ApplyPlayerAttributes, player);
 	}
 	
+	//RequestFrame(NextFrame_InventoryApplied, player);
 	RequestFrame(CheckGameState);
 }
 
@@ -875,10 +857,10 @@ void NextFrame_InventoryApplied(Player player)
 			player.SetSlot(TFWeaponSlot_Primary);
 		}
 	}
-	else
+	/*else
 	{
 		player.SetSlot(TFWeaponSlot_Primary);
-	}
+	}*/
 	
 	// Boss health bar
 	if (g_bHealthBarActive == true && player.Index == g_iHealthBarTarget)

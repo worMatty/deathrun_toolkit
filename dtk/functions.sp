@@ -283,12 +283,12 @@ void ApplyPlayerAttributes(Player player)
  * Remove a player's weapon and replace it with a new one.
  * 
  * @param	int	Client index.
- * @param	int	Weapon entity index.
+ * @param	int	Current weapon entity index.
  * @param	int	Chosen item definition index.
  * @param	char	Classname of chosen weapons.
- * @noreturn
+ * @return	int	Entity index of the new weapon
  */
-void ReplaceWeapon(int client, int weapon, int itemDefIndex, char[] classname)
+int ReplaceWeapon(int client, int weapon, int itemDefIndex, char[] classname)
 {
 	RemoveEdict(weapon);
 	
@@ -329,11 +329,13 @@ void ReplaceWeapon(int client, int weapon, int itemDefIndex, char[] classname)
 				player.Flags |= FLAGS_ARMED;
 					// Give the player the FLAGS_ARMED bit
 				EquipPlayerWeapon(client, weapon);
+				DebugMessage("Replaced a weapon belonging to %N with %s %d", client, classname, itemDefIndex);
+				return weapon;
 			}
 		}
 	}
 	
-	DebugMessage("Replaced a weapon belonging to %N with %s %d", client, classname, itemDefIndex);
+	return -1;
 }
 
 
@@ -516,11 +518,11 @@ void HookLogicCases()
 	int i = -1;
 	char sTargetname[MAX_NAME_LENGTH];
 	
-	// Hook deathrun settings logic_cases
+	// Hook deathrun player property logic_cases
 	while ((i = FindEntityByClassname(i, "logic_case")) != -1)
 	{
 		GetEntPropString(i, Prop_Data, "m_iName", sTargetname, sizeof(sTargetname));
-		if (StrContains(sTargetname, "deathrun_settings", false) != -1)
+		if (StrContains(sTargetname, "deathrun_properties", false) != -1)
 		{
 			DebugMessage("Found logic_case named %s", sTargetname);
 			HookSingleEntityOutput(i, "OnUser1", ProcessLogicCase2);
@@ -531,6 +533,7 @@ void HookLogicCases()
 
 /**
  * Process data from a logic_case
+ * OLD METHOD, NO LONGER USED
  * 
  * @noreturn
  */
@@ -621,6 +624,15 @@ stock void ProcessLogicCase2(const char[] output, int caller, int activator, flo
 {
 	// Caller is the entity reference of the logic_case
 	
+	if (activator > MaxClients || activator < 0)
+	{
+		LogError("Deathrun logic_case was triggered by an invalid client index (%d)", activator);
+		return;
+	}
+	char targetname[64];
+	GetEntPropString(caller, Prop_Data, "m_iName", targetname, sizeof(targetname));
+	DebugMessage("Deathrun logic_case '%s' was triggered using output %s by client %d (%N)", targetname, output, activator, activator);
+	
 	char caseValue[256];
 	char caseNumber[12];
 	
@@ -668,7 +680,7 @@ stock void ProcessMapInstruction(int client, const char[] instruction, const cha
 			if (itemDefIndex == StringToInt(buffers[1]))
 			{
 				bool success = TF2Attrib_SetByName(weapon, buffers[2], StringToFloat(buffers[3]));
-				if (success) PrintToServer("Set an attribute on a weapon belonging to %N (%s with value %f)", player.Index, buffers[2], StringToFloat(buffers[3]));
+				if (success) DebugMessage("Set an attribute on a weapon belonging to %N (%s with value %f)", player.Index, buffers[2], StringToFloat(buffers[3]));
 			}
 		}
 	}
@@ -1014,6 +1026,27 @@ void ConVarChangeHook(ConVar convar, const char[] oldValue, const char[] newValu
 	if (StrEqual(sName, "dtk_enabled", false))
 	{
 		if (g_bSteamTools) SetServerGameDescription();
+		
+		if (g_cEnabled.BoolValue)
+		{
+			if (FindEntityByClassname(-1, "tf_logic_arena") == -1)
+			{
+				PrintToServer("%s This map does not have a tf_logic_arena", SERVERMSG_PREFIX);
+				//g_cRoundWaitTime.SetInt(2);
+			}
+			
+			EventsAndListeners(true);
+			SetServerCvars(true);
+			g_bWatchForPlayerChanges = true;	// Watch for players connecting after the map change
+												// Server doesn't fire a round reset or start event unless there are players
+			
+			g_bSettingsRead = false;			// Turned off now so players don't receive attributes next round until after settings have been read
+		}
+		else
+		{
+			EventsAndListeners(false);
+			SetServerCvars(false);
+		}
 	}
 	
 	if (StrContains(sName, "teampush", false) != -1)

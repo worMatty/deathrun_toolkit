@@ -4,39 +4,9 @@
  * ----------------------------------------------------------------------------------------------------
  */
 
-// Test health scaling of the activator
-Action AdminCommand_ScaleHealth(int client, int args)
-{
-	Player activator = new Player(g_iHealthBarTarget);
-	
-	activator.ScaleHealth();
-	
-	return Plugin_Handled;
-}
-
-/*
-// Help command
-Action Command_Help(int client, int args)
-{
-	if (!g_cEnabled.BoolValue)
-		return Plugin_Handled;
-	
-	ReplyToCommand(client, "%t %s", "prefix_notice", "\x01Here is a list of commands:\n\
-		Usage: \x0787CEEBsm_command\x01 in console, \x0787CEEB /command\x01 in chat.");
-	ReplyToCommand(client, "%s", "\x01\x0787CEEBdr, drmenu, drtoggle\x01: Open the DTK menu to change settings, view and reset points.\n\
-		\x0787CEEBpoints, pts\x01: Show your queue points.");
-	ReplyToCommand(client, "%s", "\x01\x0787CEEBreset\x01: Reset your queue points.\n\
-		\x0787CEEBprefs [0/1/2]\x01: Set your activator preference. 0 = No thanks, 1 = Don't make me activator very often, 2 = I like being activator.");
-	ReplyToCommand(client, "%s", "\x01If you use the command on its own it will tell you your current preference.\n\
-		\x0787CEEBenglish\x01: Toggle using English language SourceMod phrases.");
-	ReplyToCommand(client, "%s", "\x01\x0787CEEBdrdata\x01: Print a list of player points and preference flags to console for debugging.");
-	
-	return Plugin_Handled;
-}*/
-
-
-
-// Show my points
+/**
+ * Show my queue points in chat.
+ */
 Action Command_ShowPoints(int client, int args)
 {
 	if (!g_cEnabled.BoolValue)

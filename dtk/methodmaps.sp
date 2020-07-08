@@ -997,12 +997,12 @@ methodmap Player < Handle
 	 * @param	TFClassType	Class.
 	 * @noreturn
 	 */
-	public void SetClass(TFClassType class)
+	public bool SetClass(TFClassType class, bool regenerate=true)
 	{
 		TF2_SetPlayerClass(this.Index, class, _, false);
-		if (this.IsAlive)
+		if (this.IsAlive)	// Don't regen a dead player or they'll go to limbo
 		{
-			TF2_RegeneratePlayer(this.Index);	// Don't regen a dead player or they'll go to limbo
+			if (regenerate) TF2_RegeneratePlayer(this.Index);
 			if (g_cEnabled.BoolValue) ApplyPlayerAttributes(this);
 		}
 	}
@@ -1031,8 +1031,8 @@ methodmap Player < Handle
 	{
 		if (this.InGame && g_iHealthBar[HealthBar_PlayerResource] != -1)
 		{
-			if (health < this.MaxHealth)
-				return;
+			//if (health < this.MaxHealth)
+			//	return;
 			
 			/*if (!g_bTF2Attributes)
 			{
@@ -1177,7 +1177,7 @@ methodmap Player < Handle
 		{
 			ThrowError("Can't find %N's weapon in slot %d when trying to call SetSlot", this.Index, slot);
 			//LogError("Can't find %N's weapon in slot %d when trying to call SetSlot", this.Index, slot);
-			return;
+			//return;
 		}
 		
 		char sClassname[64];
