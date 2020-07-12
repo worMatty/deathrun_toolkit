@@ -14,8 +14,8 @@ Add the .smx file to sourcemod/plugins and the .txt file to sourcemod/translatio
 
 ### Optional Extras
 - [Asherkin's TF2 Attributes plugin](https://forums.alliedmods.net/showthread.php?t=210221) is used to set attributes on player weapons and limit them.
-- Source Chat Relay is used to send the round start, end, and activator selection messages to a Discord channel.
-- The SteamTools extension changes your game server's description.
+- [Source Chat Relay](https://forums.alliedmods.net/showthread.php?p=2617899) is used to send the round start, end, and activator selection messages to a Discord channel.
+- The [SteamTools extension](https://forums.alliedmods.net/showthread.php?t=236206) changes your game server's description.
 
 ## List of Features
 
