@@ -1,0 +1,1819 @@
+[DTK] The round has restarted
+L 06/07/2020 - 17:32:23: [dtk/dtk.smx] monster_resource entity not found!
+ [DTK] debugging > monster_resource entity index has been set to -1 (not found!)
+ [DTK] debugging > Player resource entity index has been set to 40
+ [DTK] debugging > Found logic_relay named dtk_health_scalemax with entity index -2018219367
+L 06/07/2020 - 17:32:23: [SM] Exception reported: Entity Outputs are disabled - See error logs for details
+L 06/07/2020 - 17:32:23: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 17:32:23: [SM] Call stack trace:
+L 06/07/2020 - 17:32:23: [SM]   [0] HookSingleEntityOutput
+L 06/07/2020 - 17:32:23: [SM]   [1] Line 301, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::HealthBar.HealthBar
+L 06/07/2020 - 17:32:23: [SM]   [2] Line 449, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::Event_RoundRestart
+L 06/07/2020 - 17:32:24: [SM] Exception reported: Hook type not supported on this game
+L 06/07/2020 - 17:32:24: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 17:32:24: [SM] Call stack trace:
+L 06/07/2020 - 17:32:24: [SM]   [0] SDKHook
+L 06/07/2020 - 17:32:24: [SM]   [1] Line 406, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::OnClientPutInServer
+[DTK] The round is now active
+L 06/07/2020 - 17:32:28: [SM] Exception reported: Gamerules lookup failed.
+L 06/07/2020 - 17:32:28: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 17:32:28: [SM] Call stack trace:
+L 06/07/2020 - 17:32:28: [SM]   [0] GameRules_GetProp
+L 06/07/2020 - 17:32:28: [SM]   [1] Line 196, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\sdktools_gamerules.inc::GameRules_GetRoundState
+L 06/07/2020 - 17:32:28: [SM]   [2] Line 171, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::Game.RoundActive.get
+L 06/07/2020 - 17:32:28: [SM]   [3] Line 1156, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::CheckGameState
+ [DTK] debugging > Checking if R60D needs to be welcomed
+ [DTK] debugging > Welcoming R60D
+[DTK] The round has ended
+[DTK] The round has restarted
+L 06/07/2020 - 17:32:44: [dtk/dtk.smx] monster_resource entity not found!
+ [DTK] debugging > monster_resource entity index has been set to -1 (not found!)
+ [DTK] debugging > Player resource entity index has been set to 40
+ [DTK] debugging > Found logic_relay named dtk_health_scalemax with entity index -2117092538
+L 06/07/2020 - 17:32:44: [SM] Exception reported: Entity Outputs are disabled - See error logs for details
+L 06/07/2020 - 17:32:44: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 17:32:44: [SM] Call stack trace:
+L 06/07/2020 - 17:32:44: [SM]   [0] HookSingleEntityOutput
+L 06/07/2020 - 17:32:44: [SM]   [1] Line 301, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::HealthBar.HealthBar
+L 06/07/2020 - 17:32:44: [SM]   [2] Line 449, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::Event_RoundRestart
+[DTK] The round is now active
+L 06/07/2020 - 17:32:49: [SM] Exception reported: Gamerules lookup failed.
+L 06/07/2020 - 17:32:49: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 17:32:49: [SM] Call stack trace:
+L 06/07/2020 - 17:32:49: [SM]   [0] GameRules_GetProp
+L 06/07/2020 - 17:32:49: [SM]   [1] Line 196, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\sdktools_gamerules.inc::GameRules_GetRoundState
+L 06/07/2020 - 17:32:49: [SM]   [2] Line 171, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::Game.RoundActive.get
+L 06/07/2020 - 17:32:49: [SM]   [3] Line 1156, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::CheckGameState
+ [DTK] debugging > Checking if CapPoot needs to be welcomed
+ [DTK] debugging > Welcoming CapPoot
+L 06/07/2020 - 17:34:50: [SM] Exception reported: Hook type not supported on this game
+L 06/07/2020 - 17:34:50: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 17:34:50: [SM] Call stack trace:
+L 06/07/2020 - 17:34:50: [SM]   [0] SDKHook
+L 06/07/2020 - 17:34:50: [SM]   [1] Line 406, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::OnClientPutInServer
+ [DTK] debugging > Checking if Berke needs to be welcomed
+ [DTK] debugging > Welcoming Berke
+L 06/07/2020 - 17:35:39: [sm/funcommands.smx] "R60D<3><[U:1:116384134]><>" toggled noclip on "R60D<3><[U:1:116384134]><>"
+L 06/07/2020 - 17:35:42: [sm/funcommands.smx] "R60D<3><[U:1:116384134]><>" toggled noclip on "R60D<3><[U:1:116384134]><>"
+ [DTK] debugging > Checking if CapPoot needs to be welcomed
+ [DTK] debugging > CapPoot has the WELCOMED flag. No need to welcome them
+[SM] Listing 26 plugins:
+  01 <Failed> "Source Chat Relay" (v2.1.5-0-g848b19a) by Fishy
+  02 "[DTK] Traininator" (0.2) by worMatty
+  03 <Failed> "[Matty] Mover" (0.2) by worMatty
+  04 "[Matty] Edict Overflow Diagnostic" (0.2) by worMatty
+  05 "[Matty] Debugging Tool" (0.4.1) by worMatty
+  06 "Fun Commands" (1.10.0.6459) by AlliedModders LLC
+  07 "Basic Ban Commands" (1.10.0.6459) by AlliedModders LLC
+  08 "MapChooser" (1.10.0.6459) by AlliedModders LLC
+  09 "Basic Chat" (1.10.0.6459) by AlliedModders LLC
+  10 "Player Commands" (1.10.0.6459) by AlliedModders LLC
+  11 "Map Nominations" (1.10.0.6459) by AlliedModders LLC
+  12 "Admin Menu" (1.10.0.6459) by AlliedModders LLC
+  13 "Client Preferences" (1.10.0.6459) by AlliedModders LLC
+  14 "Admin Help" (1.10.0.6459) by AlliedModders LLC
+  15 "Basic Commands" (1.10.0.6459) by AlliedModders LLC
+  16 "Basic Info Triggers" (1.10.0.6459) by AlliedModders LLC
+  17 "Basic Comm Control" (1.10.0.6459) by AlliedModders LLC
+  18 "Basic Votes" (1.10.0.6459) by AlliedModders LLC
+  19 "Admin File Reader" (1.10.0.6459) by AlliedModders LLC
+  20 "Nextmap" (1.10.0.6459) by AlliedModders LLC
+  21 "Sound Commands" (1.10.0.6459) by AlliedModders LLC
+  22 "Reserved Slots" (1.10.0.6459) by AlliedModders LLC
+  23 "Rock The Vote" (1.10.0.6459) by AlliedModders LLC
+  24 "Fun Votes" (1.10.0.6459) by AlliedModders LLC
+  25 "Anti-Flood" (1.10.0.6459) by AlliedModders LLC
+  26 "[DTK] Deathrun Toolkit Base" (0.282) by worMatty
+Errors:
+server/Source-Chat-Relay.smx (Source Chat Relay): Required extension "Socket" file("socket.ext") not running
+dtk/mmover.smx ([Matty] Mover): Required extension "TF2 Tools" file("game.tf2.ext") not running
+[DTK] CapPoot has disconnected (Steam ID: [U:1:195032098] - Reason: Disconnect by user.)
+ [DTK] debugging > Updated CapPoot's data in the database. Points 10, flags 000011, last_seen 1591544207, steamid 195032098
+Dropped CapPoot from server (Disconnect by user.)
+  Filename: dtk/mmover.smx
+  Title: [Matty] Mover (A bunch of commands for moving and respawning players.)
+  Author: worMatty
+  Version: 0.2
+  Error: Required extension "TF2 Tools" file("game.tf2.ext") not running
+[DTK] The round has ended
+L 06/07/2020 - 17:37:11: [SM] Exception reported: Gamerules lookup failed.
+L 06/07/2020 - 17:37:11: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 17:37:11: [SM] Call stack trace:
+L 06/07/2020 - 17:37:11: [SM]   [0] GameRules_GetProp
+L 06/07/2020 - 17:37:11: [SM]   [1] Line 196, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\sdktools_gamerules.inc::GameRules_GetRoundState
+L 06/07/2020 - 17:37:11: [SM]   [2] Line 171, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::Game.RoundActive.get
+L 06/07/2020 - 17:37:11: [SM]   [3] Line 1156, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::CheckGameState
+[DTK] The round has restarted
+L 06/07/2020 - 17:37:26: [dtk/dtk.smx] monster_resource entity not found!
+ [DTK] debugging > monster_resource entity index has been set to -1 (not found!)
+ [DTK] debugging > Player resource entity index has been set to 40
+ [DTK] debugging > Found logic_relay named dtk_health_scalemax with entity index -2076189709
+L 06/07/2020 - 17:37:26: [SM] Exception reported: Entity Outputs are disabled - See error logs for details
+L 06/07/2020 - 17:37:26: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 17:37:26: [SM] Call stack trace:
+L 06/07/2020 - 17:37:26: [SM]   [0] HookSingleEntityOutput
+L 06/07/2020 - 17:37:26: [SM]   [1] Line 301, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::HealthBar.HealthBar
+L 06/07/2020 - 17:37:26: [SM]   [2] Line 449, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::Event_RoundRestart
+EmitSound: volume out of bounds = 620.000000
+EmitSound: volume out of bounds = 620.000000
+EmitSound: volume out of bounds = 620.000000
+[DTK] The round is now active
+L 06/07/2020 - 17:37:31: [SM] Exception reported: Gamerules lookup failed.
+L 06/07/2020 - 17:37:31: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 17:37:31: [SM] Call stack trace:
+L 06/07/2020 - 17:37:31: [SM]   [0] GameRules_GetProp
+L 06/07/2020 - 17:37:31: [SM]   [1] Line 196, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\sdktools_gamerules.inc::GameRules_GetRoundState
+L 06/07/2020 - 17:37:31: [SM]   [2] Line 171, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::Game.RoundActive.get
+L 06/07/2020 - 17:37:31: [SM]   [3] Line 1156, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::CheckGameState
+L 06/07/2020 - 17:37:51: [sm/basecommands.smx] "⛐ worMatty<10><[U:1:1047392]><>" changed map to "stardust_v1"
+L 06/07/2020 - 17:37:54: [SM] Changed map to "stardust_v1"
+ [DTK] debugging > Updated Berke's data in the database. Points 40, flags 000011, last_seen 1591544274, steamid 190285622
+ [DTK] debugging > Updated R60D's data in the database. Points 30, flags 000011, last_seen 1591544274, steamid 116384134
+ [DTK] debugging > Updated ⛐ worMatty's data in the database. Points 40, flags 000011, last_seen 1591544274, steamid 1047392
+---- Host_Changelevel ----
+L 06/07/2020 - 17:37:54: [SM] Exception reported: Game event "teams_changed" has no active hook
+L 06/07/2020 - 17:37:54: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 17:37:54: [SM] Call stack trace:
+L 06/07/2020 - 17:37:54: [SM]   [0] UnhookEvent
+L 06/07/2020 - 17:37:54: [SM]   [1] Line 1432, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::EventsAndListeners
+L 06/07/2020 - 17:37:54: [SM]   [2] Line 324, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::OnMapEnd
+SoundEmitter:  removing map sound overrides [1 to remove, 1 to restore]
+Error loading cfg/pure_server_minimal.txt
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_island/island_parasol_table.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_island/island_parasol_table.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_island/island_parasol_table.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_moonbase/moon_handrail128_short.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_moonbase/moon_handrail128_short.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_moonbase/moon_handrail128_short.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_moonbase/moon_handrail128_short.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_moonbase/moon_handrail128_short.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_moonbase/moon_handrail128_short.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_moonbase/moon_handrail128_short.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_moonbase/moon_handrail128_short.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_moonbase/moon_handrail128_short.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_moonbase/moon_handrail128_short.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_moonbase/moon_handrail128_short.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_moonbase/moon_handrail128_short.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_moonbase/moon_handrail128_short.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_moonbase/moon_handrail128_short.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_moonbase/moon_handrail128_short.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_moonbase/moon_handrail128_short.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_moonbase/moon_handrail128_short.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_moonbase/moon_handrail128_short.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_moonbase/moon_handrail128_short.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_moonbase/moon_handrail128_short.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_moonbase/moon_handrail128_short.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_moonbase/moon_handrail128_short.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_moonbase/moon_handrail128_short.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_moonbase/moon_handrail128_short.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_moonbase/moon_handrail128_short.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_moonbase/moon_handrail128_short.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_moonbase/moon_handrail128_short.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_moonbase/moon_handrail128_short.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_moonbase/moon_handrail128_short.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_moonbase/moon_handrail128_short.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_moonbase/moon_handrail128_short.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_moonbase/moon_handrail128_short.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_moonbase/moon_handrail128_short.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_moonbase/moon_handrail128_short.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_moonbase/moon_handrail128_short.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_moonbase/moon_handrail128_short.mdl)
+L 06/07/2020 - 17:37:57: -------- Mapchange to dr_stardust_v1 --------
+L 06/07/2020 - 17:37:57: Error log file session closed.
+SV_BroadcastMessage:  Recipient Filter for message type 23 (reliable: no, init: no) with bogus client index (0) in list of 1 clients
+SV_ActivateServer: setting tickrate to 66.7
+Unknown command "�"
+'dr_stardust_v1.cfg' not present; not executing.
+[DTK] Database connection established. Handle is 1e800cb
+ [DTK] debugging > Found 0 expired records in the database to delete
+L 06/07/2020 - 17:38:11: [dtk/dtk.smx] Detected a deathrun map
+L 06/07/2020 - 17:38:11: [SM] Exception reported: Game event "teams_changed" does not exist
+L 06/07/2020 - 17:38:11: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 17:38:11: [SM] Call stack trace:
+L 06/07/2020 - 17:38:11: [SM]   [0] HookEvent
+L 06/07/2020 - 17:38:11: [SM]   [1] Line 1407, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::EventsAndListeners
+L 06/07/2020 - 17:38:11: [SM]   [2] Line 289, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::OnMapStart
+ [DTK] debugging > Berke was playing on the last map
+ [DTK] debugging > R60D was playing on the last map
+ [DTK] debugging > ⛐ worMatty was playing on the last map
+L 06/07/2020 - 17:39:20: [SM] Exception reported: Hook type not supported on this game
+L 06/07/2020 - 17:39:20: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 17:39:20: [SM] Call stack trace:
+L 06/07/2020 - 17:39:20: [SM]   [0] SDKHook
+L 06/07/2020 - 17:39:20: [SM]   [1] Line 406, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::OnClientPutInServer
+ [DTK] debugging > Checking if R60D needs to be welcomed
+ [DTK] debugging > R60D has the WELCOMED flag. No need to welcome them
+[DTK] The round has restarted
+L 06/07/2020 - 17:39:24: [dtk/dtk.smx] monster_resource entity not found!
+ [DTK] debugging > monster_resource entity index has been set to -1 (not found!)
+ [DTK] debugging > Player resource entity index has been set to 40
+ [DTK] debugging > Found logic_relay named dtk_health_scalemax with entity index -2048025262
+L 06/07/2020 - 17:39:24: [SM] Exception reported: Entity Outputs are disabled - See error logs for details
+L 06/07/2020 - 17:39:24: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 17:39:24: [SM] Call stack trace:
+L 06/07/2020 - 17:39:24: [SM]   [0] HookSingleEntityOutput
+L 06/07/2020 - 17:39:24: [SM]   [1] Line 301, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::HealthBar.HealthBar
+L 06/07/2020 - 17:39:24: [SM]   [2] Line 449, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::Event_RoundRestart
+L 06/07/2020 - 17:39:29: [SM] Exception reported: Hook type not supported on this game
+L 06/07/2020 - 17:39:29: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 17:39:29: [SM] Call stack trace:
+L 06/07/2020 - 17:39:29: [SM]   [0] SDKHook
+L 06/07/2020 - 17:39:29: [SM]   [1] Line 406, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::OnClientPutInServer
+[DTK] The round is now active
+L 06/07/2020 - 17:39:29: [SM] Exception reported: Gamerules lookup failed.
+L 06/07/2020 - 17:39:29: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 17:39:29: [SM] Call stack trace:
+L 06/07/2020 - 17:39:29: [SM]   [0] GameRules_GetProp
+L 06/07/2020 - 17:39:29: [SM]   [1] Line 196, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\sdktools_gamerules.inc::GameRules_GetRoundState
+L 06/07/2020 - 17:39:29: [SM]   [2] Line 171, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::Game.RoundActive.get
+L 06/07/2020 - 17:39:29: [SM]   [3] Line 1156, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::CheckGameState
+L 06/07/2020 - 17:39:41: [SM] Exception reported: Gamerules lookup failed.
+L 06/07/2020 - 17:39:41: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 17:39:41: [SM] Call stack trace:
+L 06/07/2020 - 17:39:41: [SM]   [0] GameRules_GetProp
+L 06/07/2020 - 17:39:41: [SM]   [1] Line 196, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\sdktools_gamerules.inc::GameRules_GetRoundState
+L 06/07/2020 - 17:39:41: [SM]   [2] Line 171, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::Game.RoundActive.get
+L 06/07/2020 - 17:39:41: [SM]   [3] Line 1156, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::CheckGameState
+ [DTK] debugging > Checking if R60D needs to be welcomed
+ [DTK] debugging > R60D has the WELCOMED flag. No need to welcome them
+[DTK] The round has restarted
+L 06/07/2020 - 17:39:54: [dtk/dtk.smx] monster_resource entity not found!
+ [DTK] debugging > monster_resource entity index has been set to -1 (not found!)
+ [DTK] debugging > Player resource entity index has been set to 40
+ [DTK] debugging > Found logic_relay named dtk_health_scalemax with entity index -2095088134
+L 06/07/2020 - 17:39:54: [SM] Exception reported: Entity Outputs are disabled - See error logs for details
+L 06/07/2020 - 17:39:54: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 17:39:54: [SM] Call stack trace:
+L 06/07/2020 - 17:39:54: [SM]   [0] HookSingleEntityOutput
+L 06/07/2020 - 17:39:54: [SM]   [1] Line 301, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::HealthBar.HealthBar
+L 06/07/2020 - 17:39:54: [SM]   [2] Line 449, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::Event_RoundRestart
+[DTK] The round is now active
+L 06/07/2020 - 17:39:59: [SM] Exception reported: Gamerules lookup failed.
+L 06/07/2020 - 17:39:59: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 17:39:59: [SM] Call stack trace:
+L 06/07/2020 - 17:39:59: [SM]   [0] GameRules_GetProp
+L 06/07/2020 - 17:39:59: [SM]   [1] Line 196, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\sdktools_gamerules.inc::GameRules_GetRoundState
+L 06/07/2020 - 17:39:59: [SM]   [2] Line 171, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::Game.RoundActive.get
+L 06/07/2020 - 17:39:59: [SM]   [3] Line 1156, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::CheckGameState
+[SM] The plugin list has been refreshed and reloaded.
+[SM] Listing 26 plugins:
+  01 <Failed> "Source Chat Relay" (v2.1.5-0-g848b19a) by Fishy
+  02 "[DTK] Traininator" (0.2) by worMatty
+  03 "[Matty] Edict Overflow Diagnostic" (0.2) by worMatty
+  04 "[Matty] Debugging Tool" (0.4.1) by worMatty
+  05 "Fun Commands" (1.10.0.6459) by AlliedModders LLC
+  06 "Basic Ban Commands" (1.10.0.6459) by AlliedModders LLC
+  07 "MapChooser" (1.10.0.6459) by AlliedModders LLC
+  08 "Basic Chat" (1.10.0.6459) by AlliedModders LLC
+  09 "Player Commands" (1.10.0.6459) by AlliedModders LLC
+  10 "Map Nominations" (1.10.0.6459) by AlliedModders LLC
+  11 "Admin Menu" (1.10.0.6459) by AlliedModders LLC
+  12 "Client Preferences" (1.10.0.6459) by AlliedModders LLC
+  13 "Admin Help" (1.10.0.6459) by AlliedModders LLC
+  14 "Basic Commands" (1.10.0.6459) by AlliedModders LLC
+  15 "Basic Info Triggers" (1.10.0.6459) by AlliedModders LLC
+  16 "Basic Comm Control" (1.10.0.6459) by AlliedModders LLC
+  17 "Basic Votes" (1.10.0.6459) by AlliedModders LLC
+  18 "Admin File Reader" (1.10.0.6459) by AlliedModders LLC
+  19 "Nextmap" (1.10.0.6459) by AlliedModders LLC
+  20 "Sound Commands" (1.10.0.6459) by AlliedModders LLC
+  21 "Reserved Slots" (1.10.0.6459) by AlliedModders LLC
+  22 "Rock The Vote" (1.10.0.6459) by AlliedModders LLC
+  23 "Fun Votes" (1.10.0.6459) by AlliedModders LLC
+  24 "Anti-Flood" (1.10.0.6459) by AlliedModders LLC
+  25 "[DTK] Deathrun Toolkit Base" (0.282) by worMatty
+  26 "[Matty] Mover" (0.2) by worMatty
+Errors:
+server/Source-Chat-Relay.smx (Source Chat Relay): Required extension "Socket" file("socket.ext") not running
+ [DTK] debugging > Checking if ⛐ worMatty needs to be welcomed
+ [DTK] debugging > ⛐ worMatty has the WELCOMED flag. No need to welcome them
+[DTK] The round has ended
+[DTK] The round has restarted
+L 06/07/2020 - 17:41:08: [dtk/dtk.smx] monster_resource entity not found!
+ [DTK] debugging > monster_resource entity index has been set to -1 (not found!)
+ [DTK] debugging > Player resource entity index has been set to 40
+ [DTK] debugging > Found logic_relay named dtk_health_scalemax with entity index -2141004118
+L 06/07/2020 - 17:41:08: [SM] Exception reported: Entity Outputs are disabled - See error logs for details
+L 06/07/2020 - 17:41:08: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 17:41:08: [SM] Call stack trace:
+L 06/07/2020 - 17:41:08: [SM]   [0] HookSingleEntityOutput
+L 06/07/2020 - 17:41:08: [SM]   [1] Line 301, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::HealthBar.HealthBar
+L 06/07/2020 - 17:41:08: [SM]   [2] Line 449, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::Event_RoundRestart
+[DTK] The round is now active
+L 06/07/2020 - 17:41:12: [SM] Exception reported: Gamerules lookup failed.
+L 06/07/2020 - 17:41:12: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 17:41:12: [SM] Call stack trace:
+L 06/07/2020 - 17:41:12: [SM]   [0] GameRules_GetProp
+L 06/07/2020 - 17:41:12: [SM]   [1] Line 196, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\sdktools_gamerules.inc::GameRules_GetRoundState
+L 06/07/2020 - 17:41:12: [SM]   [2] Line 171, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::Game.RoundActive.get
+L 06/07/2020 - 17:41:12: [SM]   [3] Line 1156, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::CheckGameState
+L 06/07/2020 - 17:41:19: [SM] Exception reported: Hook type not supported on this game
+L 06/07/2020 - 17:41:19: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 17:41:19: [SM] Call stack trace:
+L 06/07/2020 - 17:41:19: [SM]   [0] SDKHook
+L 06/07/2020 - 17:41:19: [SM]   [1] Line 406, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::OnClientPutInServer
+L 06/07/2020 - 17:41:30: [dtk/m_mover.smx] ⛐ worMatty<10><[U:1:1047392]><> brought R60D<3><[U:1:116384134]><> to them
+[DTK] MamiNova©® | BBB has connected (Steam ID: [U:1:234156717])
+Client "MamiNova©® | BBB" connected (91.170.61.251:27005).
+ [DTK] debugging > MamiNova©® | BBB is a new player
+ [DTK] debugging > Gave MamiNova©® | BBB default settings
+ [DTK] debugging > MamiNova©® | BBB has a valid Steam ID (234156717). Retrieving stored data
+ [DTK] debugging > MamiNova©® | BBB doesn't have a database record
+ [DTK] debugging > Created a new record for MamiNova©® | BBB
+L 06/07/2020 - 17:41:41: [dtk/m_mover.smx] ⛐ worMatty<10><[U:1:1047392]><> teleported ⛐ worMatty<10><[U:1:1047392]><> to their crosshair
+[DTK] The round has ended
+L 06/07/2020 - 17:43:25: [SM] Exception reported: Gamerules lookup failed.
+L 06/07/2020 - 17:43:25: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 17:43:25: [SM] Call stack trace:
+L 06/07/2020 - 17:43:25: [SM]   [0] GameRules_GetProp
+L 06/07/2020 - 17:43:25: [SM]   [1] Line 196, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\sdktools_gamerules.inc::GameRules_GetRoundState
+L 06/07/2020 - 17:43:25: [SM]   [2] Line 171, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::Game.RoundActive.get
+L 06/07/2020 - 17:43:25: [SM]   [3] Line 1156, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::CheckGameState
+ [DTK] debugging > Checking if R60D needs to be welcomed
+ [DTK] debugging > R60D has the WELCOMED flag. No need to welcome them
+[DTK] The round has restarted
+L 06/07/2020 - 17:43:40: [dtk/dtk.smx] monster_resource entity not found!
+ [DTK] debugging > monster_resource entity index has been set to -1 (not found!)
+ [DTK] debugging > Player resource entity index has been set to 40
+ [DTK] debugging > Found logic_relay named dtk_health_scalemax with entity index -2106839209
+L 06/07/2020 - 17:43:40: [SM] Exception reported: Entity Outputs are disabled - See error logs for details
+L 06/07/2020 - 17:43:40: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 17:43:40: [SM] Call stack trace:
+L 06/07/2020 - 17:43:40: [SM]   [0] HookSingleEntityOutput
+L 06/07/2020 - 17:43:40: [SM]   [1] Line 301, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::HealthBar.HealthBar
+L 06/07/2020 - 17:43:40: [SM]   [2] Line 449, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::Event_RoundRestart
+[DTK] The round is now active
+L 06/07/2020 - 17:43:45: [SM] Exception reported: Gamerules lookup failed.
+L 06/07/2020 - 17:43:45: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 17:43:45: [SM] Call stack trace:
+L 06/07/2020 - 17:43:45: [SM]   [0] GameRules_GetProp
+L 06/07/2020 - 17:43:45: [SM]   [1] Line 196, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\sdktools_gamerules.inc::GameRules_GetRoundState
+L 06/07/2020 - 17:43:45: [SM]   [2] Line 171, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::Game.RoundActive.get
+L 06/07/2020 - 17:43:45: [SM]   [3] Line 1156, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::CheckGameState
+L 06/07/2020 - 17:44:38: [SM] Exception reported: Hook type not supported on this game
+L 06/07/2020 - 17:44:38: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 17:44:38: [SM] Call stack trace:
+L 06/07/2020 - 17:44:38: [SM]   [0] SDKHook
+L 06/07/2020 - 17:44:38: [SM]   [1] Line 406, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::OnClientPutInServer
+CreateFragmentsFromFile: 'user_custom/2e/2e8b1541.dat' doesn't exist.
+CreateFragmentsFromFile: 'user_custom/2e/2e8b1541.dat' doesn't exist.
+CreateFragmentsFromFile: 'user_custom/2e/2e8b1541.dat' doesn't exist.
+ [DTK] debugging > Checking if MamiNova©® | BBB needs to be welcomed
+ [DTK] debugging > Welcoming MamiNova©® | BBB
+L 06/07/2020 - 17:45:11: [SM] Exception reported: Native is not bound
+L 06/07/2020 - 17:45:11: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 17:45:11: [SM] Call stack trace:
+L 06/07/2020 - 17:45:11: [SM]   [0] TF2_RegeneratePlayer
+L 06/07/2020 - 17:45:11: [SM]   [1] Line 928, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::Player.SetClass
+L 06/07/2020 - 17:45:11: [SM]   [2] Line 1802, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::Command_ChangeClass
+ [DTK] debugging > Checking if MamiNova©® | BBB needs to be welcomed
+ [DTK] debugging > MamiNova©® | BBB has the WELCOMED flag. No need to welcome them
+ [DTK] debugging > Checking if MamiNova©® | BBB needs to be welcomed
+ [DTK] debugging > MamiNova©® | BBB has the WELCOMED flag. No need to welcome them
+[DTK] MamiNova©® | BBB has disconnected (Steam ID: [U:1:234156717] - Reason: Disconnect by user.)
+ [DTK] debugging > Updated MamiNova©® | BBB's data in the database. Points 10, flags 000011, last_seen 1591544743, steamid 234156717
+Dropped MamiNova©® | BBB from server (Disconnect by user.)
+L 06/07/2020 - 17:45:49: [sm/funcommands.smx] "⛐ worMatty<10><[U:1:1047392]><>" toggled noclip on "⛐ worMatty<10><[U:1:1047392]><>"
+L 06/07/2020 - 17:45:54: [sm/funcommands.smx] "⛐ worMatty<10><[U:1:1047392]><>" toggled noclip on "⛐ worMatty<10><[U:1:1047392]><>"
+176.40.242.240:43122:reconnect
+ [DTK] debugging > Updated Berke's data in the database. Points 40, flags 000011, last_seen 1591544811, steamid 190285622
+[DTK] Berke has disconnected (Steam ID: [U:1:190285622] - Reason: Connection closing)
+Dropped Berke from server (Connection closing)
+[DTK] Berke has connected (Steam ID: [U:1:190285622])
+Client "Berke" connected (176.40.242.240:43122).
+ [DTK] debugging > Berke is a new player
+ [DTK] debugging > Gave Berke default settings
+ [DTK] debugging > Berke has a valid Steam ID (190285622). Retrieving stored data
+ [DTK] debugging > Retrieved stored data for Berke: Points 40, flags: 000011
+L 06/07/2020 - 17:47:30: [SM] Exception reported: Native is not bound
+L 06/07/2020 - 17:47:30: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 17:47:30: [SM] Call stack trace:
+L 06/07/2020 - 17:47:30: [SM]   [0] TF2_RegeneratePlayer
+L 06/07/2020 - 17:47:30: [SM]   [1] Line 928, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::Player.SetClass
+L 06/07/2020 - 17:47:30: [SM]   [2] Line 1802, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::Command_ChangeClass
+L 06/07/2020 - 17:47:40: [SM] Exception reported: Hook type not supported on this game
+L 06/07/2020 - 17:47:40: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 17:47:40: [SM] Call stack trace:
+L 06/07/2020 - 17:47:40: [SM]   [0] SDKHook
+L 06/07/2020 - 17:47:40: [SM]   [1] Line 406, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::OnClientPutInServer
+[DTK] The round has ended
+L 06/07/2020 - 17:47:43: [SM] Exception reported: Gamerules lookup failed.
+L 06/07/2020 - 17:47:43: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 17:47:43: [SM] Call stack trace:
+L 06/07/2020 - 17:47:43: [SM]   [0] GameRules_GetProp
+L 06/07/2020 - 17:47:43: [SM]   [1] Line 196, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\sdktools_gamerules.inc::GameRules_GetRoundState
+L 06/07/2020 - 17:47:43: [SM]   [2] Line 171, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::Game.RoundActive.get
+L 06/07/2020 - 17:47:43: [SM]   [3] Line 1156, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::CheckGameState
+ [DTK] debugging > Checking if Berke needs to be welcomed
+ [DTK] debugging > Welcoming Berke
+[DTK] The round has restarted
+L 06/07/2020 - 17:47:58: [dtk/dtk.smx] monster_resource entity not found!
+ [DTK] debugging > monster_resource entity index has been set to -1 (not found!)
+ [DTK] debugging > Player resource entity index has been set to 40
+ [DTK] debugging > Found logic_relay named dtk_health_scalemax with entity index -2111991809
+L 06/07/2020 - 17:47:58: [SM] Exception reported: Entity Outputs are disabled - See error logs for details
+L 06/07/2020 - 17:47:58: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 17:47:58: [SM] Call stack trace:
+L 06/07/2020 - 17:47:58: [SM]   [0] HookSingleEntityOutput
+L 06/07/2020 - 17:47:58: [SM]   [1] Line 301, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::HealthBar.HealthBar
+L 06/07/2020 - 17:47:58: [SM]   [2] Line 449, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::Event_RoundRestart
+[DTK] The round is now active
+L 06/07/2020 - 17:48:03: [SM] Exception reported: Gamerules lookup failed.
+L 06/07/2020 - 17:48:03: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 17:48:03: [SM] Call stack trace:
+L 06/07/2020 - 17:48:03: [SM]   [0] GameRules_GetProp
+L 06/07/2020 - 17:48:03: [SM]   [1] Line 196, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\sdktools_gamerules.inc::GameRules_GetRoundState
+L 06/07/2020 - 17:48:03: [SM]   [2] Line 171, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::Game.RoundActive.get
+L 06/07/2020 - 17:48:03: [SM]   [3] Line 1156, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::CheckGameState
+[DTK] Incentive for Defecation has connected (Steam ID: [U:1:44203340])
+Client "Incentive for Defecation" connected (79.64.191.86:27005).
+ [DTK] debugging > Incentive for Defecation is a new player
+ [DTK] debugging > Gave Incentive for Defecation default settings
+ [DTK] debugging > Incentive for Defecation has a valid Steam ID (44203340). Retrieving stored data
+ [DTK] debugging > Incentive for Defecation doesn't have a database record
+ [DTK] debugging > Created a new record for Incentive for Defecation
+L 06/07/2020 - 17:49:25: [SM] Exception reported: Native is not bound
+L 06/07/2020 - 17:49:25: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 17:49:25: [SM] Call stack trace:
+L 06/07/2020 - 17:49:25: [SM]   [0] TF2_RegeneratePlayer
+L 06/07/2020 - 17:49:25: [SM]   [1] Line 928, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::Player.SetClass
+L 06/07/2020 - 17:49:25: [SM]   [2] Line 1802, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::Command_ChangeClass
+[DTK] The round has ended
+L 06/07/2020 - 17:50:06: [SM] Exception reported: Gamerules lookup failed.
+L 06/07/2020 - 17:50:06: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 17:50:06: [SM] Call stack trace:
+L 06/07/2020 - 17:50:06: [SM]   [0] GameRules_GetProp
+L 06/07/2020 - 17:50:06: [SM]   [1] Line 196, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\sdktools_gamerules.inc::GameRules_GetRoundState
+L 06/07/2020 - 17:50:06: [SM]   [2] Line 171, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::Game.RoundActive.get
+L 06/07/2020 - 17:50:06: [SM]   [3] Line 1156, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::CheckGameState
+L 06/07/2020 - 17:50:13: [SM] Exception reported: Gamerules lookup failed.
+L 06/07/2020 - 17:50:13: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 17:50:13: [SM] Call stack trace:
+L 06/07/2020 - 17:50:13: [SM]   [0] GameRules_GetProp
+L 06/07/2020 - 17:50:13: [SM]   [1] Line 196, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\sdktools_gamerules.inc::GameRules_GetRoundState
+L 06/07/2020 - 17:50:13: [SM]   [2] Line 171, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::Game.RoundActive.get
+L 06/07/2020 - 17:50:13: [SM]   [3] Line 1156, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::CheckGameState
+[DTK] The round has restarted
+L 06/07/2020 - 17:50:21: [dtk/dtk.smx] monster_resource entity not found!
+ [DTK] debugging > monster_resource entity index has been set to -1 (not found!)
+ [DTK] debugging > Player resource entity index has been set to 40
+ [DTK] debugging > Found logic_relay named dtk_health_scalemax with entity index -2105816915
+L 06/07/2020 - 17:50:21: [SM] Exception reported: Entity Outputs are disabled - See error logs for details
+L 06/07/2020 - 17:50:21: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 17:50:21: [SM] Call stack trace:
+L 06/07/2020 - 17:50:21: [SM]   [0] HookSingleEntityOutput
+L 06/07/2020 - 17:50:21: [SM]   [1] Line 301, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::HealthBar.HealthBar
+L 06/07/2020 - 17:50:21: [SM]   [2] Line 449, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::Event_RoundRestart
+[DTK] The round is now active
+L 06/07/2020 - 17:50:26: [SM] Exception reported: Gamerules lookup failed.
+L 06/07/2020 - 17:50:26: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 17:50:26: [SM] Call stack trace:
+L 06/07/2020 - 17:50:26: [SM]   [0] GameRules_GetProp
+L 06/07/2020 - 17:50:26: [SM]   [1] Line 196, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\sdktools_gamerules.inc::GameRules_GetRoundState
+L 06/07/2020 - 17:50:26: [SM]   [2] Line 171, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::Game.RoundActive.get
+L 06/07/2020 - 17:50:26: [SM]   [3] Line 1156, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::CheckGameState
+
+Current server edicts:
+Count Classname
+  526 
+    1 ai_network
+  117 ambient_generic
+   24 beam
+    1 env_entity_dissolver
+    5 env_explosion
+    3 env_fog_controller
+    1 env_hudhint
+   22 env_laser
+    3 env_screenoverlay
+    1 env_shake
+    4 env_shooter
+    8 env_smokestack
+    2 env_soundscape
+    4 env_soundscape_triggerable
+    8 env_spark
+  141 env_sprite
+    1 env_tonemap_controller
+   23 func_areaportal
+   25 func_breakable
+   18 func_brush
+   23 func_button
+    7 func_door
+    2 func_door_rotating
+    1 func_lod
+    3 func_occluder
+    7 func_physbox
+    2 func_physbox_multiplayer
+    2 func_respawnroom
+    4 func_respawnroomvisualizer
+    1 func_rotating
+    1 func_tanktrain
+    6 func_tracktrain
+    2 func_water_analog
+    1 game_forcerespawn
+    3 game_round_win
+    2 game_ui
+   16 info_observer_point
+  100 info_particle_system
+    1 info_player_start
+   25 info_player_teamspawn
+   14 info_target
+   22 info_teleport_destination
+    3 instanced_scripted_scene
+    9 item_ammopack_small
+    9 item_healthkit_small
+   16 keyframe_rope
+   15 light
+    1 light_dynamic
+   32 light_spot
+   13 logic_auto
+   37 move_rope
+   45 path_track
+    3 player
+    1 point_clientcommand
+    1 point_push
+   26 point_spotlight
+    4 point_teleport
+   78 prop_dynamic
+   42 prop_physics
+    1 scene_manager
+    1 soundent
+   24 spotlight_end
+    1 tf_gamerules
+    1 tf_logic_arena
+    1 tf_objective_resource
+    1 tf_player_manager
+    3 tf_point_weapon_mimic
+    6 tf_team
+    9 tf_viewmodel
+    2 tf_weapon_crowbar
+    1 tf_weapon_fireaxe
+    1 tf_weapon_flamethrower
+    2 tf_weapon_pistol_mercenary
+    1 tf_weapon_shotgun
+    3 trigger_add_tf_player_condition
+    2 trigger_apply_impulse
+   23 trigger_hurt
+   10 trigger_multiple
+   19 trigger_once
+   15 trigger_push
+   10 trigger_soundscape
+   34 trigger_teleport
+    1 vote_controller
+    1 water_lod_control
+    1 worldspawn
+NumEdicts: 1692
+FreeEdicts: 497
+
+L 06/07/2020 - 17:51:39: [SM] Exception reported: Hook type not supported on this game
+L 06/07/2020 - 17:51:39: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 17:51:39: [SM] Call stack trace:
+L 06/07/2020 - 17:51:39: [SM]   [0] SDKHook
+L 06/07/2020 - 17:51:39: [SM]   [1] Line 406, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::OnClientPutInServer
+ [DTK] debugging > Checking if Incentive for Defecation needs to be welcomed
+ [DTK] debugging > Welcoming Incentive for Defecation
+L 06/07/2020 - 17:52:35: [SM] Exception reported: Gamerules lookup failed.
+L 06/07/2020 - 17:52:35: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 17:52:35: [SM] Call stack trace:
+L 06/07/2020 - 17:52:35: [SM]   [0] GameRules_GetProp
+L 06/07/2020 - 17:52:35: [SM]   [1] Line 196, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\sdktools_gamerules.inc::GameRules_GetRoundState
+L 06/07/2020 - 17:52:35: [SM]   [2] Line 171, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::Game.RoundActive.get
+L 06/07/2020 - 17:52:35: [SM]   [3] Line 1156, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::CheckGameState
+[DTK] Incentive for Defecation has disconnected (Steam ID: [U:1:44203340] - Reason: Disconnect by user.)
+ [DTK] debugging > Updated Incentive for Defecation's data in the database. Points 10, flags 000011, last_seen 1591545195, steamid 44203340
+Dropped Incentive for Defecation from server (Disconnect by user.)
+[DTK] The round has ended
+L 06/07/2020 - 17:53:32: [SM] Exception reported: Gamerules lookup failed.
+L 06/07/2020 - 17:53:32: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 17:53:32: [SM] Call stack trace:
+L 06/07/2020 - 17:53:32: [SM]   [0] GameRules_GetProp
+L 06/07/2020 - 17:53:32: [SM]   [1] Line 196, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\sdktools_gamerules.inc::GameRules_GetRoundState
+L 06/07/2020 - 17:53:32: [SM]   [2] Line 171, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::Game.RoundActive.get
+L 06/07/2020 - 17:53:32: [SM]   [3] Line 1156, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::CheckGameState
+[DTK] The round has restarted
+L 06/07/2020 - 17:53:47: [dtk/dtk.smx] monster_resource entity not found!
+ [DTK] debugging > monster_resource entity index has been set to -1 (not found!)
+ [DTK] debugging > Player resource entity index has been set to 40
+ [DTK] debugging > Found logic_relay named dtk_health_scalemax with entity index -2022282917
+L 06/07/2020 - 17:53:47: [SM] Exception reported: Entity Outputs are disabled - See error logs for details
+L 06/07/2020 - 17:53:47: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 17:53:47: [SM] Call stack trace:
+L 06/07/2020 - 17:53:47: [SM]   [0] HookSingleEntityOutput
+L 06/07/2020 - 17:53:47: [SM]   [1] Line 301, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::HealthBar.HealthBar
+L 06/07/2020 - 17:53:47: [SM]   [2] Line 449, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::Event_RoundRestart
+[DTK] The round is now active
+L 06/07/2020 - 17:53:52: [SM] Exception reported: Gamerules lookup failed.
+L 06/07/2020 - 17:53:52: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 17:53:52: [SM] Call stack trace:
+L 06/07/2020 - 17:53:52: [SM]   [0] GameRules_GetProp
+L 06/07/2020 - 17:53:52: [SM]   [1] Line 196, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\sdktools_gamerules.inc::GameRules_GetRoundState
+L 06/07/2020 - 17:53:52: [SM]   [2] Line 171, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::Game.RoundActive.get
+L 06/07/2020 - 17:53:52: [SM]   [3] Line 1156, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::CheckGameState
+[DTK] Slenderakun has connected (Steam ID: [U:1:340329546])
+Client "Slenderakun" connected (83.23.226.8:44240).
+ [DTK] debugging > Slenderakun is a new player
+ [DTK] debugging > Gave Slenderakun default settings
+ [DTK] debugging > Slenderakun has a valid Steam ID (340329546). Retrieving stored data
+ [DTK] debugging > Slenderakun doesn't have a database record
+ [DTK] debugging > Created a new record for Slenderakun
+[DTK] Slenderakun has disconnected (Steam ID: [U:1:340329546] - Reason: Disconnect by user.)
+Dropped Slenderakun from server (Disconnect by user.)
+[DTK] The round has ended
+L 06/07/2020 - 17:56:23: [SM] Exception reported: Gamerules lookup failed.
+L 06/07/2020 - 17:56:23: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 17:56:23: [SM] Call stack trace:
+L 06/07/2020 - 17:56:23: [SM]   [0] GameRules_GetProp
+L 06/07/2020 - 17:56:23: [SM]   [1] Line 196, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\sdktools_gamerules.inc::GameRules_GetRoundState
+L 06/07/2020 - 17:56:23: [SM]   [2] Line 171, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::Game.RoundActive.get
+L 06/07/2020 - 17:56:23: [SM]   [3] Line 1156, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::CheckGameState
+L 06/07/2020 - 17:56:26: [SM] Exception reported: Gamerules lookup failed.
+L 06/07/2020 - 17:56:26: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 17:56:26: [SM] Call stack trace:
+L 06/07/2020 - 17:56:26: [SM]   [0] GameRules_GetProp
+L 06/07/2020 - 17:56:26: [SM]   [1] Line 196, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\sdktools_gamerules.inc::GameRules_GetRoundState
+L 06/07/2020 - 17:56:26: [SM]   [2] Line 171, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::Game.RoundActive.get
+L 06/07/2020 - 17:56:26: [SM]   [3] Line 1156, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::CheckGameState
+[DTK] The round has restarted
+L 06/07/2020 - 17:56:38: [dtk/dtk.smx] monster_resource entity not found!
+ [DTK] debugging > monster_resource entity index has been set to -1 (not found!)
+ [DTK] debugging > Player resource entity index has been set to 40
+ [DTK] debugging > Found logic_relay named dtk_health_scalemax with entity index -2058122741
+L 06/07/2020 - 17:56:38: [SM] Exception reported: Entity Outputs are disabled - See error logs for details
+L 06/07/2020 - 17:56:38: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 17:56:38: [SM] Call stack trace:
+L 06/07/2020 - 17:56:38: [SM]   [0] HookSingleEntityOutput
+L 06/07/2020 - 17:56:38: [SM]   [1] Line 301, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::HealthBar.HealthBar
+L 06/07/2020 - 17:56:38: [SM]   [2] Line 449, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::Event_RoundRestart
+[DTK] The round is now active
+L 06/07/2020 - 17:56:43: [SM] Exception reported: Gamerules lookup failed.
+L 06/07/2020 - 17:56:43: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 17:56:43: [SM] Call stack trace:
+L 06/07/2020 - 17:56:43: [SM]   [0] GameRules_GetProp
+L 06/07/2020 - 17:56:43: [SM]   [1] Line 196, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\sdktools_gamerules.inc::GameRules_GetRoundState
+L 06/07/2020 - 17:56:43: [SM]   [2] Line 171, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::Game.RoundActive.get
+L 06/07/2020 - 17:56:43: [SM]   [3] Line 1156, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::CheckGameState
+L 06/07/2020 - 17:58:10: [sm/basecommands.smx] "R60D<3><[U:1:116384134]><>" changed map to "steam"
+L 06/07/2020 - 17:58:13: [SM] Changed map to "steam"
+ [DTK] debugging > Updated Berke's data in the database. Points 70, flags 000011, last_seen 1591545493, steamid 190285622
+ [DTK] debugging > Updated R60D's data in the database. Points 90, flags 000011, last_seen 1591545494, steamid 116384134
+ [DTK] debugging > Updated ⛐ worMatty's data in the database. Points 40, flags 000011, last_seen 1591545494, steamid 1047392
+---- Host_Changelevel ----
+L 06/07/2020 - 17:58:14: [SM] Exception reported: Game event "teams_changed" has no active hook
+L 06/07/2020 - 17:58:14: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 17:58:14: [SM] Call stack trace:
+L 06/07/2020 - 17:58:14: [SM]   [0] UnhookEvent
+L 06/07/2020 - 17:58:14: [SM]   [1] Line 1432, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::EventsAndListeners
+L 06/07/2020 - 17:58:14: [SM]   [2] Line 324, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::OnMapEnd
+SoundEmitter:  removing map sound overrides [1 to remove, 1 to restore]
+Error loading cfg/pure_server_minimal.txt
+L 06/07/2020 - 17:58:16: -------- Mapchange to dr_steamworks_extreme_b3a --------
+L 06/07/2020 - 17:58:16: Error log file session closed.
+Error, bad server command exec dr_steamworks_extreme_b3a.
+KeyValues Error: LoadFromBuffer: missing { in file maps/dr_steamworks_extreme_b3a_level_sounds.txt
+(*Buttons.snd37*), (*wave*), (*rndwave*), 
+KeyValues Error: LoadFromBuffer: missing { in file maps/dr_steamworks_extreme_b3a_level_sounds.txt
+(*Buttons.snd37*), (*wave*), (*rndwave*), 
+KeyValues Error: LoadFromBuffer: missing { in file maps/dr_steamworks_extreme_b3a_level_sounds.txt
+(*Buttons.snd37*), (*wave*), (*rndwave*), 
+KeyValues Error: LoadFromBuffer: missing { in file maps/dr_steamworks_extreme_b3a_level_sounds.txt
+(*Buttons.snd37*), (*wave*), (*rndwave*), 
+KeyValues Error: LoadFromBuffer: missing { in file maps/dr_steamworks_extreme_b3a_level_sounds.txt
+(*Buttons.snd37*), (*wave*), (*rndwave*), 
+KeyValues Error: LoadFromBuffer: missing { in file maps/dr_steamworks_extreme_b3a_level_sounds.txt
+(*Buttons.snd37*), (*wave*), (*rndwave*), 
+KeyValues Error: LoadFromBuffer: missing { in file maps/dr_steamworks_extreme_b3a_level_sounds.txt
+(*Buttons.snd37*), (*wave*), (*rndwave*), 
+SV_BroadcastMessage:  Recipient Filter for message type 23 (reliable: no, init: no) with bogus client index (0) in list of 1 clients
+SV_ActivateServer: setting tickrate to 66.7
+Unknown command "�"
+[DTK] Database connection established. Handle is 23100d2
+ [DTK] debugging > Found 0 expired records in the database to delete
+L 06/07/2020 - 17:58:30: [dtk/dtk.smx] Detected a deathrun map
+L 06/07/2020 - 17:58:30: [SM] Exception reported: Game event "teams_changed" does not exist
+L 06/07/2020 - 17:58:30: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 17:58:30: [SM] Call stack trace:
+L 06/07/2020 - 17:58:30: [SM]   [0] HookEvent
+L 06/07/2020 - 17:58:30: [SM]   [1] Line 1407, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::EventsAndListeners
+L 06/07/2020 - 17:58:30: [SM]   [2] Line 289, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::OnMapStart
+ [DTK] debugging > Berke was playing on the last map
+ [DTK] debugging > ⛐ worMatty was playing on the last map
+ [DTK] debugging > R60D was playing on the last map
+L 06/07/2020 - 17:58:49: [SM] Exception reported: Hook type not supported on this game
+L 06/07/2020 - 17:58:49: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 17:58:49: [SM] Call stack trace:
+L 06/07/2020 - 17:58:49: [SM]   [0] SDKHook
+L 06/07/2020 - 17:58:49: [SM]   [1] Line 406, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::OnClientPutInServer
+[DTK] femininelookinboi has connected (Steam ID: [U:1:170622244])
+Client "femininelookinboi" connected (24.8.57.167:27005).
+L 06/07/2020 - 17:58:53: [SM] Exception reported: Hook type not supported on this game
+L 06/07/2020 - 17:58:53: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 17:58:53: [SM] Call stack trace:
+L 06/07/2020 - 17:58:53: [SM]   [0] SDKHook
+L 06/07/2020 - 17:58:53: [SM]   [1] Line 406, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::OnClientPutInServer
+ [DTK] debugging > femininelookinboi is a new player
+ [DTK] debugging > Gave femininelookinboi default settings
+ [DTK] debugging > femininelookinboi has a valid Steam ID (170622244). Retrieving stored data
+ [DTK] debugging > femininelookinboi doesn't have a database record
+ [DTK] debugging > Created a new record for femininelookinboi
+ [DTK] debugging > Checking if R60D needs to be welcomed
+ [DTK] debugging > R60D has the WELCOMED flag. No need to welcome them
+[DTK] The round has restarted
+L 06/07/2020 - 17:59:02: [dtk/dtk.smx] monster_resource entity not found!
+ [DTK] debugging > monster_resource entity index has been set to -1 (not found!)
+ [DTK] debugging > Player resource entity index has been set to 40
+ [DTK] debugging > Couldn't create trigger_add_or_remove_tf_player_attributes for entity 2 (CARD: move speed bonus)
+L 06/07/2020 - 17:59:02: [SM] Exception reported: Invalid convar handle 0 (error 4)
+L 06/07/2020 - 17:59:02: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 17:59:02: [SM] Call stack trace:
+L 06/07/2020 - 17:59:02: [SM]   [0] ConVar.IntValue.get
+L 06/07/2020 - 17:59:02: [SM]   [1] Line 1308, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::SetServerCvars
+L 06/07/2020 - 17:59:02: [SM]   [2] Line 463, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::Event_RoundRestart
+[DTK] The round is now active
+L 06/07/2020 - 17:59:07: [SM] Exception reported: Gamerules lookup failed.
+L 06/07/2020 - 17:59:07: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 17:59:07: [SM] Call stack trace:
+L 06/07/2020 - 17:59:07: [SM]   [0] GameRules_GetProp
+L 06/07/2020 - 17:59:07: [SM]   [1] Line 196, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\sdktools_gamerules.inc::GameRules_GetRoundState
+L 06/07/2020 - 17:59:07: [SM]   [2] Line 171, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::Game.RoundActive.get
+L 06/07/2020 - 17:59:07: [SM]   [3] Line 1156, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::CheckGameState
+ [DTK] debugging > Checking if ⛐ worMatty needs to be welcomed
+ [DTK] debugging > ⛐ worMatty has the WELCOMED flag. No need to welcome them
+[DTK] The round has ended
+[DTK] The round has restarted
+L 06/07/2020 - 17:59:24: [dtk/dtk.smx] monster_resource entity not found!
+ [DTK] debugging > monster_resource entity index has been set to -1 (not found!)
+ [DTK] debugging > Player resource entity index has been set to 40
+ [DTK] debugging > Couldn't create trigger_add_or_remove_tf_player_attributes for entity 2 (CARD: move speed bonus)
+L 06/07/2020 - 17:59:24: [SM] Exception reported: Invalid convar handle 0 (error 4)
+L 06/07/2020 - 17:59:24: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 17:59:24: [SM] Call stack trace:
+L 06/07/2020 - 17:59:24: [SM]   [0] ConVar.IntValue.get
+L 06/07/2020 - 17:59:24: [SM]   [1] Line 1308, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::SetServerCvars
+L 06/07/2020 - 17:59:24: [SM]   [2] Line 463, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::Event_RoundRestart
+[DTK] The round is now active
+L 06/07/2020 - 17:59:29: [SM] Exception reported: Gamerules lookup failed.
+L 06/07/2020 - 17:59:29: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 17:59:29: [SM] Call stack trace:
+L 06/07/2020 - 17:59:29: [SM]   [0] GameRules_GetProp
+L 06/07/2020 - 17:59:29: [SM]   [1] Line 196, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\sdktools_gamerules.inc::GameRules_GetRoundState
+L 06/07/2020 - 17:59:29: [SM]   [2] Line 171, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::Game.RoundActive.get
+L 06/07/2020 - 17:59:29: [SM]   [3] Line 1156, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::CheckGameState
+[DTK] The round has restarted
+L 06/07/2020 - 17:59:33: [dtk/dtk.smx] monster_resource entity not found!
+ [DTK] debugging > monster_resource entity index has been set to -1 (not found!)
+ [DTK] debugging > Player resource entity index has been set to 40
+ [DTK] debugging > Couldn't create trigger_add_or_remove_tf_player_attributes for entity 2 (CARD: move speed bonus)
+L 06/07/2020 - 17:59:33: [SM] Exception reported: Invalid convar handle 0 (error 4)
+L 06/07/2020 - 17:59:33: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 17:59:33: [SM] Call stack trace:
+L 06/07/2020 - 17:59:33: [SM]   [0] ConVar.IntValue.get
+L 06/07/2020 - 17:59:33: [SM]   [1] Line 1308, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::SetServerCvars
+L 06/07/2020 - 17:59:33: [SM]   [2] Line 463, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::Event_RoundRestart
+[DTK] The round is now active
+L 06/07/2020 - 17:59:37: [SM] Exception reported: Gamerules lookup failed.
+L 06/07/2020 - 17:59:37: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 17:59:37: [SM] Call stack trace:
+L 06/07/2020 - 17:59:37: [SM]   [0] GameRules_GetProp
+L 06/07/2020 - 17:59:37: [SM]   [1] Line 196, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\sdktools_gamerules.inc::GameRules_GetRoundState
+L 06/07/2020 - 17:59:37: [SM]   [2] Line 171, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::Game.RoundActive.get
+L 06/07/2020 - 17:59:37: [SM]   [3] Line 1156, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::CheckGameState
+[DTK] The round has ended
+L 06/07/2020 - 18:00:10: [SM] Exception reported: Hook type not supported on this game
+L 06/07/2020 - 18:00:10: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:00:10: [SM] Call stack trace:
+L 06/07/2020 - 18:00:10: [SM]   [0] SDKHook
+L 06/07/2020 - 18:00:10: [SM]   [1] Line 406, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::OnClientPutInServer
+CreateFragmentsFromFile: 'user_custom/c6/c624749e.dat' doesn't exist.
+CreateFragmentsFromFile: 'user_custom/c6/c624749e.dat' doesn't exist.
+[DTK] The round has restarted
+L 06/07/2020 - 18:00:18: [dtk/dtk.smx] monster_resource entity not found!
+ [DTK] debugging > monster_resource entity index has been set to -1 (not found!)
+ [DTK] debugging > Player resource entity index has been set to 40
+ [DTK] debugging > Couldn't create trigger_add_or_remove_tf_player_attributes for entity 2 (CARD: move speed bonus)
+L 06/07/2020 - 18:00:18: [SM] Exception reported: Invalid convar handle 0 (error 4)
+L 06/07/2020 - 18:00:18: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:00:18: [SM] Call stack trace:
+L 06/07/2020 - 18:00:18: [SM]   [0] ConVar.IntValue.get
+L 06/07/2020 - 18:00:18: [SM]   [1] Line 1308, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::SetServerCvars
+L 06/07/2020 - 18:00:18: [SM]   [2] Line 463, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::Event_RoundRestart
+[DTK] The round is now active
+L 06/07/2020 - 18:00:23: [SM] Exception reported: Gamerules lookup failed.
+L 06/07/2020 - 18:00:23: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:00:23: [SM] Call stack trace:
+L 06/07/2020 - 18:00:23: [SM]   [0] GameRules_GetProp
+L 06/07/2020 - 18:00:23: [SM]   [1] Line 196, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\sdktools_gamerules.inc::GameRules_GetRoundState
+L 06/07/2020 - 18:00:23: [SM]   [2] Line 171, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::Game.RoundActive.get
+L 06/07/2020 - 18:00:23: [SM]   [3] Line 1156, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::CheckGameState
+ [DTK] debugging > Checking if femininelookinboi needs to be welcomed
+ [DTK] debugging > Welcoming femininelookinboi
+L 06/07/2020 - 18:00:40: [SM] Exception reported: Hook type not supported on this game
+L 06/07/2020 - 18:00:40: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:00:40: [SM] Call stack trace:
+L 06/07/2020 - 18:00:40: [SM]   [0] SDKHook
+L 06/07/2020 - 18:00:40: [SM]   [1] Line 406, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::OnClientPutInServer
+ [DTK] debugging > Checking if Berke needs to be welcomed
+ [DTK] debugging > Berke has the WELCOMED flag. No need to welcome them
+ [DTK] debugging > Checking if Berke needs to be welcomed
+ [DTK] debugging > Berke has the WELCOMED flag. No need to welcome them
+[DTK] femininelookinboi has disconnected (Steam ID: [U:1:170622244] - Reason: Disconnect by user.)
+ [DTK] debugging > Updated femininelookinboi's data in the database. Points 10, flags 000011, last_seen 1591545667, steamid 170622244
+Dropped femininelookinboi from server (Disconnect by user.)
+[DTK] The round has ended
+L 06/07/2020 - 18:04:07: [SM] Exception reported: Gamerules lookup failed.
+L 06/07/2020 - 18:04:07: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:04:07: [SM] Call stack trace:
+L 06/07/2020 - 18:04:07: [SM]   [0] GameRules_GetProp
+L 06/07/2020 - 18:04:07: [SM]   [1] Line 196, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\sdktools_gamerules.inc::GameRules_GetRoundState
+L 06/07/2020 - 18:04:07: [SM]   [2] Line 171, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::Game.RoundActive.get
+L 06/07/2020 - 18:04:07: [SM]   [3] Line 1156, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::CheckGameState
+[DTK] The round has restarted
+L 06/07/2020 - 18:04:22: [dtk/dtk.smx] monster_resource entity not found!
+ [DTK] debugging > monster_resource entity index has been set to -1 (not found!)
+ [DTK] debugging > Player resource entity index has been set to 40
+L 06/07/2020 - 18:04:22: [SM] Exception reported: Array index out-of-bounds (index 11, limit 10)
+L 06/07/2020 - 18:04:22: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:04:22: [SM] Call stack trace:
+L 06/07/2020 - 18:04:22: [SM]   [1] Line 993, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::ApplyAttributes
+L 06/07/2020 - 18:04:22: [SM]   [2] Line 459, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::Event_RoundRestart
+[DTK] The round is now active
+L 06/07/2020 - 18:04:27: [SM] Exception reported: Gamerules lookup failed.
+L 06/07/2020 - 18:04:27: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:04:27: [SM] Call stack trace:
+L 06/07/2020 - 18:04:27: [SM]   [0] GameRules_GetProp
+L 06/07/2020 - 18:04:27: [SM]   [1] Line 196, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\sdktools_gamerules.inc::GameRules_GetRoundState
+L 06/07/2020 - 18:04:27: [SM]   [2] Line 171, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::Game.RoundActive.get
+L 06/07/2020 - 18:04:27: [SM]   [3] Line 1156, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::CheckGameState
+[DTK] The round has ended
+L 06/07/2020 - 18:04:42: [SM] Exception reported: Gamerules lookup failed.
+L 06/07/2020 - 18:04:42: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:04:42: [SM] Call stack trace:
+L 06/07/2020 - 18:04:42: [SM]   [0] GameRules_GetProp
+L 06/07/2020 - 18:04:42: [SM]   [1] Line 196, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\sdktools_gamerules.inc::GameRules_GetRoundState
+L 06/07/2020 - 18:04:42: [SM]   [2] Line 171, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::Game.RoundActive.get
+L 06/07/2020 - 18:04:42: [SM]   [3] Line 1156, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::CheckGameState
+[DTK] The round has restarted
+L 06/07/2020 - 18:04:57: [dtk/dtk.smx] monster_resource entity not found!
+ [DTK] debugging > monster_resource entity index has been set to -1 (not found!)
+ [DTK] debugging > Player resource entity index has been set to 40
+L 06/07/2020 - 18:04:57: [SM] Exception reported: Array index out-of-bounds (index 11, limit 10)
+L 06/07/2020 - 18:04:57: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:04:57: [SM] Call stack trace:
+L 06/07/2020 - 18:04:57: [SM]   [1] Line 993, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::ApplyAttributes
+L 06/07/2020 - 18:04:57: [SM]   [2] Line 459, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::Event_RoundRestart
+[DTK] The round is now active
+L 06/07/2020 - 18:05:02: [SM] Exception reported: Gamerules lookup failed.
+L 06/07/2020 - 18:05:02: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:05:02: [SM] Call stack trace:
+L 06/07/2020 - 18:05:02: [SM]   [0] GameRules_GetProp
+L 06/07/2020 - 18:05:02: [SM]   [1] Line 196, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\sdktools_gamerules.inc::GameRules_GetRoundState
+L 06/07/2020 - 18:05:02: [SM]   [2] Line 171, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::Game.RoundActive.get
+L 06/07/2020 - 18:05:02: [SM]   [3] Line 1156, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::CheckGameState
+L 06/07/2020 - 18:05:06: [dtk/m_mover.smx] ⛐ worMatty<10><[U:1:1047392]><> teleported to R60D<3><[U:1:116384134]><>
+L 06/07/2020 - 18:05:13: [sm/funcommands.smx] "R60D<3><[U:1:116384134]><>" toggled noclip on "R60D<3><[U:1:116384134]><>"
+L 06/07/2020 - 18:05:16: [sm/funcommands.smx] "R60D<3><[U:1:116384134]><>" toggled noclip on "R60D<3><[U:1:116384134]><>"
+L 06/07/2020 - 18:05:20: [sm/funcommands.smx] "Berke<14><[U:1:190285622]><>" toggled noclip on "Berke<14><[U:1:190285622]><>"
+L 06/07/2020 - 18:05:22: [sm/funcommands.smx] "R60D<3><[U:1:116384134]><>" toggled noclip on "R60D<3><[U:1:116384134]><>"
+L 06/07/2020 - 18:05:22: [sm/funcommands.smx] "Berke<14><[U:1:190285622]><>" toggled noclip on "Berke<14><[U:1:190285622]><>"
+L 06/07/2020 - 18:05:24: [dtk/m_mover.smx] Berke<14><[U:1:190285622]><> brought R60D<3><[U:1:116384134]><> to them
+L 06/07/2020 - 18:05:24: [sm/funcommands.smx] "R60D<3><[U:1:116384134]><>" toggled noclip on "R60D<3><[U:1:116384134]><>"
+L 06/07/2020 - 18:05:37: [sm/funcommands.smx] "Berke<14><[U:1:190285622]><>" toggled noclip on "Berke<14><[U:1:190285622]><>"
+L 06/07/2020 - 18:05:41: [sm/funcommands.smx] "Berke<14><[U:1:190285622]><>" toggled noclip on "Berke<14><[U:1:190285622]><>"
+L 06/07/2020 - 18:05:44: [sm/funcommands.smx] "R60D<3><[U:1:116384134]><>" toggled noclip on "R60D<3><[U:1:116384134]><>"
+L 06/07/2020 - 18:05:46: [sm/funcommands.smx] "R60D<3><[U:1:116384134]><>" toggled noclip on "R60D<3><[U:1:116384134]><>"
+L 06/07/2020 - 18:05:55: [SM] Exception reported: Gamerules lookup failed.
+L 06/07/2020 - 18:05:55: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:05:55: [SM] Call stack trace:
+L 06/07/2020 - 18:05:55: [SM]   [0] GameRules_GetProp
+L 06/07/2020 - 18:05:55: [SM]   [1] Line 196, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\sdktools_gamerules.inc::GameRules_GetRoundState
+L 06/07/2020 - 18:05:55: [SM]   [2] Line 171, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::Game.RoundActive.get
+L 06/07/2020 - 18:05:55: [SM]   [3] Line 1156, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::CheckGameState
+L 06/07/2020 - 18:06:02: [SM] Exception reported: Native is not bound
+L 06/07/2020 - 18:06:02: [SM] Blaming: dtk/m_mover.smx
+L 06/07/2020 - 18:06:02: [SM] Call stack trace:
+L 06/07/2020 - 18:06:02: [SM]   [0] TF2_RespawnPlayer
+L 06/07/2020 - 18:06:02: [SM]   [1] Line 159, D:\TF2 mapping\SourceMod Scripting\Work\utils\m_mover.sp::Command_Move
+L 06/07/2020 - 18:06:07: [SM] Exception reported: Native is not bound
+L 06/07/2020 - 18:06:07: [SM] Blaming: dtk/m_mover.smx
+L 06/07/2020 - 18:06:07: [SM] Call stack trace:
+L 06/07/2020 - 18:06:07: [SM]   [0] TF2_RespawnPlayer
+L 06/07/2020 - 18:06:07: [SM]   [1] Line 307, D:\TF2 mapping\SourceMod Scripting\Work\utils\m_mover.sp::Command_Move
+Unknown command "p_forcerespawn"
+"mp_forcerespawn" = "1"
+ game notify
+Can't use cheat command mp_forcerespawnplayers in multiplayer, unless the server has sv_cheats set to 1.
+[DTK] The round has ended
+L 06/07/2020 - 18:07:17: [SM] Exception reported: Gamerules lookup failed.
+L 06/07/2020 - 18:07:17: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:07:17: [SM] Call stack trace:
+L 06/07/2020 - 18:07:17: [SM]   [0] GameRules_GetProp
+L 06/07/2020 - 18:07:17: [SM]   [1] Line 196, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\sdktools_gamerules.inc::GameRules_GetRoundState
+L 06/07/2020 - 18:07:17: [SM]   [2] Line 171, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::Game.RoundActive.get
+L 06/07/2020 - 18:07:17: [SM]   [3] Line 1156, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::CheckGameState
+[DTK] The round has restarted
+L 06/07/2020 - 18:07:32: [dtk/dtk.smx] monster_resource entity not found!
+ [DTK] debugging > monster_resource entity index has been set to -1 (not found!)
+ [DTK] debugging > Player resource entity index has been set to 40
+L 06/07/2020 - 18:07:32: [SM] Exception reported: Array index out-of-bounds (index 11, limit 10)
+L 06/07/2020 - 18:07:32: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:07:32: [SM] Call stack trace:
+L 06/07/2020 - 18:07:32: [SM]   [1] Line 993, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::ApplyAttributes
+L 06/07/2020 - 18:07:32: [SM]   [2] Line 459, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::Event_RoundRestart
+[DTK] The round is now active
+L 06/07/2020 - 18:07:37: [SM] Exception reported: Gamerules lookup failed.
+L 06/07/2020 - 18:07:37: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:07:37: [SM] Call stack trace:
+L 06/07/2020 - 18:07:37: [SM]   [0] GameRules_GetProp
+L 06/07/2020 - 18:07:37: [SM]   [1] Line 196, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\sdktools_gamerules.inc::GameRules_GetRoundState
+L 06/07/2020 - 18:07:37: [SM]   [2] Line 171, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::Game.RoundActive.get
+L 06/07/2020 - 18:07:37: [SM]   [3] Line 1156, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::CheckGameState
+L 06/07/2020 - 18:07:42: [dtk/m_mover.smx] ⛐ worMatty<10><[U:1:1047392]><> brought Berke<14><[U:1:190285622]><> to them
+L 06/07/2020 - 18:07:46: [dtk/m_mover.smx] ⛐ worMatty<10><[U:1:1047392]><> brought R60D<3><[U:1:116384134]><> to them
+L 06/07/2020 - 18:07:48: [sm/funcommands.smx] "⛐ worMatty<10><[U:1:1047392]><>" toggled noclip on "⛐ worMatty<10><[U:1:1047392]><>"
+L 06/07/2020 - 18:07:53: [sm/funcommands.smx] "⛐ worMatty<10><[U:1:1047392]><>" toggled noclip on "⛐ worMatty<10><[U:1:1047392]><>"
+L 06/07/2020 - 18:08:28: [sm/funcommands.smx] "R60D<3><[U:1:116384134]><>" toggled noclip on "R60D<3><[U:1:116384134]><>"
+L 06/07/2020 - 18:08:32: [sm/funcommands.smx] "Berke<14><[U:1:190285622]><>" toggled noclip on "Berke<14><[U:1:190285622]><>"
+L 06/07/2020 - 18:08:35: [sm/funcommands.smx] "R60D<3><[U:1:116384134]><>" toggled noclip on "R60D<3><[U:1:116384134]><>"
+[DTK] Little Kitty has connected (Steam ID: [U:1:485608836])
+Client "Little Kitty" connected (88.87.70.145:27005).
+ [DTK] debugging > Little Kitty is a new player
+ [DTK] debugging > Gave Little Kitty default settings
+ [DTK] debugging > Little Kitty has a valid Steam ID (485608836). Retrieving stored data
+ [DTK] debugging > Little Kitty doesn't have a database record
+ [DTK] debugging > Created a new record for Little Kitty
+L 06/07/2020 - 18:08:43: [sm/funcommands.smx] "Berke<14><[U:1:190285622]><>" toggled noclip on "Berke<14><[U:1:190285622]><>"
+L 06/07/2020 - 18:08:45: [SM] Exception reported: Gamerules lookup failed.
+L 06/07/2020 - 18:08:45: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:08:45: [SM] Call stack trace:
+L 06/07/2020 - 18:08:45: [SM]   [0] GameRules_GetProp
+L 06/07/2020 - 18:08:45: [SM]   [1] Line 196, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\sdktools_gamerules.inc::GameRules_GetRoundState
+L 06/07/2020 - 18:08:45: [SM]   [2] Line 171, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::Game.RoundActive.get
+L 06/07/2020 - 18:08:45: [SM]   [3] Line 1156, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::CheckGameState
+L 06/07/2020 - 18:08:48: [sm/funcommands.smx] "Berke<14><[U:1:190285622]><>" toggled noclip on "Berke<14><[U:1:190285622]><>"
+[DTK] The round has ended
+L 06/07/2020 - 18:08:56: [SM] Exception reported: Gamerules lookup failed.
+L 06/07/2020 - 18:08:56: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:08:56: [SM] Call stack trace:
+L 06/07/2020 - 18:08:56: [SM]   [0] GameRules_GetProp
+L 06/07/2020 - 18:08:56: [SM]   [1] Line 196, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\sdktools_gamerules.inc::GameRules_GetRoundState
+L 06/07/2020 - 18:08:56: [SM]   [2] Line 171, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::Game.RoundActive.get
+L 06/07/2020 - 18:08:56: [SM]   [3] Line 1156, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::CheckGameState
+[DTK] The round has restarted
+L 06/07/2020 - 18:09:11: [dtk/dtk.smx] monster_resource entity not found!
+ [DTK] debugging > monster_resource entity index has been set to -1 (not found!)
+ [DTK] debugging > Player resource entity index has been set to 40
+L 06/07/2020 - 18:09:11: [SM] Exception reported: Array index out-of-bounds (index 11, limit 10)
+L 06/07/2020 - 18:09:11: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:09:11: [SM] Call stack trace:
+L 06/07/2020 - 18:09:11: [SM]   [1] Line 993, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::ApplyAttributes
+L 06/07/2020 - 18:09:11: [SM]   [2] Line 459, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::Event_RoundRestart
+L 06/07/2020 - 18:09:14: [SM] Exception reported: Gamerules lookup failed.
+L 06/07/2020 - 18:09:14: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:09:14: [SM] Call stack trace:
+L 06/07/2020 - 18:09:14: [SM]   [0] GameRules_GetProp
+L 06/07/2020 - 18:09:14: [SM]   [1] Line 196, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\sdktools_gamerules.inc::GameRules_GetRoundState
+L 06/07/2020 - 18:09:14: [SM]   [2] Line 171, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::Game.RoundActive.get
+L 06/07/2020 - 18:09:14: [SM]   [3] Line 1156, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::CheckGameState
+[DTK] The round is now active
+L 06/07/2020 - 18:09:16: [SM] Exception reported: Gamerules lookup failed.
+L 06/07/2020 - 18:09:16: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:09:16: [SM] Call stack trace:
+L 06/07/2020 - 18:09:16: [SM]   [0] GameRules_GetProp
+L 06/07/2020 - 18:09:16: [SM]   [1] Line 196, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\sdktools_gamerules.inc::GameRules_GetRoundState
+L 06/07/2020 - 18:09:16: [SM]   [2] Line 171, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::Game.RoundActive.get
+L 06/07/2020 - 18:09:16: [SM]   [3] Line 1156, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::CheckGameState
+L 06/07/2020 - 18:09:24: [sm/funcommands.smx] "⛐ worMatty<10><[U:1:1047392]><>" toggled noclip on "⛐ worMatty<10><[U:1:1047392]><>"
+L 06/07/2020 - 18:09:29: [sm/funcommands.smx] "⛐ worMatty<10><[U:1:1047392]><>" toggled noclip on "⛐ worMatty<10><[U:1:1047392]><>"
+L 06/07/2020 - 18:09:30: [SM] Exception reported: Gamerules lookup failed.
+L 06/07/2020 - 18:09:30: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:09:30: [SM] Call stack trace:
+L 06/07/2020 - 18:09:30: [SM]   [0] GameRules_GetProp
+L 06/07/2020 - 18:09:30: [SM]   [1] Line 196, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\sdktools_gamerules.inc::GameRules_GetRoundState
+L 06/07/2020 - 18:09:30: [SM]   [2] Line 171, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::Game.RoundActive.get
+L 06/07/2020 - 18:09:30: [SM]   [3] Line 1156, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::CheckGameState
+[DTK] Berke has disconnected (Steam ID: [U:1:190285622] - Reason: Berke timed out)
+ [DTK] debugging > Updated Berke's data in the database. Points 70, flags 000011, last_seen 1591546199, steamid 190285622
+Dropped Berke from server (Berke timed out)
+[DTK] Berke has connected (Steam ID: [U:1:190285622])
+Client "Berke" connected (176.40.242.240:43193).
+ [DTK] debugging > Berke is a new player
+ [DTK] debugging > Gave Berke default settings
+ [DTK] debugging > Berke has a valid Steam ID (190285622). Retrieving stored data
+ [DTK] debugging > Retrieved stored data for Berke: Points 70, flags: 000011
+L 06/07/2020 - 18:10:10: [SM] Exception reported: Hook type not supported on this game
+L 06/07/2020 - 18:10:10: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:10:10: [SM] Call stack trace:
+L 06/07/2020 - 18:10:10: [SM]   [0] SDKHook
+L 06/07/2020 - 18:10:10: [SM]   [1] Line 406, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::OnClientPutInServer
+CreateFragmentsFromFile: 'user_custom/5d/5d376dfd.dat' doesn't exist.
+CreateFragmentsFromFile: 'user_custom/5d/5d376dfd.dat' doesn't exist.
+L 06/07/2020 - 18:10:13: [SM] Exception reported: Hook type not supported on this game
+L 06/07/2020 - 18:10:13: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:10:13: [SM] Call stack trace:
+L 06/07/2020 - 18:10:13: [SM]   [0] SDKHook
+L 06/07/2020 - 18:10:13: [SM]   [1] Line 406, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::OnClientPutInServer
+CreateFragmentsFromFile: 'user_custom/5d/5d376dfd.dat' doesn't exist.
+ [DTK] debugging > Checking if Berke needs to be welcomed
+ [DTK] debugging > Welcoming Berke
+ [DTK] debugging > Checking if Berke needs to be welcomed
+ [DTK] debugging > Berke has the WELCOMED flag. No need to welcome them
+ [DTK] debugging > Checking if Little Kitty needs to be welcomed
+ [DTK] debugging > Welcoming Little Kitty
+ [DTK] debugging > Checking if Little Kitty needs to be welcomed
+ [DTK] debugging > Little Kitty has the WELCOMED flag. No need to welcome them
+[DTK] Little Kitty has disconnected (Steam ID: [U:1:485608836] - Reason: Disconnect by user.)
+ [DTK] debugging > Updated Little Kitty's data in the database. Points 10, flags 000011, last_seen 1591546306, steamid 485608836
+Dropped Little Kitty from server (Disconnect by user.)
+L 06/07/2020 - 18:13:19: [sm/funcommands.smx] "R60D<3><[U:1:116384134]><>" toggled noclip on "R60D<3><[U:1:116384134]><>"
+L 06/07/2020 - 18:13:30: [SM] Exception reported: Gamerules lookup failed.
+L 06/07/2020 - 18:13:30: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:13:30: [SM] Call stack trace:
+L 06/07/2020 - 18:13:30: [SM]   [0] GameRules_GetProp
+L 06/07/2020 - 18:13:30: [SM]   [1] Line 196, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\sdktools_gamerules.inc::GameRules_GetRoundState
+L 06/07/2020 - 18:13:30: [SM]   [2] Line 171, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::Game.RoundActive.get
+L 06/07/2020 - 18:13:30: [SM]   [3] Line 1156, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::CheckGameState
+[DTK] The round has ended
+L 06/07/2020 - 18:13:30: [sm/funcommands.smx] "R60D<3><[U:1:116384134]><>" toggled noclip on "R60D<3><[U:1:116384134]><>"
+[DTK] The round has restarted
+L 06/07/2020 - 18:13:45: [dtk/dtk.smx] monster_resource entity not found!
+ [DTK] debugging > monster_resource entity index has been set to -1 (not found!)
+ [DTK] debugging > Player resource entity index has been set to 40
+ [DTK] debugging > Couldn't create trigger_add_or_remove_tf_player_attributes for entity 2 (CARD: move speed bonus)
+L 06/07/2020 - 18:13:45: [SM] Exception reported: Invalid convar handle 0 (error 4)
+L 06/07/2020 - 18:13:45: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:13:45: [SM] Call stack trace:
+L 06/07/2020 - 18:13:45: [SM]   [0] ConVar.IntValue.get
+L 06/07/2020 - 18:13:45: [SM]   [1] Line 1308, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::SetServerCvars
+L 06/07/2020 - 18:13:45: [SM]   [2] Line 463, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::Event_RoundRestart
+EmitSound: volume out of bounds = 620.000000
+EmitSound: volume out of bounds = 620.000000
+EmitSound: volume out of bounds = 620.000000
+[DTK] The round is now active
+L 06/07/2020 - 18:13:50: [SM] Exception reported: Gamerules lookup failed.
+L 06/07/2020 - 18:13:50: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:13:50: [SM] Call stack trace:
+L 06/07/2020 - 18:13:50: [SM]   [0] GameRules_GetProp
+L 06/07/2020 - 18:13:50: [SM]   [1] Line 196, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\sdktools_gamerules.inc::GameRules_GetRoundState
+L 06/07/2020 - 18:13:50: [SM]   [2] Line 171, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::Game.RoundActive.get
+L 06/07/2020 - 18:13:50: [SM]   [3] Line 1156, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::CheckGameState
+L 06/07/2020 - 18:14:51: [sm/funcommands.smx] "Berke<19><[U:1:190285622]><>" toggled noclip on "Berke<19><[U:1:190285622]><>"
+L 06/07/2020 - 18:14:53: [sm/funcommands.smx] "Berke<19><[U:1:190285622]><>" toggled noclip on "Berke<19><[U:1:190285622]><>"
+L 06/07/2020 - 18:15:08: [dtk/m_mover.smx] ⛐ worMatty<10><[U:1:1047392]><> teleported to Berke<19><[U:1:190285622]><>
+194.111.79.118:27005:reconnect
+ [DTK] debugging > Updated R60D's data in the database. Points 90, flags 000011, last_seen 1591546539, steamid 116384134
+[DTK] R60D has disconnected (Steam ID: [U:1:116384134] - Reason: Connection closing)
+Dropped R60D from server (Connection closing)
+[DTK] R60D has connected (Steam ID: [U:1:116384134])
+Client "R60D" connected (194.111.79.118:27005).
+ [DTK] debugging > R60D is a new player
+ [DTK] debugging > Gave R60D default settings
+ [DTK] debugging > R60D has a valid Steam ID (116384134). Retrieving stored data
+ [DTK] debugging > Retrieved stored data for R60D: Points 90, flags: 000011
+L 06/07/2020 - 18:15:47: [SM] Exception reported: Hook type not supported on this game
+L 06/07/2020 - 18:15:47: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:15:47: [SM] Call stack trace:
+L 06/07/2020 - 18:15:47: [SM]   [0] SDKHook
+L 06/07/2020 - 18:15:47: [SM]   [1] Line 406, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::OnClientPutInServer
+[DTK] The round has ended
+ [DTK] debugging > Checking if R60D needs to be welcomed
+ [DTK] debugging > Welcoming R60D
+L 06/07/2020 - 18:16:05: [sm/funcommands.smx] "Berke<19><[U:1:190285622]><>" toggled noclip on "Berke<19><[U:1:190285622]><>"
+L 06/07/2020 - 18:16:07: [SM] Exception reported: Gamerules lookup failed.
+L 06/07/2020 - 18:16:07: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:16:07: [SM] Call stack trace:
+L 06/07/2020 - 18:16:07: [SM]   [0] GameRules_GetProp
+L 06/07/2020 - 18:16:07: [SM]   [1] Line 196, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\sdktools_gamerules.inc::GameRules_GetRoundState
+L 06/07/2020 - 18:16:07: [SM]   [2] Line 171, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::Game.RoundActive.get
+L 06/07/2020 - 18:16:07: [SM]   [3] Line 1156, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::CheckGameState
+ [DTK] debugging > Checking if R60D needs to be welcomed
+ [DTK] debugging > R60D has the WELCOMED flag. No need to welcome them
+[DTK] The round has restarted
+L 06/07/2020 - 18:16:13: [dtk/dtk.smx] monster_resource entity not found!
+ [DTK] debugging > monster_resource entity index has been set to -1 (not found!)
+ [DTK] debugging > Player resource entity index has been set to 40
+ [DTK] debugging > Couldn't create trigger_add_or_remove_tf_player_attributes for entity 2 (CARD: move speed bonus)
+L 06/07/2020 - 18:16:13: [SM] Exception reported: Invalid convar handle 0 (error 4)
+L 06/07/2020 - 18:16:13: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:16:13: [SM] Call stack trace:
+L 06/07/2020 - 18:16:13: [SM]   [0] ConVar.IntValue.get
+L 06/07/2020 - 18:16:13: [SM]   [1] Line 1308, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::SetServerCvars
+L 06/07/2020 - 18:16:13: [SM]   [2] Line 463, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::Event_RoundRestart
+[DTK] The round is now active
+L 06/07/2020 - 18:16:18: [SM] Exception reported: Gamerules lookup failed.
+L 06/07/2020 - 18:16:18: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:16:18: [SM] Call stack trace:
+L 06/07/2020 - 18:16:18: [SM]   [0] GameRules_GetProp
+L 06/07/2020 - 18:16:18: [SM]   [1] Line 196, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\sdktools_gamerules.inc::GameRules_GetRoundState
+L 06/07/2020 - 18:16:18: [SM]   [2] Line 171, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::Game.RoundActive.get
+L 06/07/2020 - 18:16:18: [SM]   [3] Line 1156, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::CheckGameState
+L 06/07/2020 - 18:16:33: [SM] Exception reported: Gamerules lookup failed.
+L 06/07/2020 - 18:16:33: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:16:33: [SM] Call stack trace:
+L 06/07/2020 - 18:16:33: [SM]   [0] GameRules_GetProp
+L 06/07/2020 - 18:16:33: [SM]   [1] Line 196, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\sdktools_gamerules.inc::GameRules_GetRoundState
+L 06/07/2020 - 18:16:33: [SM]   [2] Line 171, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::Game.RoundActive.get
+L 06/07/2020 - 18:16:33: [SM]   [3] Line 1156, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::CheckGameState
+[DTK] Berke has disconnected (Steam ID: [U:1:190285622] - Reason: Berke timed out)
+ [DTK] debugging > Updated Berke's data in the database. Points 90, flags 000011, last_seen 1591546711, steamid 190285622
+Dropped Berke from server (Berke timed out)
+[DTK] Berke has connected (Steam ID: [U:1:190285622])
+Client "Berke" connected (176.40.242.240:43619).
+ [DTK] debugging > Berke is a new player
+ [DTK] debugging > Gave Berke default settings
+ [DTK] debugging > Berke has a valid Steam ID (190285622). Retrieving stored data
+ [DTK] debugging > Retrieved stored data for Berke: Points 90, flags: 000011
+L 06/07/2020 - 18:18:40: [SM] Exception reported: Gamerules lookup failed.
+L 06/07/2020 - 18:18:40: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:18:40: [SM] Call stack trace:
+L 06/07/2020 - 18:18:40: [SM]   [0] GameRules_GetProp
+L 06/07/2020 - 18:18:40: [SM]   [1] Line 196, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\sdktools_gamerules.inc::GameRules_GetRoundState
+L 06/07/2020 - 18:18:40: [SM]   [2] Line 171, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::Game.RoundActive.get
+L 06/07/2020 - 18:18:40: [SM]   [3] Line 1156, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::CheckGameState
+[DTK] The round has ended
+L 06/07/2020 - 18:18:43: [SM] Exception reported: Hook type not supported on this game
+L 06/07/2020 - 18:18:43: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:18:43: [SM] Call stack trace:
+L 06/07/2020 - 18:18:43: [SM]   [0] SDKHook
+L 06/07/2020 - 18:18:43: [SM]   [1] Line 406, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::OnClientPutInServer
+[DTK] The round has restarted
+L 06/07/2020 - 18:18:55: [dtk/dtk.smx] monster_resource entity not found!
+ [DTK] debugging > monster_resource entity index has been set to -1 (not found!)
+ [DTK] debugging > Player resource entity index has been set to 40
+ [DTK] debugging > Couldn't create trigger_add_or_remove_tf_player_attributes for entity 2 (CARD: move speed bonus)
+L 06/07/2020 - 18:18:55: [SM] Exception reported: Invalid convar handle 0 (error 4)
+L 06/07/2020 - 18:18:55: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:18:55: [SM] Call stack trace:
+L 06/07/2020 - 18:18:55: [SM]   [0] ConVar.IntValue.get
+L 06/07/2020 - 18:18:55: [SM]   [1] Line 1308, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::SetServerCvars
+L 06/07/2020 - 18:18:55: [SM]   [2] Line 463, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::Event_RoundRestart
+[DTK] The round is now active
+L 06/07/2020 - 18:19:00: [SM] Exception reported: Gamerules lookup failed.
+L 06/07/2020 - 18:19:00: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:19:00: [SM] Call stack trace:
+L 06/07/2020 - 18:19:00: [SM]   [0] GameRules_GetProp
+L 06/07/2020 - 18:19:00: [SM]   [1] Line 196, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\sdktools_gamerules.inc::GameRules_GetRoundState
+L 06/07/2020 - 18:19:00: [SM]   [2] Line 171, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::Game.RoundActive.get
+L 06/07/2020 - 18:19:00: [SM]   [3] Line 1156, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::CheckGameState
+[DTK] The round has ended
+[DTK] The round has restarted
+L 06/07/2020 - 18:19:40: [dtk/dtk.smx] monster_resource entity not found!
+ [DTK] debugging > monster_resource entity index has been set to -1 (not found!)
+ [DTK] debugging > Player resource entity index has been set to 40
+ [DTK] debugging > Couldn't create trigger_add_or_remove_tf_player_attributes for entity 2 (CARD: move speed bonus)
+L 06/07/2020 - 18:19:40: [SM] Exception reported: Invalid convar handle 0 (error 4)
+L 06/07/2020 - 18:19:40: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:19:40: [SM] Call stack trace:
+L 06/07/2020 - 18:19:40: [SM]   [0] ConVar.IntValue.get
+L 06/07/2020 - 18:19:40: [SM]   [1] Line 1308, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::SetServerCvars
+L 06/07/2020 - 18:19:40: [SM]   [2] Line 463, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::Event_RoundRestart
+ [DTK] debugging > Checking if Berke needs to be welcomed
+ [DTK] debugging > Welcoming Berke
+[DTK] The round is now active
+L 06/07/2020 - 18:19:45: [SM] Exception reported: Gamerules lookup failed.
+L 06/07/2020 - 18:19:45: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:19:45: [SM] Call stack trace:
+L 06/07/2020 - 18:19:45: [SM]   [0] GameRules_GetProp
+L 06/07/2020 - 18:19:45: [SM]   [1] Line 196, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\sdktools_gamerules.inc::GameRules_GetRoundState
+L 06/07/2020 - 18:19:45: [SM]   [2] Line 171, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::Game.RoundActive.get
+L 06/07/2020 - 18:19:45: [SM]   [3] Line 1156, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::CheckGameState
+L 06/07/2020 - 18:21:02: [dtk/m_mover.smx] Berke<21><[U:1:190285622]><> teleported to ⛐ worMatty<10><[U:1:1047392]><>
+L 06/07/2020 - 18:21:03: [SM] Exception reported: Gamerules lookup failed.
+L 06/07/2020 - 18:21:03: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:21:03: [SM] Call stack trace:
+L 06/07/2020 - 18:21:03: [SM]   [0] GameRules_GetProp
+L 06/07/2020 - 18:21:03: [SM]   [1] Line 196, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\sdktools_gamerules.inc::GameRules_GetRoundState
+L 06/07/2020 - 18:21:03: [SM]   [2] Line 171, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::Game.RoundActive.get
+L 06/07/2020 - 18:21:03: [SM]   [3] Line 1156, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::CheckGameState
+[DTK] The round has ended
+L 06/07/2020 - 18:21:24: [SM] Exception reported: Gamerules lookup failed.
+L 06/07/2020 - 18:21:24: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:21:24: [SM] Call stack trace:
+L 06/07/2020 - 18:21:24: [SM]   [0] GameRules_GetProp
+L 06/07/2020 - 18:21:24: [SM]   [1] Line 196, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\sdktools_gamerules.inc::GameRules_GetRoundState
+L 06/07/2020 - 18:21:24: [SM]   [2] Line 171, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::Game.RoundActive.get
+L 06/07/2020 - 18:21:24: [SM]   [3] Line 1156, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::CheckGameState
+Unknown command "dexec"
+[DTK] The round has restarted
+L 06/07/2020 - 18:21:39: [dtk/dtk.smx] monster_resource entity not found!
+ [DTK] debugging > monster_resource entity index has been set to -1 (not found!)
+ [DTK] debugging > Player resource entity index has been set to 40
+ [DTK] debugging > Couldn't create trigger_add_or_remove_tf_player_attributes for entity 2 (CARD: move speed bonus)
+L 06/07/2020 - 18:21:39: [SM] Exception reported: Invalid convar handle 0 (error 4)
+L 06/07/2020 - 18:21:39: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:21:39: [SM] Call stack trace:
+L 06/07/2020 - 18:21:39: [SM]   [0] ConVar.IntValue.get
+L 06/07/2020 - 18:21:39: [SM]   [1] Line 1308, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::SetServerCvars
+L 06/07/2020 - 18:21:39: [SM]   [2] Line 463, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::Event_RoundRestart
+'server.fg' not present; not executing.
+Unknown command "�"
+[DTK] The round is now active
+L 06/07/2020 - 18:21:44: [SM] Exception reported: Gamerules lookup failed.
+L 06/07/2020 - 18:21:44: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:21:44: [SM] Call stack trace:
+L 06/07/2020 - 18:21:44: [SM]   [0] GameRules_GetProp
+L 06/07/2020 - 18:21:44: [SM]   [1] Line 196, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\sdktools_gamerules.inc::GameRules_GetRoundState
+L 06/07/2020 - 18:21:44: [SM]   [2] Line 171, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::Game.RoundActive.get
+L 06/07/2020 - 18:21:44: [SM]   [3] Line 1156, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::CheckGameState
+[DTK] The round has ended
+[DTK] The round has restarted
+L 06/07/2020 - 18:22:24: [dtk/dtk.smx] monster_resource entity not found!
+ [DTK] debugging > monster_resource entity index has been set to -1 (not found!)
+ [DTK] debugging > Player resource entity index has been set to 40
+ [DTK] debugging > Couldn't create trigger_add_or_remove_tf_player_attributes for entity 2 (CARD: move speed bonus)
+L 06/07/2020 - 18:22:24: [SM] Exception reported: Invalid convar handle 0 (error 4)
+L 06/07/2020 - 18:22:24: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:22:24: [SM] Call stack trace:
+L 06/07/2020 - 18:22:24: [SM]   [0] ConVar.IntValue.get
+L 06/07/2020 - 18:22:24: [SM]   [1] Line 1308, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::SetServerCvars
+L 06/07/2020 - 18:22:24: [SM]   [2] Line 463, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::Event_RoundRestart
+[DTK] The round is now active
+L 06/07/2020 - 18:22:29: [SM] Exception reported: Gamerules lookup failed.
+L 06/07/2020 - 18:22:29: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:22:29: [SM] Call stack trace:
+L 06/07/2020 - 18:22:29: [SM]   [0] GameRules_GetProp
+L 06/07/2020 - 18:22:29: [SM]   [1] Line 196, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\sdktools_gamerules.inc::GameRules_GetRoundState
+L 06/07/2020 - 18:22:29: [SM]   [2] Line 171, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::Game.RoundActive.get
+L 06/07/2020 - 18:22:29: [SM]   [3] Line 1156, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::CheckGameState
+L 06/07/2020 - 18:22:42: [sm/basecommands.smx] "⛐ worMatty<10><[U:1:1047392]><>" changed map to "backrooms"
+L 06/07/2020 - 18:22:45: [SM] Changed map to "backrooms"
+ [DTK] debugging > Updated Berke's data in the database. Points 110, flags 000011, last_seen 1591546965, steamid 190285622
+ [DTK] debugging > Updated R60D's data in the database. Points 90, flags 000011, last_seen 1591546965, steamid 116384134
+ [DTK] debugging > Updated ⛐ worMatty's data in the database. Points 160, flags 000011, last_seen 1591546965, steamid 1047392
+---- Host_Changelevel ----
+L 06/07/2020 - 18:22:46: [SM] Exception reported: Game event "teams_changed" has no active hook
+L 06/07/2020 - 18:22:46: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:22:46: [SM] Call stack trace:
+L 06/07/2020 - 18:22:46: [SM]   [0] UnhookEvent
+L 06/07/2020 - 18:22:46: [SM]   [1] Line 1432, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::EventsAndListeners
+L 06/07/2020 - 18:22:46: [SM]   [2] Line 324, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::OnMapEnd
+SoundEmitter:  removing map sound overrides [29 to remove, 18 to restore]
+Error loading cfg/pure_server_minimal.txt
+Error! Variable "$surfaceprop" is multiply defined in material "nature/blendrockgravel001a"!
+L 06/07/2020 - 18:22:47: -------- Mapchange to dr_backrooms_v2 --------
+L 06/07/2020 - 18:22:47: Error log file session closed.
+SV_BroadcastMessage:  Recipient Filter for message type 23 (reliable: no, init: no) with bogus client index (0) in list of 1 clients
+berke1/pone1/pone1.mdl/player/scout_user_animations.mdl : missmatched parent bones on "bip_head"
+berke1/pone1/pone1.mdl/player/scout_animations.mdl : missmatched parent bones on "bip_head"
+berke1/pone1/pone1.mdl/workshop/player/animations/scout_workshop_animations.mdl : missmatched parent bones on "bip_head"
+SV_ActivateServer: setting tickrate to 66.7
+Unknown command "�"
+'dr_backrooms_v2.cfg' not present; not executing.
+[DTK] Database connection established. Handle is 2a400d3
+ [DTK] debugging > Found 0 expired records in the database to delete
+L 06/07/2020 - 18:23:02: [dtk/dtk.smx] Detected a deathrun map
+L 06/07/2020 - 18:23:02: [SM] Exception reported: Game event "teams_changed" does not exist
+L 06/07/2020 - 18:23:02: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:23:02: [SM] Call stack trace:
+L 06/07/2020 - 18:23:02: [SM]   [0] HookEvent
+L 06/07/2020 - 18:23:02: [SM]   [1] Line 1407, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::EventsAndListeners
+L 06/07/2020 - 18:23:02: [SM]   [2] Line 289, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::OnMapStart
+ [DTK] debugging > Berke was playing on the last map
+ [DTK] debugging > ⛐ worMatty was playing on the last map
+ [DTK] debugging > R60D was playing on the last map
+L 06/07/2020 - 18:23:40: [SM] Exception reported: Hook type not supported on this game
+L 06/07/2020 - 18:23:40: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:23:40: [SM] Call stack trace:
+L 06/07/2020 - 18:23:40: [SM]   [0] SDKHook
+L 06/07/2020 - 18:23:40: [SM]   [1] Line 406, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::OnClientPutInServer
+ [DTK] debugging > Checking if ⛐ worMatty needs to be welcomed
+ [DTK] debugging > ⛐ worMatty has the WELCOMED flag. No need to welcome them
+[DTK] The round has restarted
+L 06/07/2020 - 18:24:02: [dtk/dtk.smx] monster_resource entity not found!
+ [DTK] debugging > monster_resource entity index has been set to -1 (not found!)
+ [DTK] debugging > Player resource entity index has been set to 40
+L 06/07/2020 - 18:24:02: [SM] Exception reported: Invalid convar handle 0 (error 4)
+L 06/07/2020 - 18:24:02: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:24:02: [SM] Call stack trace:
+L 06/07/2020 - 18:24:03: [SM]   [0] ConVar.IntValue.get
+L 06/07/2020 - 18:24:03: [SM]   [1] Line 1308, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::SetServerCvars
+L 06/07/2020 - 18:24:03: [SM]   [2] Line 463, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::Event_RoundRestart
+[DTK] The round is now active
+L 06/07/2020 - 18:24:07: [SM] Exception reported: Gamerules lookup failed.
+L 06/07/2020 - 18:24:07: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:24:07: [SM] Call stack trace:
+L 06/07/2020 - 18:24:07: [SM]   [0] GameRules_GetProp
+L 06/07/2020 - 18:24:07: [SM]   [1] Line 196, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\sdktools_gamerules.inc::GameRules_GetRoundState
+L 06/07/2020 - 18:24:07: [SM]   [2] Line 171, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::Game.RoundActive.get
+L 06/07/2020 - 18:24:07: [SM]   [3] Line 1156, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::CheckGameState
+L 06/07/2020 - 18:24:18: [SM] Exception reported: Hook type not supported on this game
+L 06/07/2020 - 18:24:18: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:24:18: [SM] Call stack trace:
+L 06/07/2020 - 18:24:18: [SM]   [0] SDKHook
+L 06/07/2020 - 18:24:18: [SM]   [1] Line 406, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::OnClientPutInServer
+ [DTK] debugging > Checking if R60D needs to be welcomed
+ [DTK] debugging > R60D has the WELCOMED flag. No need to welcome them
+[DTK] The round has ended
+[DTK] The round has restarted
+L 06/07/2020 - 18:24:39: [dtk/dtk.smx] monster_resource entity not found!
+ [DTK] debugging > monster_resource entity index has been set to -1 (not found!)
+ [DTK] debugging > Player resource entity index has been set to 40
+ [DTK] debugging > Couldn't create trigger_add_or_remove_tf_player_attributes for entity 2 (CARD: move speed bonus)
+L 06/07/2020 - 18:24:39: [SM] Exception reported: Invalid convar handle 0 (error 4)
+L 06/07/2020 - 18:24:39: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:24:39: [SM] Call stack trace:
+L 06/07/2020 - 18:24:39: [SM]   [0] ConVar.IntValue.get
+L 06/07/2020 - 18:24:39: [SM]   [1] Line 1308, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::SetServerCvars
+L 06/07/2020 - 18:24:39: [SM]   [2] Line 463, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::Event_RoundRestart
+[DTK] The round is now active
+[DTK] The round has restarted
+L 06/07/2020 - 18:24:44: [dtk/dtk.smx] monster_resource entity not found!
+ [DTK] debugging > monster_resource entity index has been set to -1 (not found!)
+ [DTK] debugging > Player resource entity index has been set to 40
+ [DTK] debugging > Couldn't create trigger_add_or_remove_tf_player_attributes for entity 2 (CARD: move speed bonus)
+L 06/07/2020 - 18:24:44: [SM] Exception reported: Invalid convar handle 0 (error 4)
+L 06/07/2020 - 18:24:44: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:24:44: [SM] Call stack trace:
+L 06/07/2020 - 18:24:44: [SM]   [0] ConVar.IntValue.get
+L 06/07/2020 - 18:24:44: [SM]   [1] Line 1308, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::SetServerCvars
+L 06/07/2020 - 18:24:44: [SM]   [2] Line 463, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::Event_RoundRestart
+L 06/07/2020 - 18:24:44: [SM] Exception reported: Gamerules lookup failed.
+L 06/07/2020 - 18:24:44: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:24:44: [SM] Call stack trace:
+L 06/07/2020 - 18:24:44: [SM]   [0] GameRules_GetProp
+L 06/07/2020 - 18:24:44: [SM]   [1] Line 196, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\sdktools_gamerules.inc::GameRules_GetRoundState
+L 06/07/2020 - 18:24:44: [SM]   [2] Line 171, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::Game.RoundActive.get
+L 06/07/2020 - 18:24:44: [SM]   [3] Line 1156, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::CheckGameState
+[DTK] The round is now active
+L 06/07/2020 - 18:24:49: [SM] Exception reported: Gamerules lookup failed.
+L 06/07/2020 - 18:24:49: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:24:49: [SM] Call stack trace:
+L 06/07/2020 - 18:24:49: [SM]   [0] GameRules_GetProp
+L 06/07/2020 - 18:24:49: [SM]   [1] Line 196, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\sdktools_gamerules.inc::GameRules_GetRoundState
+L 06/07/2020 - 18:24:49: [SM]   [2] Line 171, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::Game.RoundActive.get
+L 06/07/2020 - 18:24:49: [SM]   [3] Line 1156, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::CheckGameState
+L 06/07/2020 - 18:24:51: [SM] Exception reported: Hook type not supported on this game
+L 06/07/2020 - 18:24:51: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:24:51: [SM] Call stack trace:
+L 06/07/2020 - 18:24:51: [SM]   [0] SDKHook
+L 06/07/2020 - 18:24:51: [SM]   [1] Line 406, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::OnClientPutInServer
+ [DTK] debugging > Checking if Berke needs to be welcomed
+ [DTK] debugging > Berke has the WELCOMED flag. No need to welcome them
+[DTK] The round has ended
+L 06/07/2020 - 18:27:06: [SM] Exception reported: Gamerules lookup failed.
+L 06/07/2020 - 18:27:06: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:27:06: [SM] Call stack trace:
+L 06/07/2020 - 18:27:06: [SM]   [0] GameRules_GetProp
+L 06/07/2020 - 18:27:06: [SM]   [1] Line 196, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\sdktools_gamerules.inc::GameRules_GetRoundState
+L 06/07/2020 - 18:27:06: [SM]   [2] Line 171, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::Game.RoundActive.get
+L 06/07/2020 - 18:27:06: [SM]   [3] Line 1156, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::CheckGameState
+[DTK] The round has restarted
+L 06/07/2020 - 18:27:21: [dtk/dtk.smx] monster_resource entity not found!
+ [DTK] debugging > monster_resource entity index has been set to -1 (not found!)
+ [DTK] debugging > Player resource entity index has been set to 40
+ [DTK] debugging > Couldn't create trigger_add_or_remove_tf_player_attributes for entity 2 (CARD: move speed bonus)
+L 06/07/2020 - 18:27:21: [SM] Exception reported: Invalid convar handle 0 (error 4)
+L 06/07/2020 - 18:27:21: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:27:21: [SM] Call stack trace:
+L 06/07/2020 - 18:27:21: [SM]   [0] ConVar.IntValue.get
+L 06/07/2020 - 18:27:21: [SM]   [1] Line 1308, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::SetServerCvars
+L 06/07/2020 - 18:27:21: [SM]   [2] Line 463, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::Event_RoundRestart
+[DTK] The round is now active
+L 06/07/2020 - 18:27:26: [SM] Exception reported: Gamerules lookup failed.
+L 06/07/2020 - 18:27:26: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:27:26: [SM] Call stack trace:
+L 06/07/2020 - 18:27:26: [SM]   [0] GameRules_GetProp
+L 06/07/2020 - 18:27:26: [SM]   [1] Line 196, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\sdktools_gamerules.inc::GameRules_GetRoundState
+L 06/07/2020 - 18:27:26: [SM]   [2] Line 171, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::Game.RoundActive.get
+L 06/07/2020 - 18:27:26: [SM]   [3] Line 1156, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::CheckGameState
+[DTK] suXin has connected (Steam ID: [U:1:21206179])
+Client "suXin" connected (213.128.7.74:27005).
+ [DTK] debugging > suXin is a new player
+ [DTK] debugging > Gave suXin default settings
+ [DTK] debugging > suXin has a valid Steam ID (21206179). Retrieving stored data
+ [DTK] debugging > suXin doesn't have a database record
+ [DTK] debugging > Created a new record for suXin
+[DTK] Incentive for Defecation has connected (Steam ID: [U:1:44203340])
+Client "Incentive for Defecation" connected (79.64.191.86:27005).
+ [DTK] debugging > Incentive for Defecation is a new player
+ [DTK] debugging > Gave Incentive for Defecation default settings
+ [DTK] debugging > Incentive for Defecation has a valid Steam ID (44203340). Retrieving stored data
+ [DTK] debugging > Retrieved stored data for Incentive for Defecation: Points 10, flags: 000011
+[DTK] suXin has disconnected (Steam ID: [U:1:21206179] - Reason: Disconnect by user.)
+Dropped suXin from server (Disconnect by user.)
+L 06/07/2020 - 18:29:23: [SM] Exception reported: Hook type not supported on this game
+L 06/07/2020 - 18:29:23: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:29:23: [SM] Call stack trace:
+L 06/07/2020 - 18:29:23: [SM]   [0] SDKHook
+L 06/07/2020 - 18:29:23: [SM]   [1] Line 406, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::OnClientPutInServer
+ [DTK] debugging > Checking if Incentive for Defecation needs to be welcomed
+ [DTK] debugging > Welcoming Incentive for Defecation
+L 06/07/2020 - 18:29:49: [SM] Exception reported: Gamerules lookup failed.
+L 06/07/2020 - 18:29:49: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:29:49: [SM] Call stack trace:
+L 06/07/2020 - 18:29:49: [SM]   [0] GameRules_GetProp
+L 06/07/2020 - 18:29:49: [SM]   [1] Line 196, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\sdktools_gamerules.inc::GameRules_GetRoundState
+L 06/07/2020 - 18:29:49: [SM]   [2] Line 171, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::Game.RoundActive.get
+L 06/07/2020 - 18:29:49: [SM]   [3] Line 1156, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::CheckGameState
+[DTK] Mythical Manchild has connected (Steam ID: [U:1:249678633])
+Client "Mythical Manchild" connected (24.162.112.115:27005).
+24.162.112.115:27005:reconnect
+[DTK] Mythical Manchild has disconnected (Steam ID: [U:1:249678633] - Reason: Connection closing)
+Dropped Mythical Manchild from server (Connection closing)
+[DTK] Mythical Manchild has connected (Steam ID: [U:1:249678633])
+Client "Mythical Manchild" connected (24.162.112.115:27005).
+ [DTK] debugging > Mythical Manchild is a new player
+ [DTK] debugging > Gave Mythical Manchild default settings
+ [DTK] debugging > Mythical Manchild has a valid Steam ID (249678633). Retrieving stored data
+ [DTK] debugging > Mythical Manchild doesn't have a database record
+ [DTK] debugging > Created a new record for Mythical Manchild
+L 06/07/2020 - 18:30:06: [sm/funcommands.smx] "Berke<21><[U:1:190285622]><>" toggled noclip on "Berke<21><[U:1:190285622]><>"
+L 06/07/2020 - 18:30:09: [sm/funcommands.smx] "Berke<21><[U:1:190285622]><>" toggled noclip on "Berke<21><[U:1:190285622]><>"
+[DTK] Incentive for Defecation has disconnected (Steam ID: [U:1:44203340] - Reason: Disconnect by user.)
+ [DTK] debugging > Updated Incentive for Defecation's data in the database. Points 10, flags 000011, last_seen 1591547425, steamid 44203340
+Dropped Incentive for Defecation from server (Disconnect by user.)
+[DTK] Mythical Manchild has disconnected (Steam ID: [U:1:249678633] - Reason: Disconnect by user.)
+Dropped Mythical Manchild from server (Disconnect by user.)
+"hostname" = "⬛█ Death Ventures █⬛" ( def. "" )
+ - Hostname for server.
+L 06/07/2020 - 18:32:19: [SM] Exception reported: Gamerules lookup failed.
+L 06/07/2020 - 18:32:19: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:32:19: [SM] Call stack trace:
+L 06/07/2020 - 18:32:19: [SM]   [0] GameRules_GetProp
+L 06/07/2020 - 18:32:19: [SM]   [1] Line 196, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\sdktools_gamerules.inc::GameRules_GetRoundState
+L 06/07/2020 - 18:32:19: [SM]   [2] Line 171, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::Game.RoundActive.get
+L 06/07/2020 - 18:32:19: [SM]   [3] Line 1156, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::CheckGameState
+[DTK] The round has ended
+L 06/07/2020 - 18:33:33: [SM] Exception reported: Gamerules lookup failed.
+L 06/07/2020 - 18:33:33: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:33:33: [SM] Call stack trace:
+L 06/07/2020 - 18:33:33: [SM]   [0] GameRules_GetProp
+L 06/07/2020 - 18:33:33: [SM]   [1] Line 196, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\sdktools_gamerules.inc::GameRules_GetRoundState
+L 06/07/2020 - 18:33:33: [SM]   [2] Line 171, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::Game.RoundActive.get
+L 06/07/2020 - 18:33:33: [SM]   [3] Line 1156, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::CheckGameState
+[DTK] The round has restarted
+L 06/07/2020 - 18:33:48: [dtk/dtk.smx] monster_resource entity not found!
+ [DTK] debugging > monster_resource entity index has been set to -1 (not found!)
+ [DTK] debugging > Player resource entity index has been set to 40
+ [DTK] debugging > Couldn't create trigger_add_or_remove_tf_player_attributes for entity 2 (CARD: move speed bonus)
+L 06/07/2020 - 18:33:48: [SM] Exception reported: Invalid convar handle 0 (error 4)
+L 06/07/2020 - 18:33:48: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:33:48: [SM] Call stack trace:
+L 06/07/2020 - 18:33:48: [SM]   [0] ConVar.IntValue.get
+L 06/07/2020 - 18:33:48: [SM]   [1] Line 1308, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::SetServerCvars
+L 06/07/2020 - 18:33:48: [SM]   [2] Line 463, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::Event_RoundRestart
+[DTK] The round is now active
+L 06/07/2020 - 18:33:53: [SM] Exception reported: Gamerules lookup failed.
+L 06/07/2020 - 18:33:53: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:33:53: [SM] Call stack trace:
+L 06/07/2020 - 18:33:53: [SM]   [0] GameRules_GetProp
+L 06/07/2020 - 18:33:53: [SM]   [1] Line 196, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\sdktools_gamerules.inc::GameRules_GetRoundState
+L 06/07/2020 - 18:33:53: [SM]   [2] Line 171, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::Game.RoundActive.get
+L 06/07/2020 - 18:33:53: [SM]   [3] Line 1156, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::CheckGameState
+L 06/07/2020 - 18:35:30: [sm/funcommands.smx] "Berke<21><[U:1:190285622]><>" toggled noclip on "Berke<21><[U:1:190285622]><>"
+"sv_turbophysics" = "1"
+ game replicated
+ - Turns on turbo physics
+L 06/07/2020 - 18:35:33: [sm/funcommands.smx] "Berke<21><[U:1:190285622]><>" toggled noclip on "Berke<21><[U:1:190285622]><>"
+L 06/07/2020 - 18:35:37: [SM] Exception reported: Gamerules lookup failed.
+L 06/07/2020 - 18:35:37: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:35:37: [SM] Call stack trace:
+L 06/07/2020 - 18:35:37: [SM]   [0] GameRules_GetProp
+L 06/07/2020 - 18:35:37: [SM]   [1] Line 196, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\sdktools_gamerules.inc::GameRules_GetRoundState
+L 06/07/2020 - 18:35:37: [SM]   [2] Line 171, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::Game.RoundActive.get
+L 06/07/2020 - 18:35:37: [SM]   [3] Line 1156, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::CheckGameState
+[DTK] The round has ended
+L 06/07/2020 - 18:36:07: [SM] Exception reported: Gamerules lookup failed.
+L 06/07/2020 - 18:36:07: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:36:07: [SM] Call stack trace:
+L 06/07/2020 - 18:36:07: [SM]   [0] GameRules_GetProp
+L 06/07/2020 - 18:36:07: [SM]   [1] Line 196, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\sdktools_gamerules.inc::GameRules_GetRoundState
+L 06/07/2020 - 18:36:07: [SM]   [2] Line 171, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::Game.RoundActive.get
+L 06/07/2020 - 18:36:07: [SM]   [3] Line 1156, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::CheckGameState
+[DTK] The round has restarted
+L 06/07/2020 - 18:36:22: [dtk/dtk.smx] monster_resource entity not found!
+ [DTK] debugging > monster_resource entity index has been set to -1 (not found!)
+ [DTK] debugging > Player resource entity index has been set to 40
+ [DTK] debugging > Couldn't create trigger_add_or_remove_tf_player_attributes for entity 2 (CARD: move speed bonus)
+L 06/07/2020 - 18:36:22: [SM] Exception reported: Invalid convar handle 0 (error 4)
+L 06/07/2020 - 18:36:22: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:36:22: [SM] Call stack trace:
+L 06/07/2020 - 18:36:22: [SM]   [0] ConVar.IntValue.get
+L 06/07/2020 - 18:36:22: [SM]   [1] Line 1308, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::SetServerCvars
+L 06/07/2020 - 18:36:22: [SM]   [2] Line 463, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::Event_RoundRestart
+EmitSound: volume out of bounds = 620.000000
+EmitSound: volume out of bounds = 620.000000
+EmitSound: volume out of bounds = 620.000000
+[DTK] The round is now active
+L 06/07/2020 - 18:36:27: [SM] Exception reported: Gamerules lookup failed.
+L 06/07/2020 - 18:36:27: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:36:27: [SM] Call stack trace:
+L 06/07/2020 - 18:36:27: [SM]   [0] GameRules_GetProp
+L 06/07/2020 - 18:36:27: [SM]   [1] Line 196, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\sdktools_gamerules.inc::GameRules_GetRoundState
+L 06/07/2020 - 18:36:27: [SM]   [2] Line 171, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::Game.RoundActive.get
+L 06/07/2020 - 18:36:27: [SM]   [3] Line 1156, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::CheckGameState
+L 06/07/2020 - 18:36:33: [sm/basecommands.smx] "R60D<20><[U:1:116384134]><>" changed map to "playstation"
+L 06/07/2020 - 18:36:36: [SM] Changed map to "playstation"
+ [DTK] debugging > Updated Berke's data in the database. Points 140, flags 000011, last_seen 1591547796, steamid 190285622
+ [DTK] debugging > Updated R60D's data in the database. Points 90, flags 000011, last_seen 1591547796, steamid 116384134
+ [DTK] debugging > Updated ⛐ worMatty's data in the database. Points 200, flags 000011, last_seen 1591547796, steamid 1047392
+---- Host_Changelevel ----
+L 06/07/2020 - 18:36:36: [SM] Exception reported: Game event "teams_changed" has no active hook
+L 06/07/2020 - 18:36:36: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:36:36: [SM] Call stack trace:
+L 06/07/2020 - 18:36:36: [SM]   [0] UnhookEvent
+L 06/07/2020 - 18:36:36: [SM]   [1] Line 1432, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::EventsAndListeners
+L 06/07/2020 - 18:36:36: [SM]   [2] Line 324, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::OnMapEnd
+Error loading cfg/pure_server_minimal.txt
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_medieval/medieval_small_window_frame.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_medieval/medieval_small_window_frame.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_medieval/medieval_tall_window_frame.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_medieval/medieval_small_window_frame.mdl)
+L 06/07/2020 - 18:36:38: -------- Mapchange to dr_playstation_final --------
+L 06/07/2020 - 18:36:38: Error log file session closed.
+SV_BroadcastMessage:  Recipient Filter for message type 23 (reliable: no, init: no) with bogus client index (0) in list of 1 clients
+SV_ActivateServer: setting tickrate to 66.7
+Unknown command "�"
+'dr_playstation_final.cfg' not present; not executing.
+[DTK] Database connection established. Handle is 2e400d6
+ [DTK] debugging > Found 0 expired records in the database to delete
+L 06/07/2020 - 18:36:53: [dtk/dtk.smx] Detected a deathrun map
+L 06/07/2020 - 18:36:53: [SM] Exception reported: Game event "teams_changed" does not exist
+L 06/07/2020 - 18:36:53: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:36:53: [SM] Call stack trace:
+L 06/07/2020 - 18:36:53: [SM]   [0] HookEvent
+L 06/07/2020 - 18:36:53: [SM]   [1] Line 1407, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::EventsAndListeners
+L 06/07/2020 - 18:36:53: [SM]   [2] Line 289, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::OnMapStart
+ [DTK] debugging > Berke was playing on the last map
+ [DTK] debugging > ⛐ worMatty was playing on the last map
+ [DTK] debugging > R60D was playing on the last map
+[DTK] femininelookinboi has connected (Steam ID: [U:1:170622244])
+Client "femininelookinboi" connected (24.8.57.167:27005).
+ [DTK] debugging > femininelookinboi is a new player
+ [DTK] debugging > Gave femininelookinboi default settings
+ [DTK] debugging > femininelookinboi has a valid Steam ID (170622244). Retrieving stored data
+ [DTK] debugging > Retrieved stored data for femininelookinboi: Points 10, flags: 000011
+L 06/07/2020 - 18:37:01: [SM] Exception reported: Hook type not supported on this game
+L 06/07/2020 - 18:37:01: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:37:01: [SM] Call stack trace:
+L 06/07/2020 - 18:37:01: [SM]   [0] SDKHook
+L 06/07/2020 - 18:37:01: [SM]   [1] Line 406, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::OnClientPutInServer
+L 06/07/2020 - 18:37:01: [SM] Exception reported: Hook type not supported on this game
+L 06/07/2020 - 18:37:01: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:37:01: [SM] Call stack trace:
+L 06/07/2020 - 18:37:01: [SM]   [0] SDKHook
+L 06/07/2020 - 18:37:01: [SM]   [1] Line 406, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::OnClientPutInServer
+L 06/07/2020 - 18:37:08: [SM] Exception reported: Hook type not supported on this game
+L 06/07/2020 - 18:37:08: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:37:08: [SM] Call stack trace:
+L 06/07/2020 - 18:37:08: [SM]   [0] SDKHook
+L 06/07/2020 - 18:37:08: [SM]   [1] Line 406, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::OnClientPutInServer
+ [DTK] debugging > Checking if R60D needs to be welcomed
+ [DTK] debugging > R60D has the WELCOMED flag. No need to welcome them
+[DTK] The round has restarted
+L 06/07/2020 - 18:37:14: [dtk/dtk.smx] monster_resource entity not found!
+ [DTK] debugging > monster_resource entity index has been set to -1 (not found!)
+ [DTK] debugging > Player resource entity index has been set to 40
+ [DTK] debugging > Couldn't create trigger_add_or_remove_tf_player_attributes for entity 2 (CARD: move speed bonus)
+L 06/07/2020 - 18:37:14: [SM] Exception reported: Invalid convar handle 0 (error 4)
+L 06/07/2020 - 18:37:14: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:37:14: [SM] Call stack trace:
+L 06/07/2020 - 18:37:14: [SM]   [0] ConVar.IntValue.get
+L 06/07/2020 - 18:37:14: [SM]   [1] Line 1308, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::SetServerCvars
+L 06/07/2020 - 18:37:14: [SM]   [2] Line 463, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::Event_RoundRestart
+[DTK] The round is now active
+L 06/07/2020 - 18:37:19: [SM] Exception reported: Gamerules lookup failed.
+L 06/07/2020 - 18:37:19: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:37:19: [SM] Call stack trace:
+L 06/07/2020 - 18:37:19: [SM]   [0] GameRules_GetProp
+L 06/07/2020 - 18:37:19: [SM]   [1] Line 196, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\sdktools_gamerules.inc::GameRules_GetRoundState
+L 06/07/2020 - 18:37:19: [SM]   [2] Line 171, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::Game.RoundActive.get
+L 06/07/2020 - 18:37:19: [SM]   [3] Line 1156, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::CheckGameState
+L 06/07/2020 - 18:37:19: [SM] Exception reported: Hook type not supported on this game
+L 06/07/2020 - 18:37:19: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:37:19: [SM] Call stack trace:
+L 06/07/2020 - 18:37:19: [SM]   [0] SDKHook
+L 06/07/2020 - 18:37:19: [SM]   [1] Line 406, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::OnClientPutInServer
+ [DTK] debugging > Checking if ⛐ worMatty needs to be welcomed
+ [DTK] debugging > ⛐ worMatty has the WELCOMED flag. No need to welcome them
+[DTK] The round has ended
+ [DTK] debugging > Checking if femininelookinboi needs to be welcomed
+ [DTK] debugging > Welcoming femininelookinboi
+[DTK] The round has restarted
+L 06/07/2020 - 18:37:37: [dtk/dtk.smx] monster_resource entity not found!
+ [DTK] debugging > monster_resource entity index has been set to -1 (not found!)
+ [DTK] debugging > Player resource entity index has been set to 40
+ [DTK] debugging > Couldn't create trigger_add_or_remove_tf_player_attributes for entity 2 (CARD: move speed bonus)
+ [DTK] debugging > Couldn't create trigger_add_or_remove_tf_player_attributes for entity 3 (CARD: move speed bonus)
+ [DTK] debugging > Couldn't create trigger_add_or_remove_tf_player_attributes for entity 3 (no double jump)
+L 06/07/2020 - 18:37:37: [SM] Exception reported: Array index out-of-bounds (index 10, limit 10)
+L 06/07/2020 - 18:37:37: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:37:37: [SM] Call stack trace:
+L 06/07/2020 - 18:37:37: [SM]   [1] Line 993, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::ApplyAttributes
+L 06/07/2020 - 18:37:37: [SM]   [2] Line 459, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::Event_RoundRestart
+[DTK] The round is now active
+L 06/07/2020 - 18:37:42: [SM] Exception reported: Gamerules lookup failed.
+L 06/07/2020 - 18:37:42: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:37:42: [SM] Call stack trace:
+L 06/07/2020 - 18:37:42: [SM]   [0] GameRules_GetProp
+L 06/07/2020 - 18:37:42: [SM]   [1] Line 196, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\sdktools_gamerules.inc::GameRules_GetRoundState
+L 06/07/2020 - 18:37:42: [SM]   [2] Line 171, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::Game.RoundActive.get
+L 06/07/2020 - 18:37:42: [SM]   [3] Line 1156, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::CheckGameState
+[DTK] The round has restarted
+L 06/07/2020 - 18:37:45: [dtk/dtk.smx] monster_resource entity not found!
+ [DTK] debugging > monster_resource entity index has been set to -1 (not found!)
+ [DTK] debugging > Player resource entity index has been set to 40
+ [DTK] debugging > Couldn't create trigger_add_or_remove_tf_player_attributes for entity 2 (CARD: move speed bonus)
+ [DTK] debugging > Couldn't create trigger_add_or_remove_tf_player_attributes for entity 3 (CARD: move speed bonus)
+ [DTK] debugging > Couldn't create trigger_add_or_remove_tf_player_attributes for entity 3 (no double jump)
+L 06/07/2020 - 18:37:45: [SM] Exception reported: Array index out-of-bounds (index 10, limit 10)
+L 06/07/2020 - 18:37:45: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:37:45: [SM] Call stack trace:
+L 06/07/2020 - 18:37:45: [SM]   [1] Line 993, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::ApplyAttributes
+L 06/07/2020 - 18:37:45: [SM]   [2] Line 459, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::Event_RoundRestart
+L 06/07/2020 - 18:37:48: [dtk/m_mover.smx] ⛐ worMatty<10><[U:1:1047392]><> teleported femininelookinboi<26><[U:1:170622244]><> to their crosshair
+[DTK] The round is now active
+L 06/07/2020 - 18:37:49: [SM] Exception reported: Gamerules lookup failed.
+L 06/07/2020 - 18:37:49: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:37:49: [SM] Call stack trace:
+L 06/07/2020 - 18:37:49: [SM]   [0] GameRules_GetProp
+L 06/07/2020 - 18:37:49: [SM]   [1] Line 196, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\sdktools_gamerules.inc::GameRules_GetRoundState
+L 06/07/2020 - 18:37:49: [SM]   [2] Line 171, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::Game.RoundActive.get
+L 06/07/2020 - 18:37:49: [SM]   [3] Line 1156, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::CheckGameState
+L 06/07/2020 - 18:38:05: [SM] Exception reported: Gamerules lookup failed.
+L 06/07/2020 - 18:38:05: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:38:05: [SM] Call stack trace:
+L 06/07/2020 - 18:38:05: [SM]   [0] GameRules_GetProp
+L 06/07/2020 - 18:38:05: [SM]   [1] Line 196, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\sdktools_gamerules.inc::GameRules_GetRoundState
+L 06/07/2020 - 18:38:05: [SM]   [2] Line 171, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::Game.RoundActive.get
+L 06/07/2020 - 18:38:05: [SM]   [3] Line 1156, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::CheckGameState
+ [DTK] debugging > Checking if Berke needs to be welcomed
+ [DTK] debugging > Berke has the WELCOMED flag. No need to welcome them
+[DTK] femininelookinboi has disconnected (Steam ID: [U:1:170622244] - Reason: Disconnect by user.)
+ [DTK] debugging > Updated femininelookinboi's data in the database. Points 10, flags 000011, last_seen 1591547893, steamid 170622244
+Dropped femininelookinboi from server (Disconnect by user.)
+Entity 142 (class 'tf_ammo_pack') reported ENTITY_CHANGE_NONE but 'm_hOwnerEntity' changed.
+Entity 143 (class 'tf_dropped_weapon') reported ENTITY_CHANGE_NONE but 'm_hOwnerEntity' changed.
+[DTK] The round has ended
+L 06/07/2020 - 18:38:26: [SM] Exception reported: Gamerules lookup failed.
+L 06/07/2020 - 18:38:26: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:38:26: [SM] Call stack trace:
+L 06/07/2020 - 18:38:26: [SM]   [0] GameRules_GetProp
+L 06/07/2020 - 18:38:26: [SM]   [1] Line 196, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\sdktools_gamerules.inc::GameRules_GetRoundState
+L 06/07/2020 - 18:38:26: [SM]   [2] Line 171, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::Game.RoundActive.get
+L 06/07/2020 - 18:38:26: [SM]   [3] Line 1156, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::CheckGameState
+[DTK] The round has restarted
+L 06/07/2020 - 18:38:41: [dtk/dtk.smx] monster_resource entity not found!
+ [DTK] debugging > monster_resource entity index has been set to -1 (not found!)
+ [DTK] debugging > Player resource entity index has been set to 40
+ [DTK] debugging > Couldn't create trigger_add_or_remove_tf_player_attributes for entity 2 (CARD: move speed bonus)
+ [DTK] debugging > Couldn't create trigger_add_or_remove_tf_player_attributes for entity 3 (CARD: move speed bonus)
+ [DTK] debugging > Couldn't create trigger_add_or_remove_tf_player_attributes for entity 3 (no double jump)
+L 06/07/2020 - 18:38:41: [SM] Exception reported: Invalid convar handle 0 (error 4)
+L 06/07/2020 - 18:38:41: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:38:41: [SM] Call stack trace:
+L 06/07/2020 - 18:38:41: [SM]   [0] ConVar.IntValue.get
+L 06/07/2020 - 18:38:41: [SM]   [1] Line 1308, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::SetServerCvars
+L 06/07/2020 - 18:38:41: [SM]   [2] Line 463, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::Event_RoundRestart
+[DTK] 9AMOON, The Fresh has connected (Steam ID: [U:1:44932714])
+Client "9AMOON, The Fresh" connected (109.177.69.139:27005).
+ [DTK] debugging > 9AMOON, The Fresh is a new player
+ [DTK] debugging > Gave 9AMOON, The Fresh default settings
+ [DTK] debugging > 9AMOON, The Fresh has a valid Steam ID (44932714). Retrieving stored data
+ [DTK] debugging > 9AMOON, The Fresh doesn't have a database record
+ [DTK] debugging > Created a new record for 9AMOON, The Fresh
+L 06/07/2020 - 18:38:45: [dtk/m_mover.smx] ⛐ worMatty<10><[U:1:1047392]><> teleported to R60D<20><[U:1:116384134]><>
+[DTK] The round is now active
+L 06/07/2020 - 18:38:46: [SM] Exception reported: Gamerules lookup failed.
+L 06/07/2020 - 18:38:46: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:38:46: [SM] Call stack trace:
+L 06/07/2020 - 18:38:46: [SM]   [0] GameRules_GetProp
+L 06/07/2020 - 18:38:46: [SM]   [1] Line 196, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\sdktools_gamerules.inc::GameRules_GetRoundState
+L 06/07/2020 - 18:38:46: [SM]   [2] Line 171, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::Game.RoundActive.get
+L 06/07/2020 - 18:38:46: [SM]   [3] Line 1156, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::CheckGameState
+L 06/07/2020 - 18:38:51: [sm/funcommands.smx] "R60D<20><[U:1:116384134]><>" toggled noclip on "R60D<20><[U:1:116384134]><>"
+L 06/07/2020 - 18:38:51: [sm/funcommands.smx] "⛐ worMatty<10><[U:1:1047392]><>" toggled noclip on "⛐ worMatty<10><[U:1:1047392]><>"
+L 06/07/2020 - 18:38:56: [sm/funcommands.smx] "⛐ worMatty<10><[U:1:1047392]><>" toggled noclip on "⛐ worMatty<10><[U:1:1047392]><>"
+L 06/07/2020 - 18:39:01: [sm/funcommands.smx] "R60D<20><[U:1:116384134]><>" toggled noclip on "R60D<20><[U:1:116384134]><>"
+[DTK] CrispYBacoN has connected (Steam ID: [U:1:30876287])
+Client "CrispYBacoN" connected (185.17.12.141:27005).
+ [DTK] debugging > CrispYBacoN is a new player
+ [DTK] debugging > Gave CrispYBacoN default settings
+ [DTK] debugging > CrispYBacoN has a valid Steam ID (30876287). Retrieving stored data
+ [DTK] debugging > CrispYBacoN doesn't have a database record
+ [DTK] debugging > Created a new record for CrispYBacoN
+L 06/07/2020 - 18:39:19: [SM] Exception reported: Hook type not supported on this game
+L 06/07/2020 - 18:39:19: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:39:19: [SM] Call stack trace:
+L 06/07/2020 - 18:39:19: [SM]   [0] SDKHook
+L 06/07/2020 - 18:39:19: [SM]   [1] Line 406, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::OnClientPutInServer
+CreateFragmentsFromFile: 'user_custom/17/1783f706.dat' doesn't exist.
+CreateFragmentsFromFile: 'user_custom/17/1783f706.dat' doesn't exist.
+CreateFragmentsFromFile: 'user_custom/17/1783f706.dat' doesn't exist.
+ [DTK] debugging > Checking if 9AMOON, The Fresh needs to be welcomed
+ [DTK] debugging > Welcoming 9AMOON, The Fresh
+ [DTK] debugging > Checking if 9AMOON, The Fresh needs to be welcomed
+ [DTK] debugging > 9AMOON, The Fresh has the WELCOMED flag. No need to welcome them
+L 06/07/2020 - 18:39:33: [SM] Exception reported: Hook type not supported on this game
+L 06/07/2020 - 18:39:33: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:39:33: [SM] Call stack trace:
+L 06/07/2020 - 18:39:33: [SM]   [0] SDKHook
+L 06/07/2020 - 18:39:33: [SM]   [1] Line 406, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::OnClientPutInServer
+ [DTK] debugging > Checking if 9AMOON, The Fresh needs to be welcomed
+ [DTK] debugging > 9AMOON, The Fresh has the WELCOMED flag. No need to welcome them
+ [DTK] debugging > Checking if CrispYBacoN needs to be welcomed
+ [DTK] debugging > Welcoming CrispYBacoN
+L 06/07/2020 - 18:39:48: [sm/funcommands.smx] "Berke<21><[U:1:190285622]><>" toggled noclip on "Berke<21><[U:1:190285622]><>"
+L 06/07/2020 - 18:39:50: [sm/funcommands.smx] "Berke<21><[U:1:190285622]><>" toggled noclip on "Berke<21><[U:1:190285622]><>"
+[DTK] 9AMOON, The Fresh has disconnected (Steam ID: [U:1:44932714] - Reason: Disconnect by user.)
+ [DTK] debugging > Updated 9AMOON, The Fresh's data in the database. Points 10, flags 000011, last_seen 1591547992, steamid 44932714
+Dropped 9AMOON, The Fresh from server (Disconnect by user.)
+DataTable warning: player: Out-of-range value (4000.000000/1000.000000) in SendPropFloat 'm_vecBaseVelocity', clamping.
+DataTable warning: player: Out-of-range value (4000.000000/1000.000000) in SendPropFloat 'm_vecBaseVelocity', clamping.
+DataTable warning: player: Out-of-range value (4000.000000/1000.000000) in SendPropFloat 'm_vecBaseVelocity', clamping.
+DataTable warning: player: Out-of-range value (4000.000000/1000.000000) in SendPropFloat 'm_vecBaseVelocity', clamping.
+DataTable warning: player: Out-of-range value (4000.000000/1000.000000) in SendPropFloat 'm_vecBaseVelocity', clamping.
+DataTable warning: player: Out-of-range value (4000.000000/1000.000000) in SendPropFloat 'm_vecBaseVelocity', clamping.
+DataTable warning: player: Out-of-range value (4000.000000/1000.000000) in SendPropFloat 'm_vecBaseVelocity', clamping.
+DataTable warning: player: Out-of-range value (4000.000000/1000.000000) in SendPropFloat 'm_vecBaseVelocity', clamping.
+DataTable warning: player: Out-of-range value (4000.000000/1000.000000) in SendPropFloat 'm_vecBaseVelocity', clamping.
+DataTable warning: player: Out-of-range value (4000.000000/1000.000000) in SendPropFloat 'm_vecBaseVelocity', clamping.
+DataTable warning: player: Out-of-range value (4000.000000/1000.000000) in SendPropFloat 'm_vecBaseVelocity', clamping.
+DataTable warning: player: Out-of-range value (4000.000000/1000.000000) in SendPropFloat 'm_vecBaseVelocity', clamping.
+DataTable warning: player: Out-of-range value (4000.000000/1000.000000) in SendPropFloat 'm_vecBaseVelocity', clamping.
+DataTable warning: player: Out-of-range value (4000.000000/1000.000000) in SendPropFloat 'm_vecBaseVelocity', clamping.
+DataTable warning: player: Out-of-range value (4000.000000/1000.000000) in SendPropFloat 'm_vecBaseVelocity', clamping.
+DataTable warning: player: Out-of-range value (4000.000000/1000.000000) in SendPropFloat 'm_vecBaseVelocity', clamping.
+DataTable warning: player: Out-of-range value (4000.000000/1000.000000) in SendPropFloat 'm_vecBaseVelocity', clamping.
+DataTable warning: player: Out-of-range value (4000.000000/1000.000000) in SendPropFloat 'm_vecBaseVelocity', clamping.
+DataTable warning: player: Out-of-range value (4000.000000/1000.000000) in SendPropFloat 'm_vecBaseVelocity', clamping.
+[DTK] CrispYBacoN has disconnected (Steam ID: [U:1:30876287] - Reason: Disconnect by user.)
+ [DTK] debugging > Updated CrispYBacoN's data in the database. Points 10, flags 000011, last_seen 1591548005, steamid 30876287
+Dropped CrispYBacoN from server (Disconnect by user.)
+L 06/07/2020 - 18:40:07: [dtk/m_mover.smx] ⛐ worMatty<10><[U:1:1047392]><> teleported ⛐ worMatty<10><[U:1:1047392]><> to their crosshair
+L 06/07/2020 - 18:40:12: [dtk/m_mover.smx] ⛐ worMatty<10><[U:1:1047392]><> teleported ⛐ worMatty<10><[U:1:1047392]><> to their crosshair
+L 06/07/2020 - 18:40:21: [sm/funcommands.smx] "⛐ worMatty<10><[U:1:1047392]><>" toggled noclip on "⛐ worMatty<10><[U:1:1047392]><>"
+L 06/07/2020 - 18:40:29: [sm/funcommands.smx] "⛐ worMatty<10><[U:1:1047392]><>" toggled noclip on "⛐ worMatty<10><[U:1:1047392]><>"
+L 06/07/2020 - 18:40:35: [sm/funcommands.smx] "R60D<20><[U:1:116384134]><>" toggled noclip on "R60D<20><[U:1:116384134]><>"
+L 06/07/2020 - 18:40:40: [sm/funcommands.smx] "⛐ worMatty<10><[U:1:1047392]><>" toggled noclip on "⛐ worMatty<10><[U:1:1047392]><>"
+L 06/07/2020 - 18:40:41: [sm/funcommands.smx] "R60D<20><[U:1:116384134]><>" toggled noclip on "R60D<20><[U:1:116384134]><>"
+L 06/07/2020 - 18:40:48: [sm/funcommands.smx] "⛐ worMatty<10><[U:1:1047392]><>" toggled noclip on "⛐ worMatty<10><[U:1:1047392]><>"
+L 06/07/2020 - 18:40:50: [sm/funcommands.smx] "R60D<20><[U:1:116384134]><>" toggled noclip on "R60D<20><[U:1:116384134]><>"
+L 06/07/2020 - 18:41:02: [sm/funcommands.smx] "⛐ worMatty<10><[U:1:1047392]><>" toggled noclip on "⛐ worMatty<10><[U:1:1047392]><>"
+L 06/07/2020 - 18:41:08: [sm/funcommands.smx] "Berke<21><[U:1:190285622]><>" toggled noclip on "Berke<21><[U:1:190285622]><>"
+L 06/07/2020 - 18:41:13: [sm/funcommands.smx] "Berke<21><[U:1:190285622]><>" toggled noclip on "Berke<21><[U:1:190285622]><>"
+L 06/07/2020 - 18:41:15: [sm/funcommands.smx] "Berke<21><[U:1:190285622]><>" toggled noclip on "Berke<21><[U:1:190285622]><>"
+[DTK] The round has ended
+L 06/07/2020 - 18:41:16: [SM] Exception reported: Gamerules lookup failed.
+L 06/07/2020 - 18:41:16: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:41:16: [SM] Call stack trace:
+L 06/07/2020 - 18:41:16: [SM]   [0] GameRules_GetProp
+L 06/07/2020 - 18:41:16: [SM]   [1] Line 196, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\sdktools_gamerules.inc::GameRules_GetRoundState
+L 06/07/2020 - 18:41:16: [SM]   [2] Line 171, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::Game.RoundActive.get
+L 06/07/2020 - 18:41:16: [SM]   [3] Line 1156, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::CheckGameState
+[DTK] The round has restarted
+L 06/07/2020 - 18:41:31: [dtk/dtk.smx] monster_resource entity not found!
+ [DTK] debugging > monster_resource entity index has been set to -1 (not found!)
+ [DTK] debugging > Player resource entity index has been set to 40
+ [DTK] debugging > Couldn't create trigger_add_or_remove_tf_player_attributes for entity 2 (CARD: move speed bonus)
+ [DTK] debugging > Couldn't create trigger_add_or_remove_tf_player_attributes for entity 3 (CARD: move speed bonus)
+ [DTK] debugging > Couldn't create trigger_add_or_remove_tf_player_attributes for entity 3 (no double jump)
+L 06/07/2020 - 18:41:31: [SM] Exception reported: Invalid convar handle 0 (error 4)
+L 06/07/2020 - 18:41:31: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:41:31: [SM] Call stack trace:
+L 06/07/2020 - 18:41:31: [SM]   [0] ConVar.IntValue.get
+L 06/07/2020 - 18:41:31: [SM]   [1] Line 1308, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::SetServerCvars
+L 06/07/2020 - 18:41:31: [SM]   [2] Line 463, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::Event_RoundRestart
+[DTK] The round is now active
+L 06/07/2020 - 18:41:36: [SM] Exception reported: Gamerules lookup failed.
+L 06/07/2020 - 18:41:36: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:41:36: [SM] Call stack trace:
+L 06/07/2020 - 18:41:36: [SM]   [0] GameRules_GetProp
+L 06/07/2020 - 18:41:36: [SM]   [1] Line 196, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\sdktools_gamerules.inc::GameRules_GetRoundState
+L 06/07/2020 - 18:41:36: [SM]   [2] Line 171, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::Game.RoundActive.get
+L 06/07/2020 - 18:41:36: [SM]   [3] Line 1156, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::CheckGameState
+Entity 1 (class 'player') reported ENTITY_CHANGE_NONE but 'm_nPlayerCond' changed.
+Entity 1 (class 'player') reported ENTITY_CHANGE_NONE but '007' changed.
+[DTK] Berke has disconnected (Steam ID: [U:1:190285622] - Reason: Disconnect by user.)
+ [DTK] debugging > Updated Berke's data in the database. Points 160, flags 000011, last_seen 1591548134, steamid 190285622
+Dropped Berke from server (Disconnect by user.)
+[DTK] Berke has connected (Steam ID: [U:1:190285622])
+Client "Berke" connected (176.40.242.240:43619).
+L 06/07/2020 - 18:42:14: [sm/funcommands.smx] "R60D<20><[U:1:116384134]><>" toggled noclip on "R60D<20><[U:1:116384134]><>"
+ [DTK] debugging > Berke is a new player
+ [DTK] debugging > Gave Berke default settings
+ [DTK] debugging > Berke has a valid Steam ID (190285622). Retrieving stored data
+ [DTK] debugging > Retrieved stored data for Berke: Points 160, flags: 000011
+L 06/07/2020 - 18:42:20: [SM] Exception reported: Hook type not supported on this game
+L 06/07/2020 - 18:42:20: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:42:20: [SM] Call stack trace:
+L 06/07/2020 - 18:42:20: [SM]   [0] SDKHook
+L 06/07/2020 - 18:42:20: [SM]   [1] Line 406, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::OnClientPutInServer
+[DTK] The round has ended
+L 06/07/2020 - 18:42:33: [SM] Exception reported: Gamerules lookup failed.
+L 06/07/2020 - 18:42:33: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:42:33: [SM] Call stack trace:
+L 06/07/2020 - 18:42:33: [SM]   [0] GameRules_GetProp
+L 06/07/2020 - 18:42:33: [SM]   [1] Line 196, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\sdktools_gamerules.inc::GameRules_GetRoundState
+L 06/07/2020 - 18:42:33: [SM]   [2] Line 171, D:\TF2 mapping\SourceMod Scripting\SPEdit Configs\sm_1_10_6459\include\dtk.inc::Game.RoundActive.get
+L 06/07/2020 - 18:42:33: [SM]   [3] Line 1156, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::CheckGameState
+[DTK] The round has restarted
+L 06/07/2020 - 18:42:48: [dtk/dtk.smx] monster_resource entity not found!
+ [DTK] debugging > monster_resource entity index has been set to -1 (not found!)
+ [DTK] debugging > Player resource entity index has been set to 40
+ [DTK] debugging > Couldn't create trigger_add_or_remove_tf_player_attributes for entity 2 (CARD: move speed bonus)
+ [DTK] debugging > Couldn't create trigger_add_or_remove_tf_player_attributes for entity 3 (CARD: move speed bonus)
+ [DTK] debugging > Couldn't create trigger_add_or_remove_tf_player_attributes for entity 3 (no double jump)
+L 06/07/2020 - 18:42:48: [SM] Exception reported: Invalid convar handle 0 (error 4)
+L 06/07/2020 - 18:42:48: [SM] Blaming: dtk/dtk.smx
+L 06/07/2020 - 18:42:48: [SM] Call stack trace:
+L 06/07/2020 - 18:42:48: [SM]   [0] ConVar.IntValue.get
+L 06/07/2020 - 18:42:48: [SM]   [1] Line 1308, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::SetServerCvars
+L 06/07/2020 - 18:42:48: [SM]   [2] Line 463, D:\TF2 mapping\SourceMod Scripting\Work\Deathrun Toolkit\dtk.sp::Event_RoundRestart

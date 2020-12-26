@@ -1,0 +1,25 @@
+Property testing
+================
+
+
+m_nHudType
+----------
+Arena (DR) 250
+rd_asteroid 255
+ctf_turbine 255
+cp_snowplow 0
+cp_dustbowl 0
+ctf_doublecross 0
+ctf_turbine 1
+
+m_nGameType
+-----------
+ctf_turbine 3
+ctf_doublecross 0
+ctf_turbine 0
+cp_dustbowl 0
+
+m_bIsInTraining
+---------------
+cp_dustbowl 0
+tr_dustbowl 1

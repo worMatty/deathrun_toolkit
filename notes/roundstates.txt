@@ -1,0 +1,40 @@
+enum RoundState {
+	// initialize the game, create teams
+0	RoundState_Init,
+
+	//Before players have joined the game. Periodically checks to see if enough players are ready
+	//to start a game. Also reverts to this when there are no active players
+	// Deathrun: When there aren't enough players on either team to start a round.
+1	RoundState_Pregame,
+
+	//The game is about to start, wait a bit and spawn everyone
+2	RoundState_StartGame,
+
+	//All players are respawned, frozen in place
+	// Deathrun: Pre-round freeze time during the count down when you are not penalised for suiciding and can change class
+3	RoundState_Preround,
+
+	//Round is on, playing normally
+4	RoundState_RoundRunning,
+
+	//Someone has won the round
+	// Deathrun: One team has won, or both have lost (stalemate)
+5	RoundState_TeamWin,
+
+	//Noone has won, manually restart the game, reset scores
+6	RoundState_Restart,
+
+	//Noone has won, restart the game
+	// Deathrun: The round is running!
+7	RoundState_Stalemate,
+
+	//Game is over, showing the scoreboard etc
+	// Deathrun: Map has finished, scoreboard is up
+8	RoundState_GameOver,
+
+	//Game is over, doing bonus round stuff
+9	RoundState_Bonus,
+
+	//Between rounds
+10	RoundState_BetweenRounds
+};

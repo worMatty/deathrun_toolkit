@@ -11,7 +11,7 @@
  */
 void FunStuff_ScaleHealth()
 {
-	Player activator = new Player(g_iHealthBarTarget);
+	Player activator = new Player(g_iBoss);
 	activator.ScaleHealth();
 }
 
@@ -31,10 +31,10 @@ void FunStuff_JetpackGame()
 		
 		if (player.InGame && player.Team == Team_Red)
 		{
-			int weapon = player.GetWeapon(TFWeaponSlot_Secondary);
-			if (weapon != -1) RemoveEdict(weapon);
-			player.SetClass(TFClass_Pyro);
-			player.SetSpeed(75);
+			//int weapon = player.GetWeapon(Weapon_Secondary);
+			//if (weapon != -1) RemoveEdict(weapon);
+			player.SetClass(Class_Pyro);
+			player.SetSpeed(150);
 			
 			RequestFrame(RequestFrame_Jetpacks, player);
 		}
@@ -43,13 +43,13 @@ void FunStuff_JetpackGame()
 
 void RequestFrame_Jetpacks(Player player)
 {
-	int weapon = player.GetWeapon(TFWeaponSlot_Secondary);
+	int weapon = player.GetWeapon(Weapon_Secondary);
 	
 	weapon = ReplaceWeapon(player.Index, weapon, 1179, "tf_weapon_rocketpack");
-
+	
 	if (weapon != -1)
 	{
 		TF2Attrib_SetByName(weapon, "item_meter_charge_rate", 0.01);
-		player.SetSlot(TFWeaponSlot_Secondary);
+		player.SetSlot(Weapon_Secondary);
 	}
 }

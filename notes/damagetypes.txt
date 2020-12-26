@@ -1,0 +1,340 @@
+Custom Damage Types
+===================
+
+Weapons
+-------
+
+Cow Mangler
+Righteous Bison
+Pomson?
+Phlog
+C.A.P.P.E.R 
+Third Degree?
+Sword
+
+
+Damage Types Given by Weapons
+-----------------------------
+
+#define DMG_GENERIC                  0          //
+#define DMG_CRUSH                   (1 << 0)    // 
+#define DMG_BULLET                  (1 << 1)    // Capper, Minigun, Lv. I Sentry, Needle, Sniper (Unscoped), Sniper (Scoped) Crit, Sniper (Scoped), Revolver, Revolver Crit, Pistol
+#define DMG_SLASH                   (1 << 2)    // Cleaver, Cleaver DoT
+#define DMG_BURN                    (1 << 3)    // Afterburn
+#define DMG_VEHICLE                 (1 << 4)    //
+#define DMG_FALL                    (1 << 5)    //
+#define DMG_BLAST                   (1 << 6)    // Cow Mangler, Grenade, Sticky, Lv. III Sentry Rockets, Beggar's
+#define DMG_CLUB                    (1 << 7)    // Frying Pan, Bottle, Broken Bottle, Fists, Bonesaw, Kukri, Knife, Knife (Backstab), Bat, Bat Crit, Disciplinary
+#define DMG_SHOCK                   (1 << 8)    // Bonesaw Crit
+#define DMG_SONIC                   (1 << 9)    //
+#define DMG_ENERGYBEAM              (1 << 10)   //
+#define DMG_PREVENT_PHYSICS_FORCE   (1 << 11)   // Flamethrower, Afterburn, Needle
+#define DMG_NEVERGIB                (1 << 12)   // Frying Pan, Bottle, Broken Bottle, Fists, Lv. I Sentry, Bonesaw, Kukri, Knife, Knife (Backstab), Bat, Bat Crit, Disciplinary
+#define DMG_ALWAYSGIB               (1 << 13)   //
+#define DMG_DROWN                   (1 << 14)   // Bonesaw Crit
+#define DMG_PARALYZE                (1 << 15)   // Bonesaw Crit
+#define DMG_NERVEGAS                (1 << 16)   // Bonesaw Crit
+#define DMG_POISON                  (1 << 17)   // Sticky, Lv. I Sentry, Needle, Bonesaw Crit
+#define DMG_RADIATION               (1 << 18)   // Cow Mangler, Grenade, Sticky, Lv. III Sentry Rockets, Bonesaw Crit, Beggar's
+#define DMG_DROWNRECOVER            (1 << 19)   //
+#define DMG_ACID                    (1 << 20)   // Bottle (Crit?), Sniper (Scoped) Crit, Revolver Crit, Knife (Backstab), Bat Crit
+#define DMG_SLOWBURN                (1 << 21)   // Cow Mangler, Shotgun, Scattergun, Capper, Sticky, Minigun, Rescue Ranger, Lv. I Sentry, Lv. III Sentry Rockets, Needle, Revolver, Revolver Crit, Pistol, Beggar's
+#define DMG_REMOVENORAGDOLL         (1 << 22)   // Bonesaw Crit
+#define DMG_PHYSGUN                 (1 << 23)   // Bonesaw Crit
+#define DMG_PLASMA                  (1 << 24)   // Flamethrower
+#define DMG_AIRBOAT                 (1 << 25)   // Sniper (Scoped) Crit, Sniper (Scoped)
+#define DMG_DISSOLVE                (1 << 26)   //
+#define DMG_BLAST_SURFACE           (1 << 27)   // Frying Pan, Bottle, Broken Bottle, Fists, Bonesaw, Knife, Knife (Backstab), Bat, Bat Crit, Disciplinary
+#define DMG_DIRECT                  (1 << 28)	// Bonesaw Crit
+#define DMG_BUCKSHOT                (1 << 29)   // Shotgun, Scattergun, Rescue Ranger
+#define DMG_BIT30	                (1 << 30)	// Bonesaw Crit
+
+
+Damage Type Effects from trigger_hurt
+-------------------------------------
+
+See spreadsheet.
+
+
+
+
+Custom Kill Effects When Applied to a Ragdoll
+---------------------------------------------
+
+TF_CUSTOM_HEADSHOT = 1,				No effect
+TF_CUSTOM_BACKSTAB,					No effect
+TF_CUSTOM_BURNING,					No effect
+TF_CUSTOM_WRENCH_FIX,				No effect
+TF_CUSTOM_MINIGUN, 5				No effect
+TF_CUSTOM_SUICIDE,					No effect
+TF_CUSTOM_TAUNT_HADOUKEN,			No effect
+TF_CUSTOM_BURNING_FLARE,			No effect
+TF_CUSTOM_TAUNT_HIGH_NOON,			No effect
+TF_CUSTOM_TAUNT_GRAND_SLAM, 10		No effect
+TF_CUSTOM_PENETRATE_MY_TEAM,		No effect
+TF_CUSTOM_PENETRATE_ALL_PLAYERS,	No effect
+TF_CUSTOM_TAUNT_FENCING,			No effect
+TF_CUSTOM_PENETRATE_HEADSHOT,		No effect
+TF_CUSTOM_TAUNT_ARROW_STAB, 15		No effect
+TF_CUSTOM_TELEFRAG,					No effect
+TF_CUSTOM_BURNING_ARROW,			No effect
+TF_CUSTOM_FLYINGBURN,				No effect
+TF_CUSTOM_PUMPKIN_BOMB,				No effect
+TF_CUSTOM_DECAPITATION, 20			Decapitates
+TF_CUSTOM_TAUNT_GRENADE,			No effect
+TF_CUSTOM_BASEBALL,					No effect
+TF_CUSTOM_CHARGE_IMPACT,			No effect
+TF_CUSTOM_TAUNT_BARBARIAN_SWING,	Decapitates
+TF_CUSTOM_AIR_STICKY_BURST, 25		No effect
+TF_CUSTOM_DEFENSIVE_STICKY,			No effect
+TF_CUSTOM_PICKAXE,					No effect
+TF_CUSTOM_ROCKET_DIRECTHIT,			No effect
+TF_CUSTOM_TAUNT_UBERSLICE,			No effect
+TF_CUSTOM_PLAYER_SENTRY, 30			No effect
+TF_CUSTOM_STANDARD_STICKY,			No effect
+TF_CUSTOM_SHOTGUN_REVENGE_CRIT,		No effect
+TF_CUSTOM_TAUNT_ENGINEER_SMASH,		No effect
+TF_CUSTOM_BLEEDING,					No effect
+TF_CUSTOM_GOLD_WRENCH, 35			High chance to paralyze players. Freeze/gold without colour
+TF_CUSTOM_CARRIED_BUILDING,			No effect
+TF_CUSTOM_COMBO_PUNCH,				No effect
+TF_CUSTOM_TAUNT_ENGINEER_ARM,		No effect
+TF_CUSTOM_FISH_KILL,				No effect
+TF_CUSTOM_TRIGGER_HURT, 40			No effect
+TF_CUSTOM_DECAPITATION_BOSS,		Decapitates
+TF_CUSTOM_STICKBOMB_EXPLOSION,		No effect
+TF_CUSTOM_AEGIS_ROUND,				No effect
+TF_CUSTOM_FLARE_EXPLOSION,			No effect
+TF_CUSTOM_BOOTS_STOMP, 45			No effect
+TF_CUSTOM_PLASMA,					Cow Mangler / Righteous Bison / Pomson / Short Circuit
+TF_CUSTOM_PLASMA_CHARGED,			Explode into gibs. 50% chance of gibs getting plasma fizzle.
+TF_CUSTOM_PLASMA_GIB,				No effect
+TF_CUSTOM_PRACTICE_STICKY,			No effect
+TF_CUSTOM_EYEBALL_ROCKET, 50		No effect
+TF_CUSTOM_HEADSHOT_DECAPITATION,	Decapitates
+TF_CUSTOM_TAUNT_ARMAGEDDON,			No effect
+TF_CUSTOM_FLARE_PELLET,				No effect
+TF_CUSTOM_CLEAVER,					No effect
+TF_CUSTOM_CLEAVER_CRIT, 55			No effect
+TF_CUSTOM_SAPPER_RECORDER_DEATH,	No effect
+TF_CUSTOM_MERASMUS_PLAYER_BOMB,		No effect
+TF_CUSTOM_MERASMUS_GRENADE,			No effect
+TF_CUSTOM_MERASMUS_ZAP,				No effect
+TF_CUSTOM_MERASMUS_DECAPITATION, 60		Decapitates
+TF_CUSTOM_CANNONBALL_PUSH,				No effect
+TF_CUSTOM_TAUNT_ALLCLASS_GUITAR_RIFF,	No effect
+TF_CUSTOM_THROWABLE,					No effect
+TF_CUSTOM_THROWABLE_KILL,				No effect
+TF_CUSTOM_SPELL_TELEPORT, 65		No effect
+TF_CUSTOM_SPELL_SKELETON,			No effect
+TF_CUSTOM_SPELL_MIRV,				No effect
+TF_CUSTOM_SPELL_METEOR,				No effect
+TF_CUSTOM_SPELL_LIGHTNING,			No effect
+TF_CUSTOM_SPELL_FIREBALL, 70		No effect
+TF_CUSTOM_SPELL_MONOCULUS,			No effect
+TF_CUSTOM_SPELL_BLASTJUMP,			No effect
+TF_CUSTOM_SPELL_BATS,				No effect
+TF_CUSTOM_SPELL_TINY,				No effect
+TF_CUSTOM_KART, 75					50 chance of higher velocity
+TF_CUSTOM_GIANT_HAMMER,				No effect
+TF_CUSTOM_RUNE_REFLECT,				No effect
+TF_CUSTOM_DRAGONS_FURY_IGNITE,			No effect
+TF_CUSTOM_DRAGONS_FURY_BONUS_BURNING,	No effect
+TF_CUSTOM_SLAP_KILL, 80					No effect
+TF_CUSTOM_CROC,							No effect
+TF_CUSTOM_TAUNTATK_GASBLAST,			No effect
+TF_CUSTOM_AXTINGUISHER_BOOSTED 83		No effect
+
+
+Ragdoll Properties
+------------------
+
+m_bGib				High blood gib
+m_bBurning			75% chance to set on fire
+m_bElectrocuted		Kritz disspipation electricity crackle
+m_bFeignDeath		No effect
+m_bWasDisguised		No effect
+m_bBecomeAsh		C.A.P.P.E.R. Glowing ash / Phlog / Third Degree / Manmelter / Shooting Star
+m_bOnGround			No effect
+m_bCloaked			Cloaks the ragdoll!
+m_bGoldRagdoll		Makes the ragdoll semi rigid and gold
+m_bIceRagdoll		Makes the ragdoll semi-rigid and gives it an ice freeze effect with particles
+m_bCritOnHardHit	No effect
+
+
+env_entity_dissolver Properties
+-------------------------------
+
+Type:
+0	Combine energy ball
+1	Combine energy ball but ragdoll does not float
+2	Same as 2
+3	Same as 2 but happens very fast
+
+Only three real properties
+
+
+player_death Event
+------------------
+
+Server event "player_death", Tick 18644:
+- "userid" = "2"
+- "victim_entindex" = "1"
+- "inflictor_entindex" = "298"
+- "attacker" = "0"
+- "weapon" = "trigger_hurt"
+- "weaponid" = "0"
+- "damagebits" = "16777216"
+- "customkill" = "40"
+- "assister" = "-1"
+- "weapon_logclassname" = "trigger_hurt"
+- "stun_flags" = "0"
+- "death_flags" = "0"
+- "silent_kill" = "0"
+- "playerpenetratecount" = "0"
+- "assister_fallback" = ""
+- "kill_streak_total" = "0"
+- "kill_streak_wep" = "0"
+- "kill_streak_assist" = "0"
+- "kill_streak_victim" = "0"
+- "ducks_streaked" = "0"
+- "duck_streak_total" = "0"
+- "duck_streak_assist" = "0"
+- "duck_streak_victim" = "0"
+- "rocket_jump" = "0"
+- "weapon_def_index" = "65535"
+- "crit_type" = "0"
+
+Game event "player_death", Tick 132324:
+- "userid" = "3"
+- "victim_entindex" = "2"
+- "inflictor_entindex" = "388"
+- "attacker" = "2"
+- "weapon" = "cow_mangler"
+- "weaponid" = "79"
+- "damagebits" = "2359360"
+- "customkill" = "46"
+- "assister" = "-1"
+- "weapon_logclassname" = "cow_mangler"
+- "stun_flags" = "0"
+- "death_flags" = "128"
+- "silent_kill" = "0"
+- "playerpenetratecount" = "0"
+- "assister_fallback" = ""
+- "kill_streak_total" = "0"
+- "kill_streak_wep" = "0"
+- "kill_streak_assist" = "0"
+- "kill_streak_victim" = "0"
+- "ducks_streaked" = "0"
+- "duck_streak_total" = "0"
+- "duck_streak_assist" = "0"
+- "duck_streak_victim" = "0"
+- "rocket_jump" = "0"
+- "weapon_def_index" = "441"
+- "crit_type" = "0"
+⛐ worMatty killed Bot01 with cow_mangler.
+
+
+Properties we Can Apply
+-----------------------
+
+TF_CUSTOM_DECAPITATION
+TF_CUSTOM_GOLD_WRENCH
+TF_CUSTOM_PLASMA
+TF_CUSTOM_PLASMA_CHARGED	// Can we do this using PLASMA and BLAST or ALWAYSGIB?
+
+m_bGib				High blood gib							// BLAST or ALWAYSGIB?
+m_bBurning			75% chance to set on fire				// Necessary? We have trigger_ignite
+m_bElectrocuted		Kritz disspipation electricity crackle
+m_bBecomeAsh		C.A.P.P.E.R. Glowing ash
+m_bCloaked			Cloaks the ragdoll!
+m_bGoldRagdoll		Makes the ragdoll semi rigid and gold
+m_bIceRagdoll		Makes the ragdoll semi-rigid and gives it an ice freeze effect with particles
+
+HL2 Dissolver 0		Burn corpse, fizzle and float
+HL2 Dissolver 1		Same as 0 but the ragdoll doesn't float
+HL2 Dissolver 3		Rapid disintegration
+
+
+Possible Damage Types to Use
+----------------------------
+
+DMG_SONIC
+DMG_ENERGYBEAM
+DMG_PREVENT_PHYSICS_FORCE	// No pain sounds so use as a flag. No physics force?
+DMG_NEVERGIB
+DMG_ALWAYSGIB
+DMG_PARALYZE
+DMG_POISON
+DMG_RADIATION		// Gibs
+DMG_DROWNRECOVER
+DMG_SLOWBURN
+DMG_PHYSGUN
+DMG_PLASMA
+DMG_AIRBOAT
+DMG_DISSOLVE				
+DMG_BLAST_SURFACE
+DMG_DIRECT
+DMG_BUCKSHOT
+DMG_LASTGENERICFLAG
+
+
+Combinations
+------------
+
+TF_CUSTOM_DECAPITATION		DMG_SLASH and DMG_LASTGENERICFLAG
+TF_CUSTOM_GOLD_WRENCH		DMG_PARALYZE
+TF_CUSTOM_PLASMA			DMG_PLASMA and DMG_LASTGENERICFLAG
+TF_CUSTOM_PLASMA_CHARGED	DMG_PLASMA and DMG_BLAST or DMG_ALWAYSGIB <-- test
+
+m_bGib				Necessary?
+m_bBurning			Necessary?
+m_bElectrocuted		DMG_SHOCK and DMG_LASTGENERICFLAG
+m_bBecomeAsh		DMG_PLASMA and DMG_DISSOLVE
+m_bCloaked			DMG_BLAST_SURFACE and DMG_LASTGENERICFLAG
+m_bGoldRagdoll		DMG_PARALYZE and DMG_DIRECT and DMG_LASTGENERICFLAG
+m_bIceRagdoll		DMG_PARALYZE and DMG_LASTGENERICFLAG
+
+HL2 Dissolver 0		
+HL2 Dissolver 1		
+HL2 Dissolver 3		DMG_DISSOLVE
+
+
+DMG_LASTGENERICFLAG as Standard
+-------------------------------
+
+TF_CUSTOM_DECAPITATION		DMG_SLASH
+TF_CUSTOM_GOLD_WRENCH		DMG_PARALYZE
+TF_CUSTOM_PLASMA			DMG_PLASMA
+TF_CUSTOM_PLASMA_CHARGED	DMG_PLASMA and DMG_BLAST or DMG_ALWAYSGIB <-- test or DMG_RADIATION?
+
+m_bGib				Necessary?
+m_bBurning			DMG_SLOWBURN?
+m_bElectrocuted		DMG_SHOCK
+m_bBecomeAsh		DMG_PLASMA and DMG_DISSOLVE
+m_bCloaked			
+m_bGoldRagdoll		DMG_PARALYZE and DMG_DIRECT
+m_bIceRagdoll		DMG_PARALYZE and DMG_BUCKSHOT
+
+HL2 Dissolver 0		DMG_DISSOLVE and DMG_DIRECT
+HL2 Dissolver 1		DMG_DISSOLVE and DMG_BUCKSHOT
+HL2 Dissolver 3		DMG_DISSOLVE
+
+
+
+DMG_LASTGENERICFLAG											1073741824
+	DMG_SLASH			Decapitation						1073741828
+	DMG_PHYSGUN			Electrocution						1082130432
+	DMG_SLOWBURN		Burn								1075838976
+	DMG_ENERGYBEAM		Ash									1073742848
+	DMG_PLASMA			Cow Mangler							1090519040
+		DMG_ALWAYSGIB	Cow Mangler Gib						1090527232
+	DMG_PARALYZE		Paralyze							1073774592
+		DMG_DIRECT		Paralyze Freeze						1342210048
+		DMG_BUCKSHOT	Paralyze Gold						1610645504
+	DMG_DISSOLVE		Burn, float and dissolve			1140850688
+		DMG_DIRECT		Burn and dissolve					1409286144
+		DMG_BUCKSHOT	Dissolve immediately				1677721600
+
+
+

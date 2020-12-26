@@ -1,7 +1,102 @@
+
 /**
- * Internal Functions
+ * Entity Work
  * ----------------------------------------------------------------------------------------------------
  */
+
+/**
+ * Entity hook leading to health bar/activator health changes(?)
+ * 
+ * @param		char	Name of output fired
+ * @param		int		Index of caller entity
+ * @param		int		Index of activator entity
+ * @param		float	Delay before output was(?) fired
+ * @noreturn
+ */
+void EntityHealthBar(const char[] output, int caller, int activator, float delay)
+{
+	if (StrEqual(output, "OnUser1", false))
+	{
+		healthbar.SetColor(0);
+	}
+	if (StrEqual(output, "OnUser2", false))
+	{
+		healthbar.SetColor(1);
+	}
+	if (StrEqual(output, "OutValue", false))	// TODO: Put this into a methodmap function
+	{
+		float fMin = GetEntPropFloat(caller, Prop_Data, "m_flMin");
+		float fMax = GetEntPropFloat(caller, Prop_Data, "m_flMax");
+		int offset = FindDataMapInfo(caller, "m_OutValue");
+		float fValue = GetEntDataFloat(caller, offset);
+
+		fMax -= fMin;
+		fValue -= fMin;
+		int iPercent = RoundToNearest((fValue / fMax) * 255);
+		
+		SetEntProp(healthbar.Index, Prop_Send, "m_iBossHealthPercentageByte", iPercent);
+	}
+	
+	if (StrEqual(output, "OnTrigger", false))
+	{
+		char targetname[MAX_NAME_LENGTH];
+		GetEntPropString(caller, Prop_Data, "m_iName", targetname, sizeof(targetname));
+		if (StrEqual(targetname, "dtk_health_scalemax", false))
+		{
+			Player Activator = new Player(g_iHealthBarTarget);
+			Activator.ScaleHealth(3);
+		}
+		else if (StrEqual(targetname, "dtk_health_scaleoverheal", false))
+		{
+			// TODO Grab the mode from somewhere
+			Player Activator = new Player(g_iHealthBarTarget);
+			Activator.ScaleHealth(1);
+		}
+	}
+}
+
+
+
+
+/**
+ * Get the activator's current health and max health and pass them to the HealthBar methodmap.
+ * 
+ * @noreturn
+ */
+void SetHealthBar()
+{
+	if (healthbar.Index == -1 || healthbar.PlayerResource == -1)
+		return;
+	
+	if (g_iHealthBarTarget == -1)
+	{
+		healthbar.SetHealth();
+		g_bHealthBarActive = false;
+		return;
+	}
+	
+	Player player = new Player(g_iHealthBarTarget);
+	
+	int health = player.Health;						// Get the player's health
+	int maxHealth = player.MaxHealth;				// Get the player's max health from the player resource entity
+	
+	/*
+	if (health > maxHealth)
+		maxHealth = health;
+	
+	float value = (float(health) / float(maxHealth)) * 255.0;									// Calculate the percentage of health to max health and convert it to a 0-255 scale
+	
+	if (value > 255.0)																			// Limit the values so they don't cause the bar to display at incorrect times
+		value = 255.0;
+	if (value < 0.0)
+		value = 0.0;
+	
+	SetEntProp(healthbar.Index, Prop_Send, "m_iBossHealthPercentageByte", RoundToNearest(value));
+	SetEntProp(healthbar.Index, Prop_Send, "m_iBossState", 0);											// Makes it default blue
+	*/
+	
+	healthbar.SetHealth(health, maxHealth);
+}
 
 
 
@@ -10,8 +105,8 @@
  * Player Allocation
  * ----------------------------------------------------------------------------------------------------
  */
- 
- 
+
+
 /**
  * Check for players when an activator is needed or a team changed detected
  * during pre-round freeze time.
@@ -86,8 +181,8 @@ void RedistributePlayers()
 		//for (int i = 1; i <= MaxClients && prefers <= MINIMUM_ACTIVATORS; i++)
 		{
 			Player player = new Player(i);
-			if (player.Flags & FLAGS_PREFERENCE)
-				// If player.Flags has the FLAGS_PREFERENCE bit set, return true
+			if (player.Flags & PREF_ACTIVATOR)
+				// If player.Flags has the PREF_ACTIVATOR bit set, return true
 				prefers += 1;
 		}
 		
@@ -115,7 +210,7 @@ void RedistributePlayers()
 void SelectActivatorPoints()
 {
 	// First sort our player points array by points in descending order
-	int points_order[TF2MAXPLAYERS-1][2];
+	int points_order[MAXPLAYERS_TF2-1][2];
 		// 0 will be client index. 1 will be points.
 		
 	for (int i = 0; i < MaxClients; i++)
@@ -134,14 +229,17 @@ void SelectActivatorPoints()
 	{
 		Player player = new Player(points_order[i][0]);
 		
-		if (player.InGame && player.Team == Team_Red && (player.Flags & FLAGS_PREFERENCE))
-			// If player.Flags has the FLAGS_PREFERENCE bit set return true
+		if (player.InGame && player.Team == Team_Red && (player.Flags & PREF_ACTIVATOR))
+			// If player.Flags has the PREF_ACTIVATOR bit set return true
 		{
-			PrintToServer("%s The points-based activator selection system has selected %N", SERVERMSG_PREFIX, player.Index);
+			PrintToServer("%s The points-based activator selection system has selected %N", PREFIX_SERVER, player.Index);
 			if (g_bSCR && g_cSCR.BoolValue)
-				SCR_SendEvent(SERVERMSG_PREFIX, "%N is now the activator", player.Index);
+				SCR_SendEvent(PREFIX_SERVER, "%N is now the activator", player.Index);
+			player.Flags |= SESSION_ACTIVATOR;
+			if (player.Flags & SESSION_ACTIVATOR)
+				DebugMessage("%N has been given SESSION_ACTIVATOR", player.Index);
 			player.SetTeam(Team_Blue);
-			player.SetPoints(Points_Consumed);
+			player.SetPoints(QP_Consumed);
 			PrintToChat(player.Index, "%t %t", "prefix_notice", "queue points consumed");
 			g_iHealthBarTarget = player.Index;
 		}
@@ -174,9 +272,13 @@ void SelectActivatorTurn()
 		
 		if (player.InGame && player.Team == Team_Red)
 		{
-			PrintToServer("%s The turn-based activator selection system has selected %N", SERVERMSG_PREFIX, player.Index);
+			PrintToServer("%s The turn-based activator selection system has selected %N", PREFIX_SERVER, player.Index);
 			if (g_bSCR && g_cSCR.BoolValue)
-				SCR_SendEvent(SERVERMSG_PREFIX, "%N is now the activator", player.Index);
+				SCR_SendEvent(PREFIX_SERVER, "%N is now the activator", player.Index);
+			player.Flags |= SESSION_ACTIVATOR;
+				// Give the player the SESSION_ACTIVATOR flag
+			if (player.Flags & SESSION_ACTIVATOR)
+				DebugMessage("Selected activator %N has been given SESSION_ACTIVATOR", player.Index);
 			player.SetTeam(Team_Blue);
 			g_iHealthBarTarget = player.Index;
 			DebugMessage("Set g_iHealthBarTarget to %d (%N)", player.Index, player.Index);
@@ -191,6 +293,49 @@ void SelectActivatorTurn()
 
 
 
+
+/**
+ * DTK Count Players
+ * Count the number of players on a team, or on both teams, or on all teams.
+ * Choose to count only live players, or dead, or either.
+ *
+ * @param int Team_Red, Team_Blue, Team_Both, Team_Spec, Team_None or Team_All.
+ * @param int LifeState_Alive, LifeState_Dead or LifeState_Any.
+ *
+ * @return			   Number of players counted.
+ */
+stock int DTK_CountPlayers(int team=Team_Both, int lifestate=LifeState_Any)
+{
+	int iCount;
+
+	for (int i = 1; i <= MaxClients; i++)
+	{
+		Player player = new Player(i);
+		
+		if (!player.InGame)
+			continue;
+		
+		int iLifeState = (player.IsAlive) ? LifeState_Alive : LifeState_Dead;
+		
+		if (player.Team == team || (team == Team_Both && (player.Team == Team_Blue || player.Team == Team_Red)) || team == Team_All)
+			if (iLifeState == lifestate || lifestate == LifeState_Any)
+				iCount++;
+	}
+	
+	//DebugMessage("Counted %d clients on team %d %swith specified life state: %d%s", iCount, team,
+	//	(team == Team_Both) ? "(red and blue) " : "", lifestate,
+	//	(lifestate == LifeState_Any) ? " (any)" : "");
+	return iCount;
+}
+
+
+
+
+/**
+ * Player Properties
+ * ----------------------------------------------------------------------------------------------------
+ */
+
 /**
  * Apply the necessary attributes to a player after they spawn.
  * 
@@ -198,29 +343,15 @@ void SelectActivatorTurn()
  */
 void ApplyPlayerAttributes(Player player)
 {
-	if (g_iGame != Game_TF)
+	if (!(g_iGame & FLAG_TF))
 		return;
-	
-	/*int iRunSpeeds[] =
-	{
-		RunSpeed_NoClass,
-		RunSpeed_Scout,
-		RunSpeed_Sniper,
-		RunSpeed_Soldier,
-		RunSpeed_DemoMan,
-		RunSpeed_Medic,
-		RunSpeed_Heavy,
-		RunSpeed_Pyro,
-		RunSpeed_Spy,
-		RunSpeed_Engineer
-	};*/
-	
+
 	// Blue
 	if (player.Team == Team_Blue)
 	{
 		if (g_cBlueSpeed.FloatValue != 0.0)
 		{
-			//DTK_AddPlayerAttribute(player.Index, "CARD: move speed bonus", g_cBlueSpeed.FloatValue / iRunSpeeds[player.Class]);
+			//AddPlayerAttribute(player.Index, "CARD: move speed bonus", g_cBlueSpeed.FloatValue / iRunSpeeds[player.Class]);
 			player.SetSpeed(g_cBlueSpeed.IntValue);
 		}
 	}
@@ -231,46 +362,46 @@ void ApplyPlayerAttributes(Player player)
 		// Set red speed
 		if (g_cRedSpeed.FloatValue != 0.0)
 		{
-			//DTK_AddPlayerAttribute(player.Index, "CARD: move speed bonus", g_cRedSpeed.FloatValue / iRunSpeeds[player.Class]);
+			//AddPlayerAttribute(player.Index, "CARD: move speed bonus", g_cRedSpeed.FloatValue / iRunSpeeds[player.Class]);
 			player.SetSpeed(g_cRedSpeed.IntValue);
 		}
 		// set red scout speed
-		else if (g_cRedScoutSpeed.FloatValue != 0.0 && player.Class == TFClass_Scout)
+		else if (g_cRedScoutSpeed.FloatValue != 0.0 && player.Class == Class_Scout)
 		{
-			//DTK_AddPlayerAttribute(player.Index, "CARD: move speed bonus", g_cRedScoutSpeed.FloatValue / iRunSpeeds[player.Class]);
+			//AddPlayerAttribute(player.Index, "CARD: move speed bonus", g_cRedScoutSpeed.FloatValue / iRunSpeeds[player.Class]);
 			player.SetSpeed(g_cRedScoutSpeed.IntValue);
 		}
 		
 		// Disable double jump
-		if (g_cRedScoutDoubleJump.BoolValue == false && player.Class == TFClass_Scout)
+		if (g_cRedScoutDoubleJump.BoolValue == false && player.Class == Class_Scout)
 		{
-			DTK_AddPlayerAttribute(player.Index, "no double jump", 1.0);
+			AddPlayerAttribute(player.Index, "no double jump", 1.0);
 		}
 		
 		// Spy cloaking
-		if (player.Class == TFClass_Spy)
+		if (player.Class == Class_Spy)
 		{
 			if (g_cRedSpyCloakLimits.IntValue == 2)
 			{
-				DTK_AddPlayerAttribute(player.Index, "mult cloak meter consume rate", 8.0);
-				DTK_AddPlayerAttribute(player.Index, "mult cloak meter regen rate", 0.25);
+				AddPlayerAttribute(player.Index, "mult cloak meter consume rate", 8.0);
+				AddPlayerAttribute(player.Index, "mult cloak meter regen rate", 0.25);
 			}
 		}
 
 		// Demo man charging
-		if (player.Class == TFClass_DemoMan)
+		if (player.Class == Class_DemoMan)
 		{
 			switch (g_cRedDemoChargeLimits.IntValue)
 			{
 				case 0:
 				{
-					DTK_AddPlayerAttribute(player.Index, "charge time decreased", -1000.0);
-					DTK_AddPlayerAttribute(player.Index, "charge recharge rate increased", 0.0);
+					AddPlayerAttribute(player.Index, "charge time decreased", -1000.0);
+					AddPlayerAttribute(player.Index, "charge recharge rate increased", 0.0);
 				}
 				case 2:
 				{
-					DTK_AddPlayerAttribute(player.Index, "charge time decreased", -0.95);
-					DTK_AddPlayerAttribute(player.Index, "charge recharge rate increased", 0.2);
+					AddPlayerAttribute(player.Index, "charge time decreased", -0.95);
+					AddPlayerAttribute(player.Index, "charge recharge rate increased", 0.2);
 				}
 			}
 		}
@@ -292,46 +423,32 @@ int ReplaceWeapon(int client, int weapon, int itemDefIndex, char[] classname)
 {
 	RemoveEdict(weapon);
 	
-	if (g_bTF2Items)
+	weapon = CreateEntityByName(classname);
+	if (weapon == -1)
 	{
-		Handle item = TF2Items_CreateItem(OVERRIDE_ALL);
-		TF2Items_SetClassname(item, classname);
-		TF2Items_SetItemIndex(item, itemDefIndex);
-		TF2Items_SetNumAttributes(item, 0);
-		TF2Items_SetLevel(item, 0);
-		TF2Items_SetQuality(item, 0);
-		weapon = TF2Items_GiveNamedItem(client, item);
-		EquipPlayerWeapon(client, weapon);
-		CloseHandle(item);
+		LogError("Couldn't create %s for %N", classname, client);
 	}
 	else
 	{
-		weapon = CreateEntityByName(classname);
-		if (weapon == -1)
+		SetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex", itemDefIndex);
+		SetEntProp(weapon, Prop_Send, "m_iEntityLevel", 0);
+		SetEntProp(weapon, Prop_Send, "m_iEntityQuality", 0);
+		SetEntProp(weapon, Prop_Send, "m_bValidatedAttachedEntity", true);
+		SetEntProp(weapon, Prop_Send, "m_bInitialized", 1);
+		//SetEntProp(weapon, Prop_Send, "m_hOwnerEntity", client);
+		
+		if (!DispatchSpawn(weapon))
 		{
-			LogError("Couldn't create %s for %N", classname, client);
+			LogError("Couldn't spawn %s for %N", classname, client);
 		}
 		else
 		{
-			SetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex", itemDefIndex);
-			SetEntProp(weapon, Prop_Send, "m_iEntityLevel", 0);
-			SetEntProp(weapon, Prop_Send, "m_iEntityQuality", 0);
-			SetEntProp(weapon, Prop_Send, "m_bValidatedAttachedEntity", true);
-			SetEntProp(weapon, Prop_Send, "m_bInitialized", 1);
-			
-			if (!DispatchSpawn(weapon))
-			{
-				LogError("Couldn't spawn %s for %N", classname, client);
-			}
-			else
-			{
-				Player player = new Player(client);
-				player.Flags |= FLAGS_ARMED;
-					// Give the player the FLAGS_ARMED bit
-				EquipPlayerWeapon(client, weapon);
-				DebugMessage("Replaced a weapon belonging to %N with %s %d", client, classname, itemDefIndex);
-				return weapon;
-			}
+			Player player = new Player(client);
+			player.Flags |= SESSION_ARMED;
+				// Give the player the SESSION_ARMED bit
+			EquipPlayerWeapon(client, weapon);
+			DebugMessage("Replaced a weapon belonging to %N with %s %d", client, classname, itemDefIndex);
+			return weapon;
 		}
 	}
 	
@@ -373,130 +490,6 @@ void CheckGameState()
 			PrintToChatAll("%t %s", "prefix", "Team mate pushing has been disabled");
 		}
 	}
-	
-	/*
-		Is the round active?
-		
-		Count red players alive
-		
-		Pushing
-			Is global pushing disabled?
-				If push remain enabled?
-					If less than or equal to cvar setting, apply pushing
-					Else disable.
-	*/
-
-/*
-	// Red glow
-	int iGlowRemain = g_cRedGlowRemaining.IntValue;
-	
-	if (iRedAlive <= iGlowRemain && iGlowRemain != 0 && g_cRedGlow.BoolValue == false)
-	{
-		g_bIsRedGlowActive = true;
-		
-		for (int i = 1; i <= MaxClients; i++)
-		{
-			if (IsClientInGame(i) && IsPlayerAlive(i) && GetClientTeam(i) == Team_Red)
-			{
-				SetEntProp(i, Prop_Send, "m_bGlowEnabled", 1, 1);
-			}
-		}
-	}
-*/
-}
-
-
-
-/**
- * Get the activator's current health and max health and pass them to the HealthBar methodmap.
- * 
- * @noreturn
- */
-void SetHealthBar()
-{
-	if (healthbar.Index == -1 || healthbar.PlayerResource == -1)
-		return;
-	
-	if (g_iHealthBarTarget == -1)
-	{
-		healthbar.SetHealth();
-		g_bHealthBarActive = false;
-		return;
-	}
-	
-	Player player = new Player(g_iHealthBarTarget);
-	
-	int health = player.Health;						// Get the player's health
-	int maxHealth = player.MaxHealth;				// Get the player's max health from the player resource entity
-	
-	/*
-	if (health > maxHealth)
-		maxHealth = health;
-	
-	float value = (float(health) / float(maxHealth)) * 255.0;									// Calculate the percentage of health to max health and convert it to a 0-255 scale
-	
-	if (value > 255.0)																			// Limit the values so they don't cause the bar to display at incorrect times
-		value = 255.0;
-	if (value < 0.0)
-		value = 0.0;
-	
-	SetEntProp(healthbar.Index, Prop_Send, "m_iBossHealthPercentageByte", RoundToNearest(value));
-	SetEntProp(healthbar.Index, Prop_Send, "m_iBossState", 0);											// Makes it default blue
-	*/
-	
-	healthbar.SetHealth(health, maxHealth);
-}
-
-
-
-/**
- * Process a text string into a class number.
- * 
- * @param	char	Class name string.
- * @return	int	Class number.
- */
-int ProcessClassString(const char[] string)
-{
-	int class;
-	
-	if (strncmp(string, "scout", 3, false) == 0)
-	{
-		class = view_as<int>(TFClass_Scout);
-	}
-	else if (strncmp(string, "soldier", 3, false) == 0)
-	{
-		class = view_as<int>(TFClass_Soldier);
-	}
-	else if (strncmp(string, "pyro", 3, false) == 0)
-	{
-		class = view_as<int>(TFClass_Pyro);
-	}
-	else if (strncmp(string, "demo", 3, false) == 0)
-	{
-		class = view_as<int>(TFClass_DemoMan);
-	}
-	else if (strncmp(string, "heavy", 3, false) == 0)
-	{
-		class = view_as<int>(TFClass_Heavy);
-	}
-	else if (strncmp(string, "engineer", 3, false) == 0)
-	{
-		class = view_as<int>(TFClass_Engineer);
-	}
-	else if (strncmp(string, "medic", 3, false) == 0)
-	{
-		class = view_as<int>(TFClass_Medic);
-	}
-	else if (strncmp(string, "spy", 3, false) == 0)
-	{
-		class = view_as<int>(TFClass_Spy);
-	}
-	else if (strncmp(string, "sniper", 3, false) == 0)
-	{
-		class = view_as<int>(TFClass_Sniper);
-	}
-	
-	return class;
 }
 
 
@@ -507,33 +500,8 @@ int ProcessClassString(const char[] string)
  * ----------------------------------------------------------------------------------------------------
  */
 
-
 /**
- * Hook logic_cases
- * 
- * @noreturn
- */
-void HookLogicCases()
-{
-	int i = -1;
-	char sTargetname[MAX_NAME_LENGTH];
-	
-	// Hook deathrun player property logic_cases
-	while ((i = FindEntityByClassname(i, "logic_case")) != -1)
-	{
-		GetEntPropString(i, Prop_Data, "m_iName", sTargetname, sizeof(sTargetname));
-		if (StrContains(sTargetname, "deathrun_properties", false) != -1)
-		{
-			DebugMessage("Found logic_case named %s", sTargetname);
-			HookSingleEntityOutput(i, "OnUser1", ProcessLogicCase2);
-		}
-	}
-}
-
-
-/**
- * Process data from a logic_case
- * OLD METHOD, NO LONGER USED
+ * Process data from a logic_case using string splitting and delimiters
  * 
  * @noreturn
  */
@@ -541,100 +509,24 @@ stock void ProcessLogicCase(const char[] output, int caller, int activator, floa
 {
 	// Caller is the entity reference of the logic_case
 	
-	char caseValue[256];
-	Player player = new Player(activator);
-	
-	// Class
-	GetEntPropString(caller, Prop_Data, "m_nCase[3]", caseValue, sizeof(caseValue));
-	if (caseValue[0] != '0')
-	{
-		int class = ProcessClassString(caseValue);
-		player.SetClass(view_as<TFClassType>(class));
-	}
-	
-	// Weapon slot
-	GetEntPropString(caller, Prop_Data, "m_nCase[0]", caseValue, sizeof(caseValue));
-	int slot = StringToInt(caseValue);
-	
-	// Weapon IDI
-	GetEntPropString(caller, Prop_Data, "m_nCase[1]", caseValue, sizeof(caseValue));
-	int itemDefIndex = StringToInt(caseValue);
-	
-	// Weapon classname
-	char classname[64];
-	GetEntPropString(caller, Prop_Data, "m_nCase[2]", classname, sizeof(classname));
-	
-	// Speed
-	GetEntPropString(caller, Prop_Data, "m_nCase[4]", caseValue, sizeof(caseValue));
-	if (caseValue[0] != '0') player.SetSpeed(StringToInt(caseValue));
-	
-	// Max health
-	GetEntPropString(caller, Prop_Data, "m_nCase[5]", caseValue, sizeof(caseValue));
-	if (caseValue[0] != '0') player.SetMaxHealth(StringToFloat(caseValue));
-	
-	// Health
-	GetEntPropString(caller, Prop_Data, "m_nCase[6]", caseValue, sizeof(caseValue));
-	if (caseValue[0] != '0') player.SetHealth(StringToInt(caseValue));
-	
-	// Move type
-	GetEntPropString(caller, Prop_Data, "m_nCase[7]", caseValue, sizeof(caseValue));
-	if (caseValue[0] != '0')
-	{
-		if (StrEqual(caseValue, "MOVETYPE_FLY", true))
-		{
-			SetEntityMoveType(player.Index, MOVETYPE_FLY);
-		}
-	}
-	
-	// Message
-	char message[256];
-	GetEntPropString(caller, Prop_Data, "m_nCase[8]", message, sizeof(message));
-	if (message[0] != '0') PrintToChat(player.Index, "%t %s", "prefix_notice", message);
-	
-	// Melee-only
-	GetEntPropString(caller, Prop_Data, "m_nCase[9]", caseValue, sizeof(caseValue));
-	if (caseValue[0] == 'y')
-	{
-		player.MeleeOnly();
-	}
-	if (caseValue[0] == 'n')
-	{
-		player.MeleeOnly(false);
-	}
-	
-	// Give weapon
-	if (itemDefIndex != 0 && classname[0] != '0')
-	{
-		PrintToChatAll("Replacing weapon in slot %d to a %s", slot, classname);
-		int weapon;
-		if ((weapon = player.GetWeapon(slot)) != -1)
-		{
-			ReplaceWeapon(activator, weapon, itemDefIndex, classname);
-		}
-	}	
-}
-
-
-/**
- * Process data from a logic_case using string splitting and delimiters
- * 
- * @noreturn
- */
-stock void ProcessLogicCase2(const char[] output, int caller, int activator, float delay)
-{
-	// Caller is the entity reference of the logic_case
-	
 	if (activator > MaxClients || activator < 0)
 	{
-		LogError("Deathrun logic_case was triggered by an invalid client index (%d)", activator);
+		char classname[64];
+		char targetname[64];
+		
+		GetEntityClassname(activator, classname, sizeof(classname));
+		GetEntPropString(activator, Prop_Data, "m_iName", targetname, sizeof(targetname));
+		
+		LogError("Deathrun logic_case was triggered by an invalid client index (%d, a %s named '%s')", activator, classname, targetname);
 		return;
 	}
-	char targetname[64];
-	GetEntPropString(caller, Prop_Data, "m_iName", targetname, sizeof(targetname));
-	DebugMessage("Deathrun logic_case '%s' was triggered using output %s by client %d (%N)", targetname, output, activator, activator);
 	
 	char caseValue[256];
 	char caseNumber[12];
+	char targetname[64];
+	
+	GetEntPropString(caller, Prop_Data, "m_iName", targetname, sizeof(targetname));
+	DebugMessage("Deathrun logic_case '%s' received %s from %N", targetname, output, activator);
 	
 	for (int i = 0; i < 16; i++)
 	{
@@ -671,6 +563,16 @@ stock void ProcessMapInstruction(int client, const char[] instruction, const cha
 		}
 	}
 	
+	if (StrEqual(instruction, "remove_weapon", false))
+	{
+		int weapon = player.GetWeapon(StringToInt(buffers[0]));
+		if (weapon != -1)
+		{
+			RemoveEdict(weapon);
+			DebugMessage("Removed %N's weapon in slot %s", player.Index, buffers[0]);
+		}
+	}
+	
 	if (StrEqual(instruction, "weapon_attribute", false))
 	{
 		int weapon = player.GetWeapon(StringToInt(buffers[0]));
@@ -685,10 +587,15 @@ stock void ProcessMapInstruction(int client, const char[] instruction, const cha
 		}
 	}
 	
+	if (StrEqual(instruction, "switch_to_slot", false))
+	{
+		player.SetSlot(StringToInt(buffers[0]));
+	}
+	
 	if (StrEqual(instruction, "class", false))
 	{
 		int class = ProcessClassString(buffers[0]);
-		player.SetClass(view_as<TFClassType>(class));
+		player.SetClass(class);
 	}
 	
 	if (StrEqual(instruction, "speed", false))
@@ -782,8 +689,8 @@ void DisplayNextActivators()
 	for (int i = 1; i <= MaxClients; i++)
 	{
 		Player player = new Player(i);
-		if (player.Flags & FLAGS_PREFERENCE)
-			// If player.Flags has the FLAGS_PREFERENCE bit set return true
+		if (player.Flags & PREF_ACTIVATOR)
+			// If player.Flags has the PREF_ACTIVATOR bit set return true
 			willing += 1;
 	}
 	
@@ -794,7 +701,7 @@ void DisplayNextActivators()
 	}
 	
 	// Create a temporary array to store client index[0] and points[1]
-	int points_order[TF2MAXPLAYERS-1][2];
+	int points_order[MAXPLAYERS_TF2-1][2];
 	
 	// Populate with player data
 	for (int i = 0; i < MaxClients; i++)
@@ -816,9 +723,9 @@ void DisplayNextActivators()
 		Player player = new Player(points_order[i][0]);
 		//client = points_order[i][0];
 	
-		if (player.InGame && player.IsParticipating && points_order[i][1] > 0 && (player.Flags & FLAGS_PREFERENCE))
-			// If player.Flags has the FLAGS_PREFERENCE bit set return true
-		//if (IsClientInGame(client) && points_order[i][1] > 0 && (g_iFlags[client] & FLAGS_PREFERENCE) == FLAGS_PREFERENCE)
+		if (player.InGame && player.IsParticipating && points_order[i][1] > 0 && (player.Flags & PREF_ACTIVATOR))
+			// If player.Flags has the PREF_ACTIVATOR bit set return true
+		//if (IsClientInGame(client) && points_order[i][1] > 0 && (g_iFlags[client] & PREF_ACTIVATOR) == PREF_ACTIVATOR)
 		{
 			players[count] = player.Index;
 			//players[count] = client;
@@ -863,6 +770,47 @@ int SortByPoints(int[] a, int[] b, const int[][] array, Handle hndl)
 
 
 
+/**
+ * DTK Game Sound
+ * Send a teamplay_broadcast_audio event to a client.
+ *
+ * @param client Client to broadcast to.
+ * @param sound1 Game sound name.
+ * @param sound2 Second game sound name to use if first doesn't exist.
+ * @param sound3 Third game sound name to use if second doesn't exist.
+ * @return True if game sound exists and was broadcast. False if the mapper doesn't use it.
+ */
+stock bool DTK_GameSound(int client, const char[] sound1, const char[] sound2="", const char[] sound3="")
+{
+	if (sound1[0] == '\0')
+		ThrowError("No game sound specified when using DTK_GameSound on client %d", client);
+	
+	Event hSound = CreateEvent("teamplay_broadcast_audio", true);
+	int channel, soundLevel, pitch, maxlength;
+	float volume;
+	char sample[256];
+	
+	if (GetGameSoundParams(sound1, channel, soundLevel, volume, pitch, sample, maxlength))
+		hSound.SetString("sound", sound1);
+	else if (GetGameSoundParams(sound2, channel, soundLevel, volume, pitch, sample, maxlength))
+		hSound.SetString("sound", sound2);
+	else if (GetGameSoundParams(sound3, channel, soundLevel, volume, pitch, sample, maxlength))
+		hSound.SetString("sound", sound3);
+	else
+	{
+		hSound.Cancel();
+		return false;
+	}
+	
+	hSound.SetInt("team", 255);
+	hSound.FireToClient(client);
+	hSound.Cancel();
+	
+	return true;
+}
+
+
+
 
 /**
  * Server Environment
@@ -885,7 +833,7 @@ void SetServerCvars(bool set)
 		g_cAutoBalance.IntValue = 0;
 		g_cScramble.IntValue = 0;
 		g_cArenaQueue.IntValue = 0;
-		g_cHumansMustJoinTeam.SetString("red");
+		//g_cHumansMustJoinTeam.SetString("red");
 		g_cServerTeamMatePush.SetBool(g_cTeamMatePush.BoolValue);
 		if (g_cArenaFirstBlood != null) g_cArenaFirstBlood.IntValue = 0;
 	}
@@ -897,7 +845,7 @@ void SetServerCvars(bool set)
 		g_cArenaQueue.RestoreDefault();
 		g_cServerTeamMatePush.RestoreDefault();
 		g_cRoundWaitTime.RestoreDefault();
-		g_cHumansMustJoinTeam.RestoreDefault();
+		//g_cHumansMustJoinTeam.RestoreDefault();
 		if (g_cArenaFirstBlood != null) g_cArenaFirstBlood.RestoreDefault();
 	}
 }
@@ -923,17 +871,16 @@ void EventsAndListeners(bool hook)
 		HookEvent("player_changeclass", Event_ChangeClass, EventHookMode_Post);				// Player changes class
 		HookEvent("player_healed", Event_PlayerHealed, EventHookMode_Post);					// Player healed
 		HookEvent("player_death", Event_PlayerDeath, EventHookMode_Post);					// Player dies
-		HookEvent("player_connect_client", Event_PlayerConnect, EventHookMode_Post);		// Player connects to the server for the first time
-		HookEvent("player_disconnect", Event_PlayerDisconnect, EventHookMode_Post);			// Player disconnects from the server
+		HookEvent("player_team", Event_TeamsChanged, EventHookMode_Pre);					// Used to monitor team switches
 		
-		if (g_iGame == Game_TF)
+		if (g_iGame & FLAG_TF)
 		{
-			HookEvent("teams_changed", Event_TeamsChanged, EventHookMode_PostNoCopy);				// Used to monitor team switches
+			//HookEvent("teams_changed", Event_TeamsChanged, EventHookMode_PostNoCopy);				// Used to monitor team switches
 			HookEvent("post_inventory_application", Event_InventoryApplied, EventHookMode_Post);	// Used to modify weapons on receipt
 		}
 		else
 		{
-			HookEvent("player_team", Event_TeamsChanged, EventHookMode_PostNoCopy);					// Used to monitor team switches
+			//HookEvent("player_team", Event_TeamsChanged, EventHookMode_PostNoCopy);				// Used to monitor team switches
 			HookEvent("player_hurt", Event_PlayerDamaged, EventHookMode_Post);						// Used for the health bar in place of damage hooking
 		}
 		
@@ -957,17 +904,16 @@ void EventsAndListeners(bool hook)
 		UnhookEvent("player_changeclass", Event_ChangeClass, EventHookMode_Post);
 		UnhookEvent("player_healed", Event_PlayerHealed, EventHookMode_Post);
 		UnhookEvent("player_death", Event_PlayerDeath, EventHookMode_Post);
-		UnhookEvent("player_connect_client", Event_PlayerConnect, EventHookMode_Post);
-		UnhookEvent("player_disconnect", Event_PlayerDisconnect, EventHookMode_Post);
+		UnhookEvent("player_team", Event_TeamsChanged, EventHookMode_Pre);
 		
-		if (g_iGame == Game_TF)
+		if (g_iGame & FLAG_TF)
 		{
-			UnhookEvent("teams_changed", Event_TeamsChanged, EventHookMode_PostNoCopy);
+			//UnhookEvent("teams_changed", Event_TeamsChanged, EventHookMode_PostNoCopy);
 			UnhookEvent("post_inventory_application", Event_InventoryApplied, EventHookMode_Post);
 		}
 		else
 		{
-			UnhookEvent("player_team", Event_TeamsChanged, EventHookMode_PostNoCopy);
+			//UnhookEvent("player_team", Event_TeamsChanged, EventHookMode_PostNoCopy);
 			UnhookEvent("player_hurt", Event_PlayerDamaged, EventHookMode_Post);
 		}
 		
@@ -996,7 +942,7 @@ void ConVarChangeHook(ConVar convar, const char[] oldValue, const char[] newValu
 	char sName[64];
 	convar.GetName(sName, sizeof(sName));
 	
-	PrintToServer("%s %s has been changed from %s to %s", SERVERMSG_PREFIX, sName, oldValue, newValue);
+	PrintToServer("%s %s has been changed from %s to %s", PREFIX_SERVER, sName, oldValue, newValue);
 	
 	/*
 		Convars which need a change to take effect when changed
@@ -1031,7 +977,7 @@ void ConVarChangeHook(ConVar convar, const char[] oldValue, const char[] newValu
 		{
 			if (FindEntityByClassname(-1, "tf_logic_arena") == -1)
 			{
-				PrintToServer("%s This map does not have a tf_logic_arena", SERVERMSG_PREFIX);
+				PrintToServer("%s This map does not have a tf_logic_arena", PREFIX_SERVER);
 				//g_cRoundWaitTime.SetInt(2);
 			}
 			
@@ -1074,12 +1020,16 @@ void ConVarChangeHook(ConVar convar, const char[] oldValue, const char[] newValu
  */
 void SetServerGameDescription()
 {
+	if (!g_iGame) // TODO Replace this with JBB's function
+		return;
+	
 	char sGameDesc[32];
 	
 	if (!g_cEnabled.BoolValue)
 	{
-		if (g_iGame == Game_TF) Format(sGameDesc, sizeof(sGameDesc), "Team Fortress");
-		if (g_iGame == Game_OF) Format(sGameDesc, sizeof(sGameDesc), "Open Fortress");
+		if (g_iGame & FLAG_TF) Format(sGameDesc, sizeof(sGameDesc), "Team Fortress");
+		if (g_iGame & FLAG_OF) Format(sGameDesc, sizeof(sGameDesc), "Open Fortress");
+		if (g_iGame & FLAG_TF2C) Format(sGameDesc, sizeof(sGameDesc), "Team Fortress 2 Classic");
 	}
 	else
 	{
@@ -1087,8 +1037,9 @@ void SetServerGameDescription()
 	}
 	
 	Steam_SetGameDescription(sGameDesc);
-	PrintToServer("%s Set game description to '%s'", SERVERMSG_PREFIX, sGameDesc);
+	PrintToServer("%s Set game description to '%s'", PREFIX_SERVER, sGameDesc);
 }
+
 
 
 
@@ -1109,5 +1060,5 @@ stock void DebugMessage(const char[] string, any ...)
 	char[] buffer = new char[len];
 	VFormat(buffer, len, string, 2);
 	
-	PrintToServer("%s %s", DEBUG_PREFIX, buffer);
+	PrintToServer("%s %s", PREFIX_DEBUG, buffer);
 }

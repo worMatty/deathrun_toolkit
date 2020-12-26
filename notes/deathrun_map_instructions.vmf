@@ -1,0 +1,468 @@
+versioninfo
+{
+	"editorversion" "400"
+	"editorbuild" "8163"
+	"mapversion" "4"
+	"formatversion" "100"
+	"prefab" "0"
+}
+visgroups
+{
+}
+viewsettings
+{
+	"bSnapToGrid" "1"
+	"bShowGrid" "1"
+	"bShowLogicalGrid" "0"
+	"nGridSpacing" "32"
+	"bShow3DGrid" "0"
+}
+world
+{
+	"id" "1"
+	"mapversion" "4"
+	"classname" "worldspawn"
+	"skyname" "sky_tf2_04"
+	"maxpropscreenwidth" "-1"
+	"detailvbsp" "detail.vbsp"
+	"detailmaterial" "detail/detailsprites"
+	solid
+	{
+		"id" "26"
+		side
+		{
+			"id" "19"
+			"plane" "(-192 192 2048) (192 192 2048) (192 -512 2048)"
+			"material" "DEV/REFLECTIVITY_50"
+			"uaxis" "[1 0 0 0] 0.25"
+			"vaxis" "[0 -1 0 0] 0.25"
+			"rotation" "0"
+			"lightmapscale" "16"
+			"smoothing_groups" "0"
+		}
+		side
+		{
+			"id" "20"
+			"plane" "(-192 -512 1984) (192 -512 1984) (192 192 1984)"
+			"material" "DEV/REFLECTIVITY_50"
+			"uaxis" "[1 0 0 0] 0.25"
+			"vaxis" "[0 -1 0 0] 0.25"
+			"rotation" "0"
+			"lightmapscale" "16"
+			"smoothing_groups" "0"
+		}
+		side
+		{
+			"id" "21"
+			"plane" "(-192 192 2048) (-192 -512 2048) (-192 -512 1984)"
+			"material" "DEV/REFLECTIVITY_50"
+			"uaxis" "[0 1 0 0] 0.25"
+			"vaxis" "[0 0 -1 0] 0.25"
+			"rotation" "0"
+			"lightmapscale" "16"
+			"smoothing_groups" "0"
+		}
+		side
+		{
+			"id" "22"
+			"plane" "(192 192 1984) (192 -512 1984) (192 -512 2048)"
+			"material" "DEV/REFLECTIVITY_50"
+			"uaxis" "[0 1 0 0] 0.25"
+			"vaxis" "[0 0 -1 0] 0.25"
+			"rotation" "0"
+			"lightmapscale" "16"
+			"smoothing_groups" "0"
+		}
+		side
+		{
+			"id" "23"
+			"plane" "(192 192 2048) (-192 192 2048) (-192 192 1984)"
+			"material" "DEV/REFLECTIVITY_50"
+			"uaxis" "[1 0 0 0] 0.25"
+			"vaxis" "[0 0 -1 0] 0.25"
+			"rotation" "0"
+			"lightmapscale" "16"
+			"smoothing_groups" "0"
+		}
+		side
+		{
+			"id" "24"
+			"plane" "(192 -512 1984) (-192 -512 1984) (-192 -512 2048)"
+			"material" "DEV/REFLECTIVITY_50"
+			"uaxis" "[1 0 0 0] 0.25"
+			"vaxis" "[0 0 -1 0] 0.25"
+			"rotation" "0"
+			"lightmapscale" "16"
+			"smoothing_groups" "0"
+		}
+		editor
+		{
+			"color" "0 216 205"
+			"visgroupshown" "1"
+			"visgroupautoshown" "1"
+		}
+	}
+}
+entity
+{
+	"id" "2"
+	"classname" "logic_case"
+	"Case01" "scalehealth"
+	"targetname" "deathrun_properties_scalehealth"
+	"origin" "-128 -224 2080"
+	editor
+	{
+		"color" "220 30 220"
+		"visgroupshown" "1"
+		"visgroupautoshown" "1"
+		"comments" "As long as the targetname begins with deathrun_properties you can call it whatever you like."
+		"logicalpos" "[0 0]"
+	}
+}
+entity
+{
+	"id" "6"
+	"classname" "logic_case"
+	"Case01" "class:pyro"
+	"Case02" "weapon:1,1179,tf_weapon_rocketpack"
+	"Case03" "weapon_attribute:1,1179,item_meter_charge_rate,0.01"
+	"Case04" "switch_to_slot:1"
+	"Case05" "remove_weapon:0"
+	"Case06" "remove_weapon:3"
+	"Case07" "speed:150"
+	"Case08" "message:You are now a pyro! Your speed has been capped to 150u/s"
+	"Case09" "message:Your jetpack is your only weapon and you have unlimited charges!"
+	"targetname" "deathrun_properties_jetpack"
+	"origin" "-128 0 2080"
+	editor
+	{
+		"color" "220 30 220"
+		"visgroupshown" "1"
+		"visgroupautoshown" "1"
+		"comments" "As long as the targetname begins with deathrun_properties you can call it whatever you like."
+		"logicalpos" "[0 0]"
+	}
+}
+entity
+{
+	"id" "8"
+	"classname" "trigger_multiple"
+	"origin" "-96 96 2080"
+	"solid" "1"
+	"spawnflags" "1"
+	"StartDisabled" "0"
+	"TeamNum" "0"
+	"wait" "1"
+	connections
+	{
+		"OnStartTouch" "deathrun_properties_jetpack,FireUser1,,0,-1"
+	}
+	solid
+	{
+		"id" "9"
+		side
+		{
+			"id" "1"
+			"plane" "(-160 32 2112) (-160 160 2112) (-32 160 2112)"
+			"material" "TOOLS/TOOLSTRIGGER"
+			"uaxis" "[1 0 0 0] 0.25"
+			"vaxis" "[0 -1 0 0] 0.25"
+			"rotation" "0"
+			"lightmapscale" "16"
+			"smoothing_groups" "0"
+		}
+		side
+		{
+			"id" "2"
+			"plane" "(-160 160 2048) (-160 32 2048) (-32 32 2048)"
+			"material" "TOOLS/TOOLSTRIGGER"
+			"uaxis" "[1 0 0 0] 0.25"
+			"vaxis" "[0 -1 0 0] 0.25"
+			"rotation" "0"
+			"lightmapscale" "16"
+			"smoothing_groups" "0"
+		}
+		side
+		{
+			"id" "3"
+			"plane" "(-160 32 2048) (-160 160 2048) (-160 160 2112)"
+			"material" "TOOLS/TOOLSTRIGGER"
+			"uaxis" "[0 1 0 0] 0.25"
+			"vaxis" "[0 0 -1 0] 0.25"
+			"rotation" "0"
+			"lightmapscale" "16"
+			"smoothing_groups" "0"
+		}
+		side
+		{
+			"id" "4"
+			"plane" "(-32 160 2048) (-32 32 2048) (-32 32 2112)"
+			"material" "TOOLS/TOOLSTRIGGER"
+			"uaxis" "[0 1 0 0] 0.25"
+			"vaxis" "[0 0 -1 0] 0.25"
+			"rotation" "0"
+			"lightmapscale" "16"
+			"smoothing_groups" "0"
+		}
+		side
+		{
+			"id" "5"
+			"plane" "(-160 160 2048) (-32 160 2048) (-32 160 2112)"
+			"material" "TOOLS/TOOLSTRIGGER"
+			"uaxis" "[1 0 0 0] 0.25"
+			"vaxis" "[0 0 -1 0] 0.25"
+			"rotation" "0"
+			"lightmapscale" "16"
+			"smoothing_groups" "0"
+		}
+		side
+		{
+			"id" "6"
+			"plane" "(-32 32 2048) (-160 32 2048) (-160 32 2112)"
+			"material" "TOOLS/TOOLSTRIGGER"
+			"uaxis" "[1 0 0 0] 0.25"
+			"vaxis" "[0 0 -1 0] 0.25"
+			"rotation" "0"
+			"lightmapscale" "16"
+			"smoothing_groups" "0"
+		}
+		editor
+		{
+			"color" "220 30 220"
+			"visgroupshown" "1"
+			"visgroupautoshown" "1"
+		}
+	}
+	editor
+	{
+		"color" "220 30 220"
+		"visgroupshown" "1"
+		"visgroupautoshown" "1"
+		"logicalpos" "[0 0]"
+	}
+}
+entity
+{
+	"id" "11"
+	"classname" "trigger_multiple"
+	"origin" "-96 -128 2080"
+	"solid" "1"
+	"spawnflags" "1"
+	"StartDisabled" "0"
+	"TeamNum" "0"
+	"wait" "1"
+	connections
+	{
+		"OnStartTouch" "deathrun_properties_scalehealth,FireUser1,,0,-1"
+	}
+	solid
+	{
+		"id" "12"
+		side
+		{
+			"id" "18"
+			"plane" "(-160 -192 2112) (-160 -64 2112) (-32 -64 2112)"
+			"material" "TOOLS/TOOLSTRIGGER"
+			"uaxis" "[1 0 0 0] 0.25"
+			"vaxis" "[0 -1 0 0] 0.25"
+			"rotation" "0"
+			"lightmapscale" "16"
+			"smoothing_groups" "0"
+		}
+		side
+		{
+			"id" "17"
+			"plane" "(-160 -64 2048) (-160 -192 2048) (-32 -192 2048)"
+			"material" "TOOLS/TOOLSTRIGGER"
+			"uaxis" "[1 0 0 0] 0.25"
+			"vaxis" "[0 -1 0 0] 0.25"
+			"rotation" "0"
+			"lightmapscale" "16"
+			"smoothing_groups" "0"
+		}
+		side
+		{
+			"id" "16"
+			"plane" "(-160 -192 2048) (-160 -64 2048) (-160 -64 2112)"
+			"material" "TOOLS/TOOLSTRIGGER"
+			"uaxis" "[0 1 0 0] 0.25"
+			"vaxis" "[0 0 -1 0] 0.25"
+			"rotation" "0"
+			"lightmapscale" "16"
+			"smoothing_groups" "0"
+		}
+		side
+		{
+			"id" "15"
+			"plane" "(-32 -64 2048) (-32 -192 2048) (-32 -192 2112)"
+			"material" "TOOLS/TOOLSTRIGGER"
+			"uaxis" "[0 1 0 0] 0.25"
+			"vaxis" "[0 0 -1 0] 0.25"
+			"rotation" "0"
+			"lightmapscale" "16"
+			"smoothing_groups" "0"
+		}
+		side
+		{
+			"id" "14"
+			"plane" "(-160 -64 2048) (-32 -64 2048) (-32 -64 2112)"
+			"material" "TOOLS/TOOLSTRIGGER"
+			"uaxis" "[1 0 0 0] 0.25"
+			"vaxis" "[0 0 -1 0] 0.25"
+			"rotation" "0"
+			"lightmapscale" "16"
+			"smoothing_groups" "0"
+		}
+		side
+		{
+			"id" "13"
+			"plane" "(-32 -192 2048) (-160 -192 2048) (-160 -192 2112)"
+			"material" "TOOLS/TOOLSTRIGGER"
+			"uaxis" "[1 0 0 0] 0.25"
+			"vaxis" "[0 0 -1 0] 0.25"
+			"rotation" "0"
+			"lightmapscale" "16"
+			"smoothing_groups" "0"
+		}
+		editor
+		{
+			"color" "220 30 220"
+			"visgroupshown" "1"
+			"visgroupautoshown" "1"
+		}
+	}
+	editor
+	{
+		"color" "220 30 220"
+		"visgroupshown" "1"
+		"visgroupautoshown" "1"
+		"logicalpos" "[0 0]"
+	}
+}
+entity
+{
+	"id" "160"
+	"classname" "logic_case"
+	"Case01" "meleeonly:yes"
+	"Case02" "movetype:fly"
+	"Case03" "health:1000"
+	"Case04" "maxhealth:1000"
+	"targetname" "deathrun_properties_flyingmelee"
+	"origin" "-128 -448 2080"
+	editor
+	{
+		"color" "220 30 220"
+		"visgroupshown" "1"
+		"visgroupautoshown" "1"
+		"comments" "As long as the targetname begins with deathrun_properties you can call it whatever you like."
+		"logicalpos" "[0 0]"
+	}
+}
+entity
+{
+	"id" "162"
+	"classname" "trigger_multiple"
+	"origin" "-96 -352 2080"
+	"solid" "1"
+	"spawnflags" "1"
+	"StartDisabled" "0"
+	"TeamNum" "0"
+	"wait" "1"
+	connections
+	{
+		"OnStartTouch" "deathrun_properties_flyingmelee,FireUser1,,0,-1"
+	}
+	solid
+	{
+		"id" "163"
+		side
+		{
+			"id" "36"
+			"plane" "(-160 -416 2112) (-160 -288 2112) (-32 -288 2112)"
+			"material" "TOOLS/TOOLSTRIGGER"
+			"uaxis" "[1 0 0 0] 0.25"
+			"vaxis" "[0 -1 0 0] 0.25"
+			"rotation" "0"
+			"lightmapscale" "16"
+			"smoothing_groups" "0"
+		}
+		side
+		{
+			"id" "35"
+			"plane" "(-160 -288 2048) (-160 -416 2048) (-32 -416 2048)"
+			"material" "TOOLS/TOOLSTRIGGER"
+			"uaxis" "[1 0 0 0] 0.25"
+			"vaxis" "[0 -1 0 0] 0.25"
+			"rotation" "0"
+			"lightmapscale" "16"
+			"smoothing_groups" "0"
+		}
+		side
+		{
+			"id" "34"
+			"plane" "(-160 -416 2048) (-160 -288 2048) (-160 -288 2112)"
+			"material" "TOOLS/TOOLSTRIGGER"
+			"uaxis" "[0 1 0 0] 0.25"
+			"vaxis" "[0 0 -1 0] 0.25"
+			"rotation" "0"
+			"lightmapscale" "16"
+			"smoothing_groups" "0"
+		}
+		side
+		{
+			"id" "33"
+			"plane" "(-32 -288 2048) (-32 -416 2048) (-32 -416 2112)"
+			"material" "TOOLS/TOOLSTRIGGER"
+			"uaxis" "[0 1 0 0] 0.25"
+			"vaxis" "[0 0 -1 0] 0.25"
+			"rotation" "0"
+			"lightmapscale" "16"
+			"smoothing_groups" "0"
+		}
+		side
+		{
+			"id" "32"
+			"plane" "(-160 -288 2048) (-32 -288 2048) (-32 -288 2112)"
+			"material" "TOOLS/TOOLSTRIGGER"
+			"uaxis" "[1 0 0 0] 0.25"
+			"vaxis" "[0 0 -1 0] 0.25"
+			"rotation" "0"
+			"lightmapscale" "16"
+			"smoothing_groups" "0"
+		}
+		side
+		{
+			"id" "31"
+			"plane" "(-32 -416 2048) (-160 -416 2048) (-160 -416 2112)"
+			"material" "TOOLS/TOOLSTRIGGER"
+			"uaxis" "[1 0 0 0] 0.25"
+			"vaxis" "[0 0 -1 0] 0.25"
+			"rotation" "0"
+			"lightmapscale" "16"
+			"smoothing_groups" "0"
+		}
+		editor
+		{
+			"color" "220 30 220"
+			"visgroupshown" "1"
+			"visgroupautoshown" "1"
+		}
+	}
+	editor
+	{
+		"color" "220 30 220"
+		"visgroupshown" "1"
+		"visgroupautoshown" "1"
+		"logicalpos" "[0 0]"
+	}
+}
+cameras
+{
+	"activecamera" "-1"
+}
+cordon
+{
+	"mins" "(-1024 -1024 -1024)"
+	"maxs" "(1024 1024 1024)"
+	"active" "0"
+}

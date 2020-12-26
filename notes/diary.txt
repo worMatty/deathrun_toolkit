@@ -1,0 +1,106 @@
+Deathrun Toolkit
+================
+
+Development Diary.
+
+3rd march 2020
+
+Today I have implemented a form of rocket and sticky jump moderation. It works by halving the damage caused by one's self. It doesn't yet filter by weapon type, or change the value depending on what kind of jump (e.g. rocket or sticky). That is a bit too complicated for now. I would rather just test it on the server and see how it works before I do anything more. I want to get the implementation right but at the rate I'm bringing in new features, I have reminded myself of the alpha stage philosophy of doing a bunch of work and having it tested regardless if it's polished.
+
+I need to have a look at weapon restrictions. 
+
+Test: Can we still use the database commands when useSQL is disabled?
+What happens if I switch UseSQL and UsePoints in varying combinations?
+
+
+4th March 2020
+
+I should make a list of the things I want to change using logic, like speed, health and abilities.
+
+Health scaling of blue players on demand based on the number of red players alive, for use in minigames. Alternatively an option to use this system outright.
+Health reset of players for use in one-on-one games. (Really necessary if we aren't scaling?)
+Respawn all red players.
+Respawn only a certain number of red players. 0.decimals would be 'half the team' and positive figures would be players.
+Some way to keep track of things for a player that's bigger than just targetname. Maybe an array?
+Red run speed (we have the logic we may as well use it).
+
+Probably best to have some method of detecting a return value to use as a fall back for servers not running DTK.
+
+Perhaps some method of changing stuff in a map depending if DTK is running. Like barring a MG.
+
+
+9th March 2020
+
+I think it might be useful to have 'session flags' which are only used while the user is playing in a session. For exampe, things like 'DBD for this map' and being welcomed *back* to a server. I could only store the first half of the bit field in the database by using a comparison operation on the first eight bits (255).
+
+11th March 2020
+
+How can you just do 'Handle Whatever[MAXPLAYERS+1]'? Don't you need to specify a type of handle? Or can you just do anything when you make a handle? Or are they arrays by default?
+
+
+21st March 2020
+
+Health bar process:
+
+g_bHealthBarActive = false;
+Get activator index and assign it to g_iHealthBarTarget when they are made activator.
+When the round is active, check the activator for damage. If it comes from another player, set g_bHealthBarActive = true and 
+
+
+25th March 2020
+
+Been messing around with colours today. Apparently, morecolors (via multicolors) is responsible for the wrong translated phrases being displayed to people. I tried making the prefix phrase German as well, didn't work. Replaced all the C text options with normal ones and the problem disappeared. Now I'm back to using a prefix within the script and have learned somet things.
+
+You can use alt+numpad characters instead of \x01 and so on. Alt+01 makes the 'default' colour. You need this at the start of any line for it to use colour. \x07 doesn't work this way in the plugin script but it does work in translation files (I think).
+
+If you want to stop colour codes appearing in console you have to use SayText2.
+
+
+29th March 2020
+
+Do bots trigger player_connect_client and player_disconnect when a human is transitioning between maps?
+
+
+30th March 2020
+
+CTFPlayer m_bIsMiniBoss can show an MvM boss health icon above a player for the enemy.
+m_bUseBossHealthBar shows boss health bars on the vM HUD. I wonder if I can fake the HUD?
+
+
+1st April 2020
+
+Had the idea to make sound events that can be used by mappers to play sounds when certain things happen. They would be like DRR's extra narrator lines but would be game sounds mappers could add to their soundscript.
+
+
+2nd April 2020
+
+CountPlayers doesn't return the right value when someone dies because it counts too quickly. It needs a RequestFrame, presumably because the IsPlayerAlive function works too quickly for the game?
+
+
+8th April 2020
+
+PrecacheScriptSound and GetGameSoundParams do not seem to find sounds in a map's packed soundscript.
+
+
+18th April 2020
+
+While making my sandbox methodmap for players I kept running into a problem. I couldn't call a function or address a property within the same methodmap unless it had come before. I wanted to give properties setters which called separate functions, which would mean the functions need to come before the properties in the methodmap. However, I also wanted to set properties in functions, but couldn't because they would come after. 
+
+I looked at other people's MMs and found that they only give Getters to properties and use functions for setting. That's probably the best way to do it. Setting a property in the same way you would set a variable isn't as readable IMO as doing it like the Events and ConVar MMs do, which look like functions.
+
+I also wanted to have some properties dependent on others but you can only do so much. It's probably inevitable that at some point you will just need to code the same set of native functions into more than one property. At least you don't duplicate too much and the properties are easier to read in a MM.
+
+mp_forceautoteam 1 will bypass the cvar that restricts players to choosing the red team. Need to patch that in future.
+
+
+20th April 2020
+
+Just thinking about the glow on red people. I don't think it's that useful. If a player goes out of the activator's PVS, they aren't drawn anyway so their glow won't be visible.
+Playing dr_owo last night made me realise it could do more harm than good. YoshJoe has a mini game where players have to hide, and if they have a red glow it defeats the object of the game.
+Likewise with any map that has a maze.
+I'm inclined to leave that sort of thing to the mappers. If they want to make people glow they can do using tf_glow. There aren't many situations I can think of where a glow on a red player would be that beneficial. And we should be encouraging mappers to improve the visibility of runners for the activator instead of relying on a crutch for poor design.
+
+
+23rd April 2020
+
+Bitwise operations are confusing so I made a bunch in my sandbox plugin so I could try to see how they worked. Hopefully they will be an example for others.

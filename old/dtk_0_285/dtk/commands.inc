@@ -36,7 +36,7 @@ Action Command_ResetPoints(int client, int args)
 	{
 		if (player.Points >= 0)
 		{
-			player.SetPoints(Points_Consumed);
+			player.SetPoints(QP_Consumed);
 			ReplyToCommand(player.Index, "%t %t", "prefix_notice", "points have been reset to i", player.Points);
 			DebugMessage("%N has reset their points using /reset", player.Index);
 		}
@@ -63,18 +63,18 @@ Action Command_Preferences(int client, int args)
 	if (args < 1)
 	{
 		Player player = new Player(client);
-		if (!(player.Flags & FLAGS_PREFERENCE))
-			// If player.Flags does not have the FLAGS_PREFERENCE bit set return false
+		if (!(player.Flags & PREF_ACTIVATOR))
+			// If player.Flags does not have the PREF_ACTIVATOR bit set return false
 		{
 			ReplyToCommand(client, "%t %t", "prefix_notice", "current preference is to never be the activator");
 		}
 		else
 		{
-			ReplyToCommand(client, "%t %t", "prefix_notice", "current preference is to receive i points per round", (player.Flags & FLAGS_FULLPOINTS) ? Points_FullAward : Points_PartialAward);
-			// If player.Flags has the FLAGS_FULLPOINTS bit set return true, otherwise return false
+			ReplyToCommand(client, "%t %t", "prefix_notice", "current preference is to receive i points per round", (player.Flags & PREF_FULL_QP) ? QP_Full : QP_Partial);
+			// If player.Flags has the PREF_FULL_QP bit set return true, otherwise return false
 		}
 		
-		PrintToConsole(client, " %s Your preference bit flags: Session: %06b Stored: %06b", SERVERMSG_PREFIX, (player.Flags & FLAGS_SESSION), (player.Flags & FLAGS_STORED));
+		PrintToConsole(client, " %s Your preference bit flags: Session: %06b Stored: %06b", PREFIX_SERVER, (player.Flags & MASK_SESSION), (player.Flags & MASK_STORED));
 		return Plugin_Handled;
 	}
 	
@@ -102,26 +102,26 @@ void AdjustPreference(int client, int selection)
 	{
 		case 0:
 		{
-			player.Flags &= ~FLAGS_PREFERENCE;
-			// Set the FLAGS_PREFERENCE bit to 0
+			player.Flags &= ~PREF_ACTIVATOR;
+			// Set the PREF_ACTIVATOR bit to 0
 			ReplyToCommand(client, "%t %t", "prefix_notice", "no longer receive queue points");
 			LogMessage(" [DR] %N Has opted out of being the activator", player.Index);
 		}
 		case 1:
 		{
-			player.Flags |= FLAGS_PREFERENCE;
-			// Set the FLAGS_PREFERENCE bit to 1
-			player.Flags &= ~FLAGS_FULLPOINTS;
-			// Set the FLAGS_FULLPOINTS bit to 0
+			player.Flags |= PREF_ACTIVATOR;
+			// Set the PREF_ACTIVATOR bit to 1
+			player.Flags &= ~PREF_FULL_QP;
+			// Set the PREF_FULL_QP bit to 0
 			ReplyToCommand(client, "%t %t", "prefix_notice", "you will now receive fewer queue points");
 			LogMessage(" [DR] %N Has opted to receive fewer queue points", player.Index);
 		}
 		case 2:
 		{
-			player.Flags |= FLAGS_PREFERENCE;
-			// Set the FLAGS_PREFERENCE bit to 1
-			player.Flags |= FLAGS_FULLPOINTS;
-			// Set the FLAGS_FULLPOINTS bit to 1
+			player.Flags |= PREF_ACTIVATOR;
+			// Set the PREF_ACTIVATOR bit to 1
+			player.Flags |= PREF_FULL_QP;
+			// Set the PREF_FULL_QP bit to 1
 			ReplyToCommand(client, "%t %t", "prefix_notice", "you will receive the maximum amount of queue points");
 			LogMessage(" [DR] %N Has opted to receive full queue points", player.Index);
 		}
@@ -135,11 +135,11 @@ void Command_English(int client)
 {	
 	Player player = new Player(client);
 	
-	if ((player.Flags & FLAGS_ENGLISH))
-	// If the player has the FLAGS_ENGLISH bit set return true
+	if ((player.Flags & PREF_ENGLISH))
+	// If the player has the PREF_ENGLISH bit set return true
 	{
-		player.Flags &= ~FLAGS_ENGLISH;
-		// Set the FLAGS_ENGLISH bit to 0
+		player.Flags &= ~PREF_ENGLISH;
+		// Set the PREF_ENGLISH bit to 0
 		char language[32];
 		if (GetClientInfo(client, "cl_language", language, sizeof(language)))
 		{
@@ -155,8 +155,8 @@ void Command_English(int client)
 	}
 	else
 	{
-		player.Flags |= FLAGS_ENGLISH;
-		// Set the FLAGS_ENGLISH bit to 1
+		player.Flags |= PREF_ENGLISH;
+		// Set the PREF_ENGLISH bit to 1
 		ReplyToCommand(client, "%t Your language has been been set to English", "prefix_notice");
 		SetClientLanguage(client, 0);
 	}
@@ -168,7 +168,7 @@ void Command_English(int client)
 // Set my queue points multiplier and activator preference
 Action AdminCommand_PlayerData(int client, int args)
 {
-	PrintToConsole(client, "\n %s Player points and preference flags\n  Please note: The table will show values for unoccupied slots. These are from\n  previous players and are reset when someone new takes the slot.\n", SERVERMSG_PREFIX);
+	PrintToConsole(client, "\n %s Player points and preference flags\n  Please note: The table will show values for unoccupied slots. These are from\n  previous players and are reset when someone new takes the slot.\n", PREFIX_SERVER);
 	PrintToConsole(client, " Index | User ID | Steam ID   | Name                             | Points | Flags");
 	PrintToConsole(client, " ----------------------------------------------------------------------------------------");
 	
@@ -180,7 +180,7 @@ Action AdminCommand_PlayerData(int client, int args)
 		//if (IsClientConnected(i))
 		if (player.InGame)
 			Format(sName, MAX_NAME_LENGTH, "%N", player.Index);
-		PrintToConsole(client, " %5d | %7d | %10d | %32s | %6d | %06b %06b", player.Index, player.ArrayUserID, player.SteamID, sName, player.Points, ((player.Flags & FLAGS_SESSION) >> 16), (player.Flags & FLAGS_STORED));
+		PrintToConsole(client, " %5d | %7d | %10d | %32s | %6d | %06b %06b", player.Index, player.ArrayUserID, player.SteamID, sName, player.Points, ((player.Flags & MASK_SESSION) >> 16), (player.Flags & MASK_STORED));
 			// This bit shift operation should take the resulting bits and shift them all down to the 'stored' range for display purposes
 	}
 	
@@ -208,49 +208,6 @@ Action AdminCommand_SetClass(int client, int args)
 
 	// Get class
 	int class;
-	/*
-	TFClassType class;
-	if (strncmp(arg2, "scout", 3, false) == 0)
-	{
-		class = TFClass_Scout;
-	}
-	else if (strncmp(arg2, "soldier", 3, false) == 0)
-	{
-		class = TFClass_Soldier;
-	}
-	else if (strncmp(arg2, "pyro", 3, false) == 0)
-	{
-		class = TFClass_Pyro;
-	}
-	else if (strncmp(arg2, "demo", 3, false) == 0)
-	{
-		class = TFClass_DemoMan;
-	}
-	else if (strncmp(arg2, "heavy", 3, false) == 0)
-	{
-		class = TFClass_Heavy;
-	}
-	else if (strncmp(arg2, "engineer", 3, false) == 0)
-	{
-		class = TFClass_Engineer;
-	}
-	else if (strncmp(arg2, "medic", 3, false) == 0)
-	{
-		class = TFClass_Medic;
-	}
-	else if (strncmp(arg2, "spy", 3, false) == 0)
-	{
-		class = TFClass_Spy;
-	}
-	else if (strncmp(arg2, "sniper", 3, false) == 0)
-	{
-		class = TFClass_Sniper;
-	}
-	else
-	{
-		class = view_as<TFClassType>(GetRandomInt(1, 9));
-	}*/
-	
 	class = ProcessClassString(arg2);
 	if (class == 0)
 	{
@@ -276,12 +233,12 @@ Action AdminCommand_SetClass(int client, int args)
 		for (int i = 0; i < iTargetCount; i++)
 		{
 			Player player = new Player(iTarget[i]);
-			player.SetClass(view_as<TFClassType>(class));
+			player.SetClass(class);
 			if (client == iTarget[i])
 				PrintToChat(iTarget[i], "%t You are now a %s", "prefix_notice", sClass);
 			else
 				PrintToChat(iTarget[i], "%t %N has made you a %s", "prefix_notice", client, sClass);
-			LogAction(client, iTarget[i], "%L respawned %L", client, iTarget[i]);
+			LogAction(client, iTarget[i], "%L changed class of %L to %s", client, iTarget[i], sClass);
 		}
 	}
 	
@@ -399,3 +356,100 @@ Action Command_Menu(int client, int args)
 
 	return Plugin_Handled;
 }*/
+
+
+
+
+
+/**
+ * Command Listeners
+ * ----------------------------------------------------------------------------------------------------
+ */
+
+Action CommandListener_Suicide(int client, const char[] command, int args)
+{
+	// If the round is active, prevent blue players from suiciding or switching if the server has that enabled.
+	//if (g_bIsRoundActive && GetClientTeam(client) == Team_Blue && IsPlayerAlive(client) && g_cPreventBlueEscape.BoolValue)
+	if (game.RoundActive && GetClientTeam(client) == Team_Blue && IsPlayerAlive(client) && g_cPreventBlueEscape.BoolValue)
+	{
+		if (!g_bBlueWarnedSuicide)
+		{
+			SlapPlayer(client, 0);
+			PrintToChat(client, "%t %t", "prefix", "blue no escape");
+			g_bBlueWarnedSuicide = true;
+		}
+		
+		ReplyToCommand(client, "%t Command '%s' has been disallowed by the server.", "prefix", command);
+		return Plugin_Handled;
+	}
+	
+	// Block the 'autoteam' command at all times because it bypasses team balancing
+	else if (strcmp(command, "autoteam", false) == 0)
+	{
+		return Plugin_Handled;
+	}
+	
+	return Plugin_Continue;
+}
+
+
+
+Action CommandListener_Build(int client, const char[] command, int args)
+{
+	/*
+	
+	build 0 0 will build a Dispenser (Engineer only)
+    build 1 0 will build a teleporter entrance (Engineer only)
+    build 1 1 will build a teleporter exit (Engineer only)
+    build 2 0 will build a Sentry Gun (Engineer only)
+    build 3 0 will build a Sapper (Spy only)
+    
+    build 0 will build a Dispenser (Engineer only)
+    build 1 will build a teleporter entrance (Engineer only)
+    build 2 will build a Sentry Gun (Engineer only)
+    build 3 will build a teleporter exit (Engineer only)
+    build 3 will build a Sapper (Spy only) [deprecated]
+    
+    1 = sentry
+	2 = dispenser
+	4 = tele entrance
+	8 = tele exit
+	
+	*/
+	
+	if (g_cBuildings.IntValue != 0)
+	{
+		char arg1[2], arg2[2];
+		GetCmdArg(1, arg1, sizeof(arg1)), GetCmdArg(2, arg2, sizeof(arg2));
+		int iArg1 = StringToInt(arg1), iArg2 = StringToInt(arg2);
+		
+		if (iArg1 == 0 && (g_cBuildings.IntValue & BUILD_DISPENSER) == BUILD_DISPENSER)
+		{
+			PrintToChat(client, "%t Sorry, you aren't allowed to build dispensers", "prefix");
+			return Plugin_Handled;
+		}
+		if (iArg1 == 1 && iArg2 == 0 && (g_cBuildings.IntValue & BUILD_TELE_ENTR) == BUILD_TELE_ENTR)
+		{
+			PrintToChat(client, "%t Sorry, you aren't allowed to build teleporter entrances", "prefix");
+			return Plugin_Handled;
+		}
+		if (iArg1 == 1 && iArg2 == 1 && (g_cBuildings.IntValue & BUILD_TELE_EXIT) == BUILD_TELE_EXIT)
+		{
+			PrintToChat(client, "%t Sorry, you aren't allowed to build teleporter exits", "prefix");
+			return Plugin_Handled;
+		}
+		if (iArg1 == 2 && (g_cBuildings.IntValue & BUILD_SENTRY) == BUILD_SENTRY)
+		{
+			PrintToChat(client, "%t Sorry, you aren't allowed to build sentries", "prefix");
+			return Plugin_Handled;
+		}
+		// build 3 is for backwards compatability of the deprecated build argument to build a tele exit
+		if (iArg1 == 3 && (g_cBuildings.IntValue & BUILD_TELE_EXIT) == BUILD_TELE_EXIT && TF2_GetPlayerClass(client) == TFClass_Engineer)
+		{
+			PrintToChat(client, "%t Sorry, you aren't allowed to build teleporter exits", "prefix");
+			return Plugin_Handled;
+		}
+	}
+
+	return Plugin_Continue;
+}

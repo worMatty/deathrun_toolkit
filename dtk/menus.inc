@@ -27,7 +27,7 @@ stock void NewMenuFunction(int client, const char[] sMenu)
 	 */
 	if (StrEqual(sMenu, "menu_main"))
 	{
-		if ((player.Flags & FLAGS_PREFERENCE))
+		if (player.HasFlag(FLAG_PREF_ACTIVATOR))
 	 	{
 	 		Format(title, sizeof(title), "%s%T\n \n", title, "menu queue points", player.Index, player.Points);
 	 	}
@@ -38,12 +38,10 @@ stock void NewMenuFunction(int client, const char[] sMenu)
 		menu.AddItem("menu_commands", "menu item commands");
 		
 		if (GetAdminFlags(GetUserAdmin(client), Access_Effective))
-		//if (CheckAccess(GetUserAdmin(client), "", ADMFLAG_KICK, true))
 		{
 			menu.AddItem("menu_admincommands", "menu item admin commands");
 			menu.AddItem("menu_adminfunstuff", "menu item admin fun stuff");
-		}
-		
+		}	
 	}
 	
 	
@@ -52,13 +50,11 @@ stock void NewMenuFunction(int client, const char[] sMenu)
 	 */
 	if (StrEqual(sMenu, "menu_prefs"))
 	{
-		if ((player.Flags & FLAGS_PREFERENCE) && (player.Flags & FLAGS_FULLPOINTS))
-			// if player.Flags has FLAGS_PREFERENCE set, FLAGS_FULLPOINTS
+		if (player.HasFlag(FLAG_PREF_ACTIVATOR) && player.HasFlag(FLAG_PREF_FULLQP))
 	 	{
 	 		Format(title, sizeof(title), "%s%T\n \n", title, "menu full queue points", player.Index, player.Points);
 	 	}
- 		else if ((player.Flags & FLAGS_PREFERENCE) && !(player.Flags & FLAGS_FULLPOINTS))
- 			// if player.Flags has FLAGS_PREFERENCE set, and *not* FLAGS_FULLPOINTS set
+ 		else if (player.HasFlag(FLAG_PREF_ACTIVATOR) && !player.HasFlag(FLAG_PREF_FULLQP))
 	 	{
 	 		Format(title, sizeof(title), "%s%T\n \n", title, "menu fewer queue points", player.Index, player.Points);
 	 	}
@@ -106,7 +102,7 @@ stock void NewMenuFunction(int client, const char[] sMenu)
 	{
 		menu.ExitBackButton = true;
 		
-		int points_order[TF2MAXPLAYERS-1][2];
+		int points_order[MAXPLAYERS][2];
 		// 0 will be client index. 1 will be points.
 		
 		for (int i = 0; i < MaxClients; i++)
@@ -123,8 +119,7 @@ stock void NewMenuFunction(int client, const char[] sMenu)
 		for (int i = 0; i < MaxClients; i++)
 		{
 			Player iPlayer = new Player(points_order[i][0]);
-			if (iPlayer.InGame && (iPlayer.Flags & FLAGS_PREFERENCE))
-			// If the player has FLAGS_PREFERENCE set to 1
+			if (iPlayer.InGame && iPlayer.HasFlag(FLAG_PREF_ACTIVATOR))
 			{
 				Format(sItem, sizeof(sItem), "%N: %d", iPlayer.Index, iPlayer.Points);
 				menu.AddItem("points_item", sItem, ITEMDRAW_DISABLED);
@@ -303,217 +298,3 @@ public int NewMenuHandler(Menu menu, MenuAction action, int param1, int param2)
 	
 	return 0;
 }
-
-
-
-
-
-
-
-
-
-
-/**
- * Old Menus
- * ----------------------------------------------------------------------------------------------------
- */
-/*
-// Open the menu
-public Action Command_Menu(int client, int args)
-{
-	if (!g_cEnabled.BoolValue)
-		return Plugin_Handled;
-
-	Player player = new Player(client);
-	char sTitle[64];
-	Format(sTitle, sizeof(sTitle), "%s %s\n \nYou have %d points\n ", PLUGIN_SHORTNAME, PLUGIN_VERSION, player.Points);
-
-	Menu menu = new Menu(MenuHandlerMain);
-	menu.SetTitle(sTitle);
-	menu.AddItem("item1", "Activator Preferences");
-	menu.AddItem("item2", "List Points");
-	menu.AddItem("item3", "Reset My Points");
-	menu.Display(player.Index, MENU_TIME_FOREVER);
-
-	return Plugin_Handled;
-}
-
-
-// Open the activator preference menu
-public Action Command_MenuPreference(int client, int args)
-{
-	if (!g_cEnabled.BoolValue)
-		return Plugin_Handled;
-
-	Menu menu = new Menu(MenuHandlerPreference);
-	menu.SetTitle("Activator Preference\n ");
-	menu.AddItem("item1", "Full queue points");
-	menu.AddItem("item2", "Fewer queue points");
-	menu.AddItem("item3", "Don't be the activator");
-	menu.ExitBackButton = true;
-	menu.Display(client, MENU_TIME_FOREVER);
-
-	return Plugin_Handled;
-}
-
-// Open the player points menu
-public Action Command_MenuPoints(int client, int args)
-{
-	if (!g_cEnabled.BoolValue)
-		return Plugin_Handled;
-
-	Menu menu = new Menu(MenuHandlerPoints);
-	menu.SetTitle("List Points\n ");
-	menu.ExitBackButton = true;
-
-	int points_order[TF2MAXPLAYERS-1][2];
-		// 0 will be client index. 1 will be points.
-		
-	for (int i = 0; i < MaxClients; i++)
-	{
-		Player player = new Player(i + 1);
-		points_order[i][0] = player.Index;
-		points_order[i][1] = player.Points;
-	}
-	
-	SortCustom2D(points_order, MaxClients, SortByPoints);
-	
-	char sItem[40];
-	
-	for (int i = 0; i < MaxClients; i++)
-	{
-		Player player = new Player(points_order[i][0]);
-		if (player.InGame && (player.Flags & FLAGS_PREFERENCE))
-		// If the player has FLAGS_PREFERENCE set to 1
-		{
-			Format(sItem, sizeof(sItem), "%N: %d", player.Index, player.Points);
-			menu.AddItem("item", sItem, ITEMDRAW_DISABLED);
-		}
-	}
-	
-	menu.Display(client, MENU_TIME_FOREVER);
-	
-	return Plugin_Handled;
-}
-
-// Open the points reset menu
-public Action Command_MenuPointsReset(int client, int args)
-{
-	if (!g_cEnabled.BoolValue)
-		return Plugin_Handled;
-
-	Player player = new Player(client);
-	char sTitle[100];
-	Format(sTitle, sizeof(sTitle), "Reset My Points\n \nYou have %d points\n \nAre you sure you want\nto reset your points?\n ", player.Points);
-
-	Menu menu = new Menu(MenuHandlerPointsReset);
-	menu.SetTitle(sTitle);
-	menu.AddItem("item1", "Yes");
-	menu.AddItem("item2", "No");
-	menu.Display(client, MENU_TIME_FOREVER);
-
-	return Plugin_Handled;
-}
-*/
-
-
-
-/**
- * Menu Handlers
- * ----------------------------------------------------------------------------------------------------
- */
-
-/*
-// The menu handler
-public int MenuHandlerMain(Menu menu, MenuAction action, int param1, int param2) // Must always be public
-{
-	switch (action)
-	{
-		// param1 = client, param2 = item position
-		case MenuAction_Select:
-		{
-			char info[32];
-			menu.GetItem(param2, info, sizeof(info));
-			
-			if (StrEqual(info, "item1"))
-				Command_MenuPreference(param1, param2);
-			if (StrEqual(info, "item2"))
-				Command_MenuPoints(param1, param2);
-			if (StrEqual(info, "item3"))
-				Command_MenuPointsReset(param1, param2);
-		}
-		case MenuAction_End:
-		{
-			delete menu;
-		}
-	}
-}
-
-// Activator preference menu handler
-public int MenuHandlerPreference(Menu menu, MenuAction action, int param1, int param2) // Must always be public
-{
-	switch (action)
-	{
-		case MenuAction_Select:
-		{
-			char info[32];
-			menu.GetItem(param2, info, sizeof(info));
-			
-			if (StrEqual(info, "item1"))
-				AdjustPreference(param1, 2);
-			if (StrEqual(info, "item2"))
-				AdjustPreference(param1, 1);
-			if (StrEqual(info, "item3"))
-				AdjustPreference(param1, 0);
-				
-			Command_Menu(param1, param2);
-		}
-		case MenuAction_Cancel:
-		{
-			if (param2 == MenuCancel_ExitBack)
-				Command_Menu(param1, param2);
-		}
-		case MenuAction_End:
-			delete menu;
-	}
-}
-
-// Queue points menu handler
-public int MenuHandlerPoints(Menu menu, MenuAction action, int param1, int param2) // Must always be public
-{
-	switch (action)
-	{
-		case MenuAction_Cancel:
-		{
-			if (param2 == MenuCancel_ExitBack)
-				Command_Menu(param1, param2);
-		}
-		case MenuAction_End:
-			delete menu;
-	}
-}
-
-// Points reset menu handler
-public int MenuHandlerPointsReset(Menu menu, MenuAction action, int param1, int param2)
-{
-	switch (action)
-	{
-		case MenuAction_Select:
-		{
-			char info[32];
-			menu.GetItem(param2, info, sizeof(info));
-			
-			if (StrEqual(info, "item1"))
-				Command_ResetPoints(param1, 0);
-				
-			Command_Menu(param1, param2);
-		}
-		case MenuAction_Cancel:
-		{
-			if (param2 == MenuCancel_ExitBack)
-				Command_Menu(param1, param2);
-		}
-		case MenuAction_End:
-			delete menu;
-	}
-}*/

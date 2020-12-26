@@ -1,0 +1,77 @@
+Restrictions
+============
+
+
+Flying
+------
+Rocket jumping
+Sticky jumping
+Parachuting
+
+
+Trap evasion horizontal
+-----------------------
+Double jump
+Atomizer
+Jet pack
+
+
+Rushing
+-------
+Charging
+Scout speed
+
+
+Mini boosting
+-------------
+Scorch shot
+Force-a-nature
+Winger
+Grenade boosting
+Ullapool Caber
+
+
+Teleporting
+-----------
+Teleporters
+Eureka Effect
+
+
+Avoiding damage
+---------------
+Cloak
+Dead Ringer
+Spy damage reduction
+Overhealng
+Ubers
+Bonk!
+
+
+Healing
+-------
+Medigun healing
+Amputator
+Self-healing
+First aid packs (sandwiches)
+Max HP increase (chocolate, steak)
+Dispenser
+
+
+Combat
+------
+Sentry
+Sapping
+
+
+Convenience commands
+====================
+
+Race
+----
+Sets all class speeds the same.
+Melee-only.
+Disables movement effects.
+
+Parkour
+-------
+No flying or boosting (Neonoir).

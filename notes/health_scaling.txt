@@ -1,0 +1,98 @@
+Scaling
+
+My own values
+
+1 200
+2 350
+3 475
+4 600
+5 1000
+6 1500
+7 
+
+Exponential curve
+
+1 no change
+2 400
+3 800
+4 1600
+5 3200
+6 6400
+7 
+
+Logarithmic curve
+
+1 no change
+2 100%		400
+3 85%		740
+4 72.25‬%	1029
+5 61.4125‬%	1,274.65
+6 
+7 
+
+0.85 to the power of something gives exponential decrease
+
+Percentage exponent curve
+
+Health is scale base multiplied by number of enemies, adding ten percent each time per enemy.
+Scale base is 150.
+
+Health values using 150 base and 15% extra per player:
+
+I'm not sure how I worked these out. 
+1 Player health
+2 325
+3 497
+4 695
+5 924
+6 1186
+10 2692
+15 6250
+22 17997
+23 20819
+31 65386 ??
+
+In practice as a pyro:
+
+5	Didn't work - only counting one client
+10	1186 - only counted six clients
+23	11550
+30	20820
+
+Old values as a pyro and base of 150:
+2	325
+5	924
+10	2693
+23	20820
+30	65386
+
+New values as a pyro and base of 300:
+2	475
+5	1673
+10	5211
+23	41464
+30	113326
+
+
+
+
+
+
+
+VSH 1.55 Stuff
+--------------
+
+playing = 10
+HaleHealthMax = RoundFloat (Pow( ( (760.8 + playing) * (playing - 1) ), 1.0341));
+HaleHealthMax = RoundFloat (Pow( ( 770.8 * 9 ), 1.0341));
+HaleHealthMax = RoundFloat (Pow( 6,937.2, 1.0341));
+HaleHealthMax = RoundFloat (Pow(6,937.2, 1.0341));
+
+1 0
+2 762.8		956.535
+3 1527.6	1961.615722		1,005.080722‬
+4 2294.4	2987.226318		1,025.610596‬
+5 3063.2	4027.672119		1,040.445801‬
+6 3834		5079.896484		1,052.224365
+
+HaleHealthMax = RoundFloat(Pow(((760.8 + playing)*(playing - 1)), 1.0341));

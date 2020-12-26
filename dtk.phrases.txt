@@ -1,0 +1,613 @@
+"Phrases"
+{
+
+/*
+	About prefixes:
+		There are three [DR] prefixes and each one is used with different types of messages.
+		Some are used as feedback to the player for their commands and settings changes.
+		Some are used for general information and some are used as announcements.
+		I feel this is useful for providing the player with context and in helping to identify
+		important messages on servers with a lot of chat.
+		
+	About colour:
+		The colour of chat is set by inserting an ASCII control character and a six or eight character
+		hexadecimal value before the chat. When using eight characters, the last two are for
+		alpha transparency. You can type the control characters in Windows by holding Alt and pressing
+		specific numerical key pad keys. https://www.ascii-code.com/
+		
+			Alt + 01				Used to return to the default colour.
+			Alt + 07				Used with a six character hex value.
+			Alt + 08				Used with an eight character hex value.
+			
+		An example phrase:
+		
+			"Your name is 87CEEB{1} and you have 87CEEB{1} points"	
+*/
+
+/*
+	Phrases which may need to be translated in future:
+		Replies to the command to set your language to English.
+		Reply to the debug command /data.
+	
+	Phrases which have been modified since they were translated will have 'modified' in a comment after them.
+*/
+
+
+	/**
+	 * Prefixes
+	 * ----------------------------------------------------------------------------------------------------
+	 * TF2 default colour is 'Blanched Almond' FBECCB
+	 */
+
+	"prefix"
+	{
+		"en"			"FFD800[Deathrun]"	// 87CEEB
+	}
+	
+		// Phrase keys which match this colour when highlighting something:
+		// next activators
+
+	"prefix_reply"
+	{
+		"en"			"B6FF00[Deathrun]"
+	}
+	
+		// Phrase keys which match this colour when highlighting something:
+		// welcome player to deathrun toolkit
+		
+		// Other phrase keys which use a highlight colour mid-sentence:
+		// killed by entity classname
+	
+	"prefix_plugin"
+	{
+		"en"			"FF0000[Deathrun]"
+	}
+
+
+
+	/**
+	 * Public Notices
+	 * ----------------------------------------------------------------------------------------------------
+	 */
+
+	"need more players" // DEPRECATED: No longer in use
+	{
+		"en"			"Looks like we need more players before we can continue"
+		"de"			"Sieht so aus als würden wir mehr Spieler benötigen um fortzufahren"
+		"tr"			"Görünüşe göre daha fazla oyuncuya ihtiyacımız var devam etmeden önce"
+	}
+
+
+
+	/**
+	 * Replies - Messages to Individual Clients
+	 * ----------------------------------------------------------------------------------------------------
+	 */
+	
+	"queue points consumed"
+	{
+		"en"			"Your queue points have been consumed"
+		"de"			"Deine Punkte wurden verbraucht"
+		"tr"			"Senin sıra puanların tüketildi"
+	}
+	
+	"received queue points from an admin"
+	{
+		"#format"		"{1:s},{2:i},{3:i}"		// 1. Name of admin, 2. points awarded, 3. player's new total
+		"en"			"{1} has awarded you {2} points, making your total {3}"
+		"de"			"{1} hat Dir {2} Punkte verleiht, somit ist deine Gesamtpunktzahl {3}"
+		"tr"			"{1} sana {2} puan ödül verdi, senin toplamını {3} yaptı"
+	}
+	
+	"you have i points"
+	{
+		"#format"		"{1:i}"		// Number of points the player has
+		"en"			"You have {1} points"
+		"de"			"Du hast {1} Punkte"
+		"tr"			"Senin {1} puanın var"
+		// Sent in response to the use of the /points command
+	}
+	
+	"not using the points system"
+	{
+		"en"			"We're not using the points system at the moment"
+		"de"			"Momentan wird das Punktesystem nicht benutzt"
+		"tr"			"Biz şuanlık puanlar sistemini kullanmıyoruz"
+		// Sent in response to the use of the /points command
+	}
+	
+	"points have been reset to i"
+	{
+		"#format"		"{1:i}"		// Points player has after a reset
+		"en"			"Your points have been reset to {1}"
+		"de"			"Deine Punkte wurden zu {1} zurückgesetzt"
+		"tr"			"Senin puanların {1} sıfırlandı"
+		// Sent in response to the /reset command and menu option
+	}
+	
+	"points cannot be reset"
+	{
+		"en"			"Sorry, your points can't be reset because they are a negative value"
+		"de"			"Entschuldigung, deine Punkte können nicht zurückgesetzt werden, da Sie ein negativer Wert sind"
+		"tr"			"Üzgünüm, senin puanların sıfırlanamaz çünkü o negatif bir değer"
+		// Sent in response to the /reset command and menu option
+	}
+	
+	"current preference is to never be the activator"
+	{
+		"en"			"Your current preference is to never be the activator"
+		"de"			"Deine momentane Präferenz ist niemals zum Aktivierer werden"
+		"tr"			"Senin şuanlık tercihin asla aktivatör olmamak"
+		// Shown in response to using the /pref command with no arguments
+	}
+	
+	"current preference is to receive i points per round"
+	{
+		"#format"		"{1:i}"		// Calculated number of points player will receive at round end
+		"en"			"Your current preference is to receive {1} points per round"
+		"de"			"Deine momentane Präferenz ist {1} Punkte per Runde zu bekommen"
+		"tr"			"Senin şuanki tercihin her roundda {1} puan almak"
+		// Shown in response to using the /pref command with no arguments
+	}
+	
+	"no longer receive queue points"
+	{
+		"en"			"You will no longer be the activator or receive queue points"
+		"de"			"Du wirst nicht mehr Aktivierer werden oder Punkte erhalten"
+		"tr"			"Sen bundan sonra aktivatör olmayacak veya sıra puanları almayacaksın"
+		// Sent in response to setting activator preference to off
+	}
+	
+	"you will now receive fewer queue points"
+	{
+		"en"			"You will now receive fewer queue points"
+		"de"			"Du wirst jetzt weniger Punkte erhalten"
+		"tr"			"Sen şimdi daha az sıra puanları alacaksın"
+		// Sent in response to setting points gan preference to fewer
+	}
+	
+	"you will receive the maximum amount of queue points"
+	{
+		"en"			"You will receive the full amount of queue points"
+		"de"			"Du wirst die volle Punktzahl erhalten"
+		"tr"			"Sen şimdi tam miktarda sıra puanları alacaksın"
+		// Sent in response to setting points gan preference to full
+	}
+	
+	"welcome player to deathrun toolkit"
+    {
+        "#format"        "{1:s}"        // Player name
+        "en"            "Hello, {1}. This server is running Deathrun Toolkit.\n  Type 87CEEB/dr for the menu to change your preferences."
+        "de"            "Willkommen zu Deathrun Toolkit, {1}. Öffne das Menü mit 87CEEB/dr"
+		"tr"			"Merhaba, {1}. Bu sunucu Deathrun Toolkit çalıştırıyor.\n  Menü için 87CEEB/dr yazarak senin tercihlerini değiştir."
+    }
+	
+	
+	
+	/**
+	 * Information
+	 * ----------------------------------------------------------------------------------------------------
+	 */
+	
+	"round end queue points received"
+	{
+		"#format"		"{1:i},{2:i}"	// 1. Points awarded at the end of the round, 2. Player's new points total
+		"en"			"You have received {1} queue points for a total of {2}"
+		"de"			"Du hast {1} Punkte erhalten für einen Punktestand von {2}"
+		"tr"			"Sen {1} sıra puanı alarak toplamını {2} yaptın"
+	}
+	
+	"killed by entity classname"
+	{
+		"#format"		"{1:s},{2:s}"	// 1. killing entity classname, 2. targetname (if it exists)
+		"en"			"You were killed by a CD5C5C{1}{2}"
+		"de"			"Du wurdest von CD5C5C{1}{2} getötet"
+		"tr"			"Sen bir CD5C5C{1}{2} tarafından öldürüldün"
+	}
+	
+	"team mate pushing enabled"
+	{
+		"en"			"Team mate pushing has been enabled"
+		"de"			"'Team mate pushing' wurde aktiviert"
+		"tr"			"Takım dostu itişi etkinleştirildi"
+	}
+	
+	"usage of pref command"
+	{
+		"en"			"Usage: sm_prefs 0/1/2. 0 = Don't be activator. 1 = Receive fewer points. 2 = Receive full points"
+		"de"			"Benutzung: sm_prefs 0/1/2. 0 = Nicht Aktivierer sein. 1 = Weniger Punkte erhalten. 2 = Volle Punktzahl erhalten"
+		"tr"			"Kullanım: sm_prefs 0/1/2. 0 = Aktivatör olma. 1 = Daha az puanlar al. 2 = Tam puanlar al"
+	}
+	
+	"wrong usage of award command"
+	{
+		"en"			"You're doing it wrong. /award <name> <points>"
+		"de"			"Du machst es falsch. /award <name> <punkte>"
+		"tr"			"Sen yanlış yapıyorsun. /award <isim> <puanlar>"
+	}
+	
+	"not enough activators"
+	{
+		"en"			"Too few willing activators. Everyone will take turns"
+		"de"			"Zu wenig freiwillige Aktivierer. Jeder kommt mal an die Reihe"
+		"tr"			"Çok az istekli aktivatörler var. Herkes sıra alacak"
+	}
+	
+	"next activators"
+	{
+		"#format"		"{1:s},{2:s},{3:s}"		// Next players to be activator in order
+		"en"			"Next activators: {1} {2} {3}"
+		"de"			"Nächste Aktivierer: {1} {2} {3}"
+		"tr"			"Sonraki aktivatörler: {1} {2} {3}"
+	}
+	
+	
+
+	/**
+	 * Round Start
+	 * ----------------------------------------------------------------------------------------------------
+	 * Phrase keys must have consecutive numbers. Gaps will break the cycle.
+	 */
+	
+	"round has begun 1"
+	{
+		"en"			"The round has begun. Tread carefully!"
+		"de"			"Die Runde hat begonnen. Sei vorsichtig!"
+		"tr"			"Tur başladı. Hareketlerine dikkat et!"
+	}
+	
+	"round has begun 2"
+	{
+		"en"			"It's dangerous to go alone... take <insert object>"
+		"de"			"Es ist gefährlich alleine zu gehen... nimm <objekt einfügen>"
+		"tr"			"Yalnız gitmek tehlikeli... yanına <obje ekle> al"
+	}
+	
+	"round has begun 3"
+	{
+		"en"			"I declare this round officially open! Woooo!"
+		"de"			"Hiermit erkläre ich diese Runde offiziell für eröffnet! Woooo!"
+		"tr"			"Bu turun resmi olarak açık olduğunu ilan ediyorum! Woooo!"
+	}
+	
+	"round has begun 4"
+	{
+		"en"			"I wasn't always a round start announcer, you know"
+		"de"			"Weißt Du, ich war nicht immer ein Rundenstart Ansager"
+		"tr"			"Bilirsin, ben her zaman bir tur başlayış spikeri değildim"
+	}
+	
+	"round has begun 5"
+	{
+		"en"			"I don't know about you, but I'd say it's a safe bet some people are gonna die"
+		"de"			"Ich weiß nicht wie es Dir geht, aber ich würde behaupten dass hier einige Leute sterben werden"
+		"tr"			"Seni bilmiyorum, ama ben derdim ki bazı insanların öleceği güvenli bir bahisdir"
+	}
+	
+	"round has begun 6"
+	{
+		"en"			"Beep boop beep! Round has begun, maggots!"
+		"de"			"Beep boop beep! Runde hat begonnen, Maden!"
+		"tr"			"Beep boop beep! Tur başladı, kurtçuklar!"
+	}
+		
+	"round has begun 7"
+	{
+		"en"			"FYI the round has started. You should probably move"
+		"de"			"Nur damit du es auch weißt: Die Runde hat begonnen. Vielleicht solltest du dich bewegen"
+		"tr"			"Bilginize, tur başladı. Muhtemelen hareket etmelisin"
+	}
+	
+	"round has begun 8"
+	{
+		"en"			"Take your 'I want to be alive' attitude outside, no one wants to hear that in here"
+		"de"			"Nimm deine 'Ich will nicht sterben' einstellung nach draußen, dass will hier keiner hören"
+		"tr"			"Senin o 'Ben yaşamak istiyorum' tavrını dışarı al, kimse onu burda duymak istemiyor"
+	}
+	
+	"round has begun 9"
+	{
+		"en"			"Hello. How may I assist you with your death?"
+		"de"			"Guten Tag. Wie kann ich Ihnen mit ihrem Tod helfen?"
+		"tr"			"Merhaba. Ölümünde sana nasıl yardımcı olabilirim?"
+	}
+	
+	/* Quarantined lines that are too long
+		"round has begun 5"
+		{
+			"en"			"I haven't seen the Round End announcer in some time. Are they still in the business?"
+			"de"			"Ich habe den Rundenend Ansager schon eine weile lang nicht gesehen. Macht der noch was in der Richtung?"
+			"tr"			"Ben epey zamandır Tur Sonu spikerini görmedim. O hala işte mi?"
+		}
+		
+		"round has begun 10"
+		{
+			"en"			"The Quest stands upon the edge of a knife. Stray but a little, and it will fail"
+			"de"			"Das Abenteuer steht auf der Kante eines Messers. Komm nur ein wenig ab, und es wird scheitern"
+			"tr"			"Macera bıçağın kenarında duruyor. Başıboş ama biraz, ve başarısız olacak"
+		}
+	*/
+
+
+
+	/**
+	 * Menus
+	 * ----------------------------------------------------------------------------------------------------
+	 */
+
+	/**
+	 * Main Menu
+	 */
+	"menu queue points"
+	{
+		"#format"		"{1:d}"
+		"en"			"You have {1} queue points"
+		"tr"			"Senin {1} sıra puanın var"
+	}
+	
+	"menu item preferences"
+	{
+		"en"			"Preferences"
+		"tr"			"Tercihler"
+	}
+	
+	"menu item reset"
+	{
+		"en"			"Reset my queue points"
+		"tr"			"Sıra puanlarımı sıfırla"
+	}
+	
+	"menu item points"
+	{
+		"en"			"List queue points"
+		"tr"			"Sıra puanlarını listele"
+	}
+	
+	"menu item commands"
+	{
+		"en"			"Commands"
+		"tr"			"Puanlar"
+	}
+	
+	"menu item admin commands"
+	{
+		"en"			"Admin Commands"
+		"tr"			"Yönetim Komutları"
+	}
+	
+	"menu item admin fun stuff"
+	{
+		"en"			"Admin Fun Stuff"
+		"tr"			"Yönetim Eğlenceli Şeyler"
+	}
+	
+	
+	/**
+	 * Preferences Menu
+	 */
+	"menu full queue points"
+	{
+		"en"			"You currently receive full queue points"
+		"tr"			"Şuanlık tam sıra puanları alacaksın"
+	}
+	
+	"menu fewer queue points"
+	{
+		"en"			"You currently receive fewer queue points"
+		"tr"			"Şuanlık daha az sıra puanları alacaksın"
+	}
+	
+	"menu not the activator"
+	{
+		"en"			"You currently prefer not to be the activator"
+		"tr"			"Şuanlık aktivatör olmamayı tercih ediyorsun"
+	}
+	
+	"menu item full queue points"
+	{
+		"en"			"Receive full queue points"
+		"tr"			"Tam sıra puanları al"
+	}
+	
+	"menu item fewer queue points"
+	{
+		"en"			"Receive fewer queue points"
+		"tr"			"Daha az sıra puanları al"
+	}
+	
+	"menu item do not be activator"
+	{
+		"en"			"Don't be the activator"
+		"tr"			"Aktivatör olma"
+	}
+	
+	"menu item toggle english language"
+	{
+		"en"			"Toggle English SourceMod translations"
+		"tr"			"İngilizce SourceMod çevirilerini değiştir"
+	}
+	
+	
+	/**
+	 * Reset Points Menu
+	 */
+	"menu reset question"
+	{
+		"en"			"Are you sure you want to reset your queue points?"
+		"tr"			"Sıra puanlarını sıfırlamak istediğinden emin misin?"
+	}
+	
+	
+	/**
+	 * Commands Menu
+	 */
+	"menu item command points"
+	{
+		"en"			"sm_points / sm_pts\nShow your queue points in chat\n \n"
+		"tr"			"sm_points / sm_pts\nSenin sıra puanlarını sohbette göster\n \n"
+	}
+	
+	"menu item command reset"
+	{
+		"en"			"sm_reset\nReset your queue points immediately\n \n"
+		"tr"			"sm_reset\nHemen senin sıra puanlarını sıfırla\n \n"
+	}
+	
+	"menu item command prefs"
+	{
+		"en"			"sm_prefs\nQuickly change your queue points preference.\n0 = Don't receive queue points,\n1 = Receive fewer queue points,\n2 = Receive full queue points.\n \n"
+		"tr"			"sm_prefs\nHızlıca senin sıra puanları tercihlerini değiştir.\n0 = Sıra puanları alma,\n1 = Daha az sıra puanları al,\n2 = Tam sıra puanları al.\n \n"
+	}
+	
+	
+	/**
+	 * Admin Commands Menu
+	 */
+	"menu item admin command award"
+	{
+		"en"			"sm_draward\nAward queue points to a player\n \n"
+		"tr"			"sm_draward\nBir oyuncuya puanlar ödül ver\n \n"
+	}
+	
+	"menu item admin command setclass"
+	{
+		"en"			"sm_setclass\nChange the TF2 class of targets\n \n"
+		"tr"			"sm_setclass\nHedeflerin TF2 sınıfını değiştir\n \n"
+	}
+	
+	"menu item admin command drdata"
+	{
+		"en"			"sm_drdata\nShow player data in the console for debugging\n \n"
+		"tr"			"sm_drdata\nOnarmak için oyuncu verisini konsolda göster\n \n"
+	}
+	
+	/*	Quarantined because it's not a command anymore
+		"menu item admin command drscalehealth"
+		{
+			"en"			"sm_drscalehealth\nScale the activator's health up based\non the number of red players alive\n \n"
+			"tr"			"sm_drscalehealth\nAktivatörün canını yaşayan kırmızı oyuncuların sayısına göre ölçekle\n \n"
+		}
+	*/
+	
+	
+	/**
+	 * Admin Fun Stuff Menu
+	 */
+	
+	"menu item admin fun stuff scale activator health"
+	{
+		"en"			"Scale the activator's health"
+		"tr"			"Aktivatör'ün canını ölçekle"
+	}
+	
+	"menu item admin fun stuff jetpack game"
+	{
+		"en"			"Jetpack Game"
+		"tr"			"Jet çantası Oyunu"
+	}
+
+	
+	/**
+	 * Common Items
+	 */
+	"menu item yes"
+	{
+		"en"			"Yes"
+		"tr"			"Evet"
+	}
+	
+	"menu item no"
+	{
+		"en"			"No"
+		"tr"			"Hayır"
+	}
+	
+	"menu item back"
+	{
+		"en"			"< Back"
+		"tr"			"< Geri"
+	}
+
+
+
+	/**
+	 * Warnings
+	 * ----------------------------------------------------------------------------------------------------
+	 */
+
+	"blue no escape"
+	{
+		"en"			"Sorry, you can't suicide as the activator or switch teams"
+		"de"			"Entschuldigung, Du kannst als Aktivierer kein suizid begehen oder das Team ändern"
+		"tr"			"Üzgünüm, aktivatör olarak intihar edemez yada takım değiştiremezsin"
+	}
+	
+	
+
+	/**
+	 * Attributes
+	 * ----------------------------------------------------------------------------------------------------
+	 */
+
+	"class default run speed"	// Console
+	{
+		"en"			"Your run speed is class default"
+		"de"			"Deine Laufgeschwindigkeit ist dein Klassenstandard"
+		"tr"			"Senin koşma hızın sınıf varsayılanı"
+	}
+
+	"red scout double jump disabled"	// Console
+	{
+		"en"			"Red scout double jump has been disabled"
+		"de"			"Doppelsprünge wurden deaktiviert"
+		"tr"			"Kırmızı scout takım çift zıplayışı devre dışı bırakıldı"
+	}
+	
+	"red spy cloak limited"
+	{
+		"en"			"Red spy cloaks are limited"
+		"de"			"Spion-Unsichtbarkeitsmäntel sind begrenzt"
+		"tr"			"Kırmızı spy saatleri limitlendirildi"
+	}
+
+	"red demo charge limited"
+	{
+		"en"			"Red demo charges are limited"
+		"de"			"Demo-Sturmangriffe sind begrenzt"
+		"tr"			"Kırmızı demo sarjları limitlendirildi"
+	}
+	
+	"red demo charge disabled"
+	{
+		"en"			"Red demo charges are turned off"
+		"de"			"Demo-Sturmangriffe sind ausgeschaltet"
+		"tr"			"Kırmızı demo sarjları kapatıldı"
+	}
+	
+	
+	
+	/**
+	 * HUD Elements
+	 * ----------------------------------------------------------------------------------------------------
+	 */
+
+	"dtk_overheal"
+	{
+		"en"			"Overheal"
+	}
+	
+	"dtk_health"
+	{
+		"en"			"Health"
+	}
+	
+	
+	
+	/**
+	 * Credits
+	 * ----------------------------------------------------------------------------------------------------
+	 * 
+	 * German (de): Izotope
+	 * Turkish (tr): Berke
+	 */
+}

@@ -1,0 +1,124 @@
+/*
+	How VSh Does Points and Flags
+	=============================
+
+	VSH does not hook the player_connect or disconnect events, and it does not use OnClientAuthorized or OnClientConnect.
+*/
+
+public OnClientPostAdminCheck(client)
+{
+    VSHFlags[client] = 0;
+}
+
+public OnClientDisconnect(client)
+{
+    VSHFlags[client] = 0;
+    if (g_bEnabled)
+    {
+        if (client == Hale)
+        {
+            if (VSHRoundState >= VSHRState_Active)
+            {
+                decl String:authid[32];
+                GetClientAuthId(client, AuthId_Steam2, authid, sizeof(authid));
+                new Handle:pack;
+                CreateDataTimer(3.0, Timer_SetDisconQueuePoints, pack, TIMER_FLAG_NO_MAPCHANGE);
+                WritePackString(pack, authid);
+                new bool:see[TF_MAX_PLAYERS];
+                see[Hale] = true;
+                new tHale = FindNextHale(see);
+                if (NextHale > 0)
+                {
+                    tHale = NextHale;
+                }
+                if (IsValidClient(tHale))
+                {
+                    ChangeTeam(tHale, HaleTeam);
+                }
+            }
+            if (VSHRoundState == VSHRState_Active)
+            {
+                ForceTeamWin(OtherTeam);
+            }
+            if (VSHRoundState == VSHRState_Waiting)
+            {
+                new bool:see[TF_MAX_PLAYERS];
+                see[Hale] = true;
+                new tHale = FindNextHale(see);
+                if (NextHale > 0)
+                {
+                    tHale = NextHale;
+                    NextHale = -1;
+                }
+                if (IsValidClient(tHale))
+                {
+                    Hale = tHale;
+                    ChangeTeam(Hale, HaleTeam);
+                    CreateTimer(0.1, MakeHale);
+                    CPrintToChat(Hale, "{olive}[VSH]{default} Surprise! You're on NOW!");
+                }
+            }
+            CPrintToChatAll("{olive}[VSH]{default} %t", "vsh_hale_disconnected");
+        }
+        else
+        {
+            if (IsClientInGame(client))
+            {
+                if (IsPlayerAlive(client)) CreateTimer(0.0, CheckAlivePlayers);
+                if (client == FindNextHaleEx()) CreateTimer(1.0, Timer_SkipHalePanel, _, TIMER_FLAG_NO_MAPCHANGE);
+            }
+            if (client == NextHale)
+            {
+                NextHale = -1;
+            }
+        }
+    }
+}
+
+// VSH uses several client cookies. According to the declarations, there is a cookie each for points, music preference, voice preference and class help info.
+
+public OnPluginStart()
+{
+	PointCookie = RegClientCookie("hale_queuepoints1", "Amount of VSH Queue points player has", CookieAccess_Protected);
+	MusicCookie = RegClientCookie("hale_music_setting", "HaleMusic setting", CookieAccess_Public);
+	VoiceCookie = RegClientCookie("hale_voice_setting", "HaleVoice setting", CookieAccess_Public);
+	ClasshelpinfoCookie = RegClientCookie("hale_classinfo", "HaleClassinfo setting", CookieAccess_Public);
+}
+
+/*
+	The mod appears to have three functions to get and set queue points.
+
+	The first function is used by some functions to get the queue points prior to setting them. For example, when giving a player points using a command.
+	A function named FindNextHale grabs the client's points in a for loop.
+	Points are never stored in an array and are only grabbed when needed. It should be possible to replace the function with a custom function.
+*/
+
+GetClientQueuePoints(client)
+{
+    if (!IsValidClient(client)) return 0;
+    if (IsFakeClient(client))
+    {
+        return botqueuepoints;
+    }
+    if (!AreClientCookiesCached(client)) return 0;
+    decl String:strPoints[MAX_DIGITS];
+    GetClientCookie(client, PointCookie, strPoints, sizeof(strPoints));
+    return StringToInt(strPoints);
+}
+
+SetClientQueuePoints(client, points)
+{
+    if (!IsValidClient(client)) return;
+    if (IsFakeClient(client)) return;
+    if (!AreClientCookiesCached(client)) return;
+    decl String:strPoints[MAX_DIGITS];
+    IntToString(points, strPoints, sizeof(strPoints));
+    SetClientCookie(client, PointCookie, strPoints);
+}
+
+SetAuthIdQueuePoints(String:authid[], points)
+{
+    decl String:strPoints[MAX_DIGITS];
+    IntToString(points, strPoints, sizeof(strPoints));
+    SetAuthIdCookie(authid, PointCookie, strPoints);
+}
