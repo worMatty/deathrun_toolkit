@@ -168,8 +168,8 @@ env_entity_dissolver Properties
 Type:
 0	Combine energy ball
 1	Combine energy ball but ragdoll does not float
-2	Same as 2
-3	Same as 2 but happens very fast
+2	Same as 1
+3	Same as 1 but happens very fast
 
 Only three real properties
 

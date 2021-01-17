@@ -54,8 +54,8 @@
 #define DRENT_PROPERTIES			"deathrun_properties"		// logic_case
 #define DRENT_SETTINGS				"deathrun_settings"			// logic_case
 #define DTKENT_BRANCH				"dtk_enabled"				// logic_branch for DTK-specific functions
-#define DTKENT_HEALTHSCALE_MAX		"dtk_health_scalemax"		// logic_relay
-#define DTKENT_HEALTHSCALE_OVERHEAL	"dtk_health_scaleoverheal"	// logic_relay
+#define DTKENT_HEALTHSCALE_MAX		"dtk_health_scalemax"		// logic_relay - DEPRECATED
+#define DTKENT_HEALTHSCALE_OVERHEAL	"dtk_health_scaleoverheal"	// logic_relay - DEPRECATED
 
 
 
@@ -165,6 +165,7 @@ enum {
 	
 	// Work-in-Progress Features
 	P_BlueBoost,
+	P_ActivatorRatio,
 	
 	ConVars_Max
 }

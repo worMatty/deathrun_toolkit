@@ -11,8 +11,7 @@
  */
 void FunStuff_ScaleHealth()
 {
-	Player activator = new Player(g_iBoss);
-	activator.ScaleHealth();
+	Player(g_iBoss).ScaleHealth();
 }
 
 
@@ -27,29 +26,27 @@ void FunStuff_JetpackGame()
 {
 	for (int i = 1; i <= MaxClients; i++)
 	{
-		Player player = new Player(i);
-		
-		if (player.InGame && player.Team == Team_Red)
+		if (Player(i).InGame && Player(i).Team == Team_Red)
 		{
 			//int weapon = player.GetWeapon(Weapon_Secondary);
 			//if (weapon != -1) RemoveEdict(weapon);
-			player.SetClass(Class_Pyro);
-			player.SetSpeed(150);
+			Player(i).SetClass(Class_Pyro);
+			Player(i).SetSpeed(150);
 			
-			RequestFrame(RequestFrame_Jetpacks, player);
+			RequestFrame(RequestFrame_Jetpacks, i);
 		}
 	}
 }
 
-void RequestFrame_Jetpacks(Player player)
+void RequestFrame_Jetpacks(int client)
 {
-	int weapon = player.GetWeapon(Weapon_Secondary);
+	int weapon = Player(client).GetWeapon(Weapon_Secondary);
 	
-	weapon = ReplaceWeapon(player.Index, weapon, 1179, "tf_weapon_rocketpack");
+	weapon = ReplaceWeapon(client, weapon, 1179, "tf_weapon_rocketpack");
 	
 	if (weapon != -1)
 	{
 		TF2Attrib_SetByName(weapon, "item_meter_charge_rate", 0.01);
-		player.SetSlot(Weapon_Secondary);
+		Player(client).SetSlot(Weapon_Secondary);
 	}
 }

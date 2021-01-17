@@ -97,26 +97,24 @@ stock void SetUpEnts()
 
 void AdjustPreference(int client, int selection)
 {
-	Player player = new Player(client);
-	
 	switch (selection)
 	{
 		case 0:
 		{
-			player.RemoveFlag(FLAG_PREF_ACTIVATOR);
-			player.RemoveFlag(FLAG_PREF_FULLQP);
+			Player(client).RemoveFlag(FLAG_PREF_ACTIVATOR);
+			Player(client).RemoveFlag(FLAG_PREF_FULLQP);
 			ChatMessage(client, Msg_Reply, "%t", "no longer receive queue points");
 		}
 		case 1:
 		{
-			player.AddFlag(FLAG_PREF_ACTIVATOR);
-			player.RemoveFlag(FLAG_PREF_FULLQP);
+			Player(client).AddFlag(FLAG_PREF_ACTIVATOR);
+			Player(client).RemoveFlag(FLAG_PREF_FULLQP);
 			ChatMessage(client, Msg_Reply, "%t", "you will now receive fewer queue points");
 		}
 		case 2:
 		{
-			player.AddFlag(FLAG_PREF_ACTIVATOR);
-			player.AddFlag(FLAG_PREF_FULLQP);
+			Player(client).AddFlag(FLAG_PREF_ACTIVATOR);
+			Player(client).AddFlag(FLAG_PREF_FULLQP);
 			ChatMessage(client, Msg_Reply, "%t", "you will receive the maximum amount of queue points");
 		}
 	}	
@@ -201,17 +199,15 @@ void RedistributePlayers()
 	// Move all blue players to the red team
 	for (int i = 1; i <= MaxClients; i++)
 	{
-		Player player = new Player(i);
-		if (player.InGame && player.Team == Team_Blue)
-			player.SetTeam(Team_Red);
+		if (Player(i).InGame && Player(i).Team == Team_Blue)
+			Player(i).SetTeam(Team_Red);
 	}
 
 	int prefers;
 	
 	for (int i = 1; i <= MaxClients; i++)
 	{
-		Player player = new Player(i);
-		if (player.HasFlag(FLAG_PREF_ACTIVATOR))
+		if (Player(i).HasFlag(FLAG_PREF_ACTIVATOR))
 			prefers += 1;
 	}
 	
@@ -241,9 +237,8 @@ void SelectActivatorPoints()
 	
 	for (int i = 0; i < MaxClients; i++)
 	{
-		Player player = new Player(i + 1);
-		points_order[i][0] = player.Index;
-		points_order[i][1] = player.Points;
+		points_order[i][0] = Player(i + 1).Index;
+		points_order[i][1] = Player(i + 1).Points;
 	}
 	
 	SortCustom2D(points_order, MaxClients, SortByPoints);
@@ -251,25 +246,34 @@ void SelectActivatorPoints()
 	// If we need activators and have enough on red to supply and not empty the team, move someone
 	int i = 0;
 	
-	while (game.Blues < g_ConVars[P_Activators].IntValue && game.Reds > 1)
+	// TODO Test this
+	int activators = g_ConVars[P_Activators].IntValue;
+	if (g_ConVars[P_Activators].IntValue == -1)
 	{
-		Player player = new Player(points_order[i][0]);
+		activators = RoundFloat(game.Participants * g_ConVars[P_ActivatorRatio].FloatValue);
+		ClampInt(activators, 1, game.Participants - 1);
+		Debug("There are %d participants and the ratio is %f so we need %d activators", game.Participants, g_ConVars[P_ActivatorRatio].FloatValue, activators);
+	}
+	
+	while (game.Blues < activators && game.Reds > 1)
+	{
+		int player = points_order[i][0];
 		
-		if (player.InGame && player.Team == Team_Red && player.HasFlag(FLAG_PREF_ACTIVATOR))
+		if (Player(player).InGame && Player(player).Team == Team_Red && Player(player).HasFlag(FLAG_PREF_ACTIVATOR))
 		{
-			PrintToServer("%s The points-based activator selection system has selected %N", PREFIX_SERVER, player.Index);
+			PrintToServer("%s The points-based activator selection system has selected %N", PREFIX_SERVER, player);
 			if (g_bSCR && g_ConVars[P_SCR].BoolValue)
-				SCR_SendEvent(PREFIX_SERVER, "%N is now the activator", player.Index);
-			player.AddFlag(FLAG_ACTIVATOR);
-			if (player.HasFlag(FLAG_ACTIVATOR))
-				Debug("%N has been given FLAG_ACTIVATOR", player.Index);
-			player.SetTeam(Team_Blue);
-			player.SetPoints(QP_Consumed);
-			ChatMessage(player.Index, Msg_Reply, "%t", "queue points consumed");
-			g_iBoss = player.Index;
+				SCR_SendEvent(PREFIX_SERVER, "%N is now the activator", player);
+			Player(player).AddFlag(FLAG_ACTIVATOR);
+			if (Player(player).HasFlag(FLAG_ACTIVATOR))
+				Debug("%N has been given FLAG_ACTIVATOR", player);
+			Player(player).SetTeam(Team_Blue);
+			Player(player).SetPoints(QP_Consumed);
+			ChatMessage(player, Msg_Reply, "%t", "queue points consumed");
+			g_iBoss = player;
 			
 			if (g_ConVars[P_BlueBoost].BoolValue)
-				ChatMessage(player.Index, Msg_Reply, "Bind +speed to use the Activator speed boost");
+				ChatMessage(player, Msg_Reply, "Bind +speed to use the Activator speed boost");
 		}
 		
 		if (i == MaxClients - 1)
@@ -319,36 +323,43 @@ void SelectActivatorPoints()
  */
 void SelectActivatorTurn()
 {
-	static int turn = 1;
+	static int client = 1;
 	
 	//if (client > MaxClients)
 		//client = 1;
 	
-	// If we need activators and have enough on red to supply and not empty the team, move someone
-	while (game.Blues < g_ConVars[P_Activators].IntValue && game.Reds > 1)
+	// TODO Test this
+	int activators = g_ConVars[P_Activators].IntValue;
+	if (g_ConVars[P_Activators].IntValue == -1)
 	{
-		Player player = new Player(turn);
-		
-		if (player.InGame && player.Team == Team_Red)
+		activators = RoundFloat(game.Participants * g_ConVars[P_ActivatorRatio].FloatValue);
+		ClampInt(activators, 1, game.Participants - 1);
+		Debug("There are %d participants and the ratio is %f so we need %d activators", game.Participants, g_ConVars[P_ActivatorRatio].FloatValue, activators);
+	}
+	
+	// If we need activators and have enough on red to supply and not empty the team, move someone
+	while (game.Blues < activators && game.Reds > 1)
+	{
+		if (Player(client).InGame && Player(client).Team == Team_Red)
 		{
-			PrintToServer("%s The turn-based activator selection system has selected %N", PREFIX_SERVER, player.Index);
+			PrintToServer("%s The turn-based activator selection system has selected %N", PREFIX_SERVER, client);
 			if (g_bSCR && g_ConVars[P_SCR].BoolValue)
-				SCR_SendEvent(PREFIX_SERVER, "%N is now the activator", player.Index);
-			player.AddFlag(FLAG_ACTIVATOR);
-			if (player.HasFlag(FLAG_ACTIVATOR))
-				Debug("Selected activator %N has been given FLAG_ACTIVATOR", player.Index);
-			player.SetTeam(Team_Blue);
-			g_iBoss = player.Index;
-			Debug("Set g_iBoss to %d (%N)", player.Index, player.Index);
+				SCR_SendEvent(PREFIX_SERVER, "%N is now the activator", client);
+			Player(client).AddFlag(FLAG_ACTIVATOR);
+			if (Player(client).HasFlag(FLAG_ACTIVATOR))
+				Debug("Selected activator %N has been given FLAG_ACTIVATOR", client);
+			Player(client).SetTeam(Team_Blue);
+			g_iBoss = client;
+			Debug("Set g_iBoss to %d (%N)", client, client);
 			
 			if (g_ConVars[P_BlueBoost].BoolValue)
-				ChatMessage(player.Index, Msg_Reply, "Bind +speed to use the Activator speed boost");
+				ChatMessage(client, Msg_Reply, "Bind +speed to use the Activator speed boost");
 		}
 		
-		if (turn == MaxClients)
-			turn = 1;
+		if (client == MaxClients)
+			client = 1;
 		else
-			turn++;
+			client++;
 	}
 	
 	// If running in Open Fortress or TF2C, respawn all players
@@ -399,56 +410,56 @@ void SelectActivatorTurn()
  * 
  * @noreturn
  */
-void ApplyPlayerAttributes(Player player)
+void ApplyPlayerAttributes(int client)
 {
 	if (!game.IsGame(FLAG_TF))
 		return;
 
 	// Reset player attributes
-	if (RemoveAllAttributes(player.Index))
-		Debug("Removed all attributes from %N", player.Index);
+	if (RemoveAllAttributes(client))
+		Debug("Removed all attributes from %N", client);
 
 	// Blue Speed
-	if (player.Team == Team_Blue)
+	if (Player(client).Team == Team_Blue)
 		if (g_ConVars[P_BlueSpeed].FloatValue != 0.0)
-			player.SetSpeed(g_ConVars[P_BlueSpeed].IntValue);
+			Player(client).SetSpeed(g_ConVars[P_BlueSpeed].IntValue);
 
 	// Red
-	if (player.Team == Team_Red)
+	if (Player(client).Team == Team_Red)
 	{
 		// Red Speed
 		if (g_ConVars[P_RedSpeed].FloatValue != 0.0)
-			player.SetSpeed(g_ConVars[P_RedSpeed].IntValue);
+			Player(client).SetSpeed(g_ConVars[P_RedSpeed].IntValue);
 		
 		// Red Scout Speed
-		else if (g_ConVars[P_RedScoutSpeed].FloatValue != 0.0 && player.Class == Class_Scout)
-			player.SetSpeed(g_ConVars[P_RedScoutSpeed].IntValue);
+		else if (g_ConVars[P_RedScoutSpeed].FloatValue != 0.0 && Player(client).Class == Class_Scout)
+			Player(client).SetSpeed(g_ConVars[P_RedScoutSpeed].IntValue);
 		
 		// Double Jump
-		if (g_ConVars[P_RedAirDash].BoolValue == false && player.Class == Class_Scout)
-			AddAttribute(player.Index, "no double jump", 1.0);
+		if (g_ConVars[P_RedAirDash].BoolValue == false && Player(client).Class == Class_Scout)
+			AddAttribute(client, "no double jump", 1.0);
 		
 		// Spy Cloak
-		if (player.Class == Class_Spy)
+		if (Player(client).Class == Class_Spy)
 		{
-			AddAttribute(player.Index, "mult cloak meter consume rate", 8.0);
-			AddAttribute(player.Index, "mult cloak meter regen rate", 0.25);
+			AddAttribute(client, "mult cloak meter consume rate", 8.0);
+			AddAttribute(client, "mult cloak meter regen rate", 0.25);
 		}
 
 		// Demo Charging
-		if (player.Class == Class_DemoMan)
+		if (Player(client).Class == Class_DemoMan)
 		{
 			switch (2)
 			{
 				case 0:
 				{
-					AddAttribute(player.Index, "charge time decreased", -1000.0);
-					AddAttribute(player.Index, "charge recharge rate increased", 0.0);
+					AddAttribute(client, "charge time decreased", -1000.0);
+					AddAttribute(client, "charge recharge rate increased", 0.0);
 				}
 				case 2:
 				{
-					AddAttribute(player.Index, "charge time decreased", -0.95);
-					AddAttribute(player.Index, "charge recharge rate increased", 0.2);
+					AddAttribute(client, "charge time decreased", -0.95);
+					AddAttribute(client, "charge recharge rate increased", 0.2);
 				}
 			}
 		}
@@ -557,104 +568,103 @@ stock void ProcessLogicCase(const char[] output, int caller, int activator, floa
 stock void ProcessMapInstruction(int client, const char[] instruction, const char[] properties)
 {
 	char buffers[16][256];
-	Player player = new Player(client);
 	ExplodeString(properties, ",", buffers, 16, 256, true);
 
 	if (StrEqual(instruction, "weapon", false))
 	{
-		int weapon = player.GetWeapon(StringToInt(buffers[0]));
+		int weapon = Player(client).GetWeapon(StringToInt(buffers[0]));
 		if (weapon != -1)
 		{
-			ReplaceWeapon(player.Index, weapon, StringToInt(buffers[1]), buffers[2]);
+			ReplaceWeapon(Player(client).Index, weapon, StringToInt(buffers[1]), buffers[2]);
 		}
 	}
 	
 	if (StrEqual(instruction, "remove_weapon", false))
 	{
-		int weapon = player.GetWeapon(StringToInt(buffers[0]));
+		int weapon = Player(client).GetWeapon(StringToInt(buffers[0]));
 		if (weapon != -1)
 		{
 			RemoveEdict(weapon);
-			Debug("Removed %N's weapon in slot %s", player.Index, buffers[0]);
+			Debug("Removed %N's weapon in slot %s", client, buffers[0]);
 		}
 	}
 	
 	if (StrEqual(instruction, "weapon_attribute", false))
 	{
-		int weapon = player.GetWeapon(StringToInt(buffers[0]));
+		int weapon = Player(client).GetWeapon(StringToInt(buffers[0]));
 		if (weapon != -1)
 		{
 			int itemDefIndex = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
 			if (itemDefIndex == StringToInt(buffers[1]))
 			{
 				bool success = TF2Attrib_SetByName(weapon, buffers[2], StringToFloat(buffers[3]));
-				if (success) Debug("Set an attribute on a weapon belonging to %N (%s with value %f)", player.Index, buffers[2], StringToFloat(buffers[3]));
+				if (success) Debug("Set an attribute on a weapon belonging to %N (%s with value %f)", client, buffers[2], StringToFloat(buffers[3]));
 			}
 		}
 	}
 	
 	if (StrEqual(instruction, "switch_to_slot", false))
 	{
-		player.SetSlot(StringToInt(buffers[0]));
+		Player(client).SetSlot(StringToInt(buffers[0]));
 	}
 	
 	if (StrEqual(instruction, "class", false))
 	{
 		int class = ProcessClassString(buffers[0]);
-		player.SetClass(class);
+		Player(client).SetClass(class);
 	}
 	
 	if (StrEqual(instruction, "speed", false))
 	{
-		player.SetSpeed(StringToInt(buffers[0]));
+		Player(client).SetSpeed(StringToInt(buffers[0]));
 	}
 	
 	if (StrEqual(instruction, "health", false))
 	{
-		player.SetHealth(StringToInt(buffers[0]));
+		Player(client).SetHealth(StringToInt(buffers[0]));
 	}
 	
 	if (StrEqual(instruction, "maxhealth", false))
 	{
-		player.SetMaxHealth(StringToFloat(buffers[0]));
+		Player(client).SetMaxHealth(StringToFloat(buffers[0]));
 	}
 	
 	if (StrEqual(instruction, "scalehealth", false))
 	{
 		// Scale max health - plugin default
 		if (buffers[0][0] == '\0' || StrEqual(buffers[0], "pool", false))
-			player.ScaleHealth(3);
+			Player(client).ScaleHealth(3);
 		
 		if (StrEqual(buffers[0], "overheal", false))
-			player.ScaleHealth(1);
+			Player(client).ScaleHealth(1);
 	}
 	
 	if (StrEqual(instruction, "movetype", false))
 	{
 		if (StrEqual(buffers[0], "fly", false))
 		{
-			SetEntityMoveType(player.Index, MOVETYPE_FLY);
+			SetEntityMoveType(client, MOVETYPE_FLY);
 		}
 		if (StrEqual(buffers[0], "walk", false))
 		{
-			SetEntityMoveType(player.Index, MOVETYPE_WALK);
+			SetEntityMoveType(client, MOVETYPE_WALK);
 		}
 	}
 	
 	if (StrEqual(instruction, "message", false))
 	{
-		ChatMessage(player.Index, Msg_Normal, "%s", buffers[0]);
+		ChatMessage(client, Msg_Normal, "%s", buffers[0]);
 	}
 	
 	if (StrEqual(instruction, "meleeonly", false))
 	{
 		if (StrEqual(buffers[0], "yes", false))
 		{
-			player.MeleeOnly();
+			Player(client).MeleeOnly();
 		}
 		if (StrEqual(buffers[0], "no", false))
 		{
-			player.MeleeOnly(false);
+			Player(client).MeleeOnly(false);
 		}
 	}
 }
@@ -679,8 +689,7 @@ void DisplayNextActivators()
 	
 	for (int i = 1; i <= MaxClients; i++)
 	{
-		Player player = new Player(i);
-		if (player.HasFlag(FLAG_PREF_ACTIVATOR))
+		if (Player(i).HasFlag(FLAG_PREF_ACTIVATOR))
 			willing += 1;
 	}
 	
@@ -694,9 +703,8 @@ void DisplayNextActivators()
 	// Populate with player data
 	for (int i = 0; i < MaxClients; i++)
 	{
-		Player player = new Player(i + 1);
-		points_order[i][0] = player.Index;
-		points_order[i][1] = player.Points;
+		points_order[i][0] = i + 1;
+		points_order[i][1] = Player(i + 1).Points;
 	}
 	
 	// Sort by points descending
@@ -708,13 +716,13 @@ void DisplayNextActivators()
 	
 	for (int i = 0; i < MaxClients && count < 3; i++)
 	{
-		Player player = new Player(points_order[i][0]);
+		int player = points_order[i][0];
 		//client = points_order[i][0];
 	
-		if (player.InGame && player.IsParticipating && points_order[i][1] > 0 && player.HasFlag(FLAG_PREF_ACTIVATOR))
+		if (Player(player).InGame && Player(player).IsParticipating && points_order[i][1] > 0 && Player(player).HasFlag(FLAG_PREF_ACTIVATOR))
 		//if (IsClientInGame(client) && points_order[i][1] > 0 && (g_iFlags[client] & PREF_ACTIVATOR) == PREF_ACTIVATOR)
 		{
-			players[count] = player.Index;
+			players[count] = player;
 			//players[count] = client;
 			count++;
 		}
@@ -900,9 +908,8 @@ void ConVar_ChangeHook(ConVar convar, const char[] oldValue, const char[] newVal
 	{
 		for (int i = 1; i <= MaxClients; i++)
 		{
-			Player player = new Player(i);
-			if (player.InGame && player.Team == Team_Red)
-				player.MeleeOnly(convar.BoolValue);
+			if (Player(i).InGame && Player(i).Team == Team_Red)
+				Player(i).MeleeOnly(convar.BoolValue);
 		}
 	}
 	
@@ -911,9 +918,8 @@ void ConVar_ChangeHook(ConVar convar, const char[] oldValue, const char[] newVal
 	{
 		for (int i = 1; i <= MaxClients; i++)
 		{
-			Player player = new Player(i);
-			if (player.InGame && player.Team == Team_Red)
-				player.SetSpeed(convar.IntValue);
+			if (Player(i).InGame && Player(i).Team == Team_Red)
+				Player(i).SetSpeed(convar.IntValue);
 		}
 	}
 }
@@ -1084,9 +1090,8 @@ stock void SetHealthBar(int health = 0, int maxhealth = 0, int entity = 0)
 	}
 	else
 	{
-		Player player = new Player(entity);
-		if (player.IsValid)
-			HealthText("%N: %d", player.Index, health);
+		if (Player(entity).IsValid)
+			HealthText("%N: %d", entity, health);
 		else
 			HealthText("%t: %d", "dtk_health", health);
 	}
@@ -1140,8 +1145,7 @@ stock void HealthText(const char[] string = "", any ...)
  */
 stock void UpdateHealthBar(int client)
 {
-	Player player = new Player(client);
-	SetHealthBar(player.Health, player.MaxHealth, player.Index);
+	SetHealthBar(Player(client).Health, Player(client).MaxHealth, client);
 }
 
 

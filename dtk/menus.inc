@@ -15,7 +15,6 @@ stock Action Command_NewMenu(int client, int args)
 */
 stock void NewMenuFunction(int client, const char[] sMenu)
 {
-	Player player = new Player(client);
 	Menu menu = new Menu(NewMenuHandler, MenuAction_DisplayItem);
 	char title[256];
 	
@@ -27,9 +26,9 @@ stock void NewMenuFunction(int client, const char[] sMenu)
 	 */
 	if (StrEqual(sMenu, "menu_main"))
 	{
-		if (player.HasFlag(FLAG_PREF_ACTIVATOR))
+		if (Player(client).HasFlag(FLAG_PREF_ACTIVATOR))
 	 	{
-	 		Format(title, sizeof(title), "%s%T\n \n", title, "menu queue points", player.Index, player.Points);
+	 		Format(title, sizeof(title), "%s%T\n \n", title, "menu queue points", client, Player(client).Points);
 	 	}
 		
 		menu.AddItem("menu_prefs", "menu item preferences");
@@ -50,17 +49,17 @@ stock void NewMenuFunction(int client, const char[] sMenu)
 	 */
 	if (StrEqual(sMenu, "menu_prefs"))
 	{
-		if (player.HasFlag(FLAG_PREF_ACTIVATOR) && player.HasFlag(FLAG_PREF_FULLQP))
+		if (Player(client).HasFlag(FLAG_PREF_ACTIVATOR) && Player(client).HasFlag(FLAG_PREF_FULLQP))
 	 	{
-	 		Format(title, sizeof(title), "%s%T\n \n", title, "menu full queue points", player.Index, player.Points);
+	 		Format(title, sizeof(title), "%s%T\n \n", title, "menu full queue points", client, Player(client).Points);
 	 	}
- 		else if (player.HasFlag(FLAG_PREF_ACTIVATOR) && !player.HasFlag(FLAG_PREF_FULLQP))
+ 		else if (Player(client).HasFlag(FLAG_PREF_ACTIVATOR) && !Player(client).HasFlag(FLAG_PREF_FULLQP))
 	 	{
-	 		Format(title, sizeof(title), "%s%T\n \n", title, "menu fewer queue points", player.Index, player.Points);
+	 		Format(title, sizeof(title), "%s%T\n \n", title, "menu fewer queue points", client, Player(client).Points);
 	 	}
 		else
 	 	{
-	 		Format(title, sizeof(title), "%s%T\n \n", title, "menu not the activator", player.Index);
+	 		Format(title, sizeof(title), "%s%T\n \n", title, "menu not the activator", client);
 	 	}
 		
 		menu.AddItem("prefs_full", "menu item full queue points");
@@ -89,7 +88,7 @@ stock void NewMenuFunction(int client, const char[] sMenu)
 	 */
 	if (StrEqual(sMenu, "menu_reset"))
 	{
-		Format(title, sizeof(title), "%s%T\n \n", title, "menu reset question", player.Index);
+		Format(title, sizeof(title), "%s%T\n \n", title, "menu reset question", client);
 		menu.AddItem("reset_yes", "menu item yes");
 		menu.AddItem("reset_no", "menu item no");
 	}
@@ -107,9 +106,9 @@ stock void NewMenuFunction(int client, const char[] sMenu)
 		
 		for (int i = 0; i < MaxClients; i++)
 		{
-			Player iPlayer = new Player(i + 1);
-			points_order[i][0] = iPlayer.Index;
-			points_order[i][1] = iPlayer.Points;
+			int iPlayer = i + 1;
+			points_order[i][0] = Player(iPlayer).Index;
+			points_order[i][1] = Player(iPlayer).Points;
 		}
 		
 		SortCustom2D(points_order, MaxClients, SortByPoints);
@@ -118,10 +117,10 @@ stock void NewMenuFunction(int client, const char[] sMenu)
 		
 		for (int i = 0; i < MaxClients; i++)
 		{
-			Player iPlayer = new Player(points_order[i][0]);
-			if (iPlayer.InGame && iPlayer.HasFlag(FLAG_PREF_ACTIVATOR))
+			int iPlayer = points_order[i][0];
+			if (Player(iPlayer).InGame && Player(iPlayer).HasFlag(FLAG_PREF_ACTIVATOR))
 			{
-				Format(sItem, sizeof(sItem), "%N: %d", iPlayer.Index, iPlayer.Points);
+				Format(sItem, sizeof(sItem), "%N: %d", iPlayer, Player(iPlayer).Points);
 				menu.AddItem("points_item", sItem, ITEMDRAW_DISABLED);
 			}
 		}

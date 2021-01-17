@@ -12,9 +12,7 @@ Action Command_ShowPoints(int client, int args)
 	if (!g_ConVars[P_Enabled].BoolValue)
 		return Plugin_Handled;
 	
-	Player player = new Player(client);
-	
-	ChatMessage(client, Msg_Reply, "%t", "you have i points", player.Points);
+	ChatMessage(client, Msg_Reply, "%t", "you have i points", Player(client).Points);
 	
 	return Plugin_Handled;
 }
@@ -27,17 +25,15 @@ Action Command_ResetPoints(int client, int args)
 	if (!g_ConVars[P_Enabled].BoolValue)
 		return Plugin_Continue;
 	
-	Player player = new Player(client);
-	
-	if (player.Points >= 0)
+	if (Player(client).Points >= 0)
 	{
-		player.SetPoints(QP_Consumed);
-		ChatMessage(player.Index, Msg_Reply, "%t", "points have been reset to i", player.Points);
-		Debug("%N has reset their points using /reset", player.Index);
+		Player(client).SetPoints(QP_Consumed);
+		ChatMessage(client, Msg_Reply, "%t", "points have been reset to i", Player(client).Points);
+		Debug("%N has reset their points using /reset", client);
 	}
 	else
 	{
-		ChatMessage(player.Index, Msg_Reply, "%t", "points cannot be reset");
+		ChatMessage(client, Msg_Reply, "%t", "points cannot be reset");
 	}
 	
 	return Plugin_Handled;
@@ -53,13 +49,12 @@ Action Command_Preferences(int client, int args)
 	
 	if (args < 1)
 	{
-		Player player = new Player(client);
-		if (!player.HasFlag(FLAG_PREF_ACTIVATOR))
+		if (!Player(client).HasFlag(FLAG_PREF_ACTIVATOR))
 			ChatMessage(client, Msg_Reply, "%t", "current preference is to never be the activator");
 		else
-			ChatMessage(client, Msg_Reply, "%t", "current preference is to receive i points per round", (player.HasFlag(FLAG_PREF_FULLQP)) ? QP_Full : QP_Partial);
+			ChatMessage(client, Msg_Reply, "%t", "current preference is to receive i points per round", (Player(client).HasFlag(FLAG_PREF_FULLQP)) ? QP_Full : QP_Partial);
 		
-		PrintToConsole(client, " %s Your preference bit flags: Session: %06b Stored: %06b", PREFIX_SERVER, (player.Flags & MASK_SESSION_FLAGS), (player.Flags & MASK_STORED_FLAGS));
+		PrintToConsole(client, " %s Your preference bit flags: Session: %06b Stored: %06b", PREFIX_SERVER, (Player(client).Flags & MASK_SESSION_FLAGS), (Player(client).Flags & MASK_STORED_FLAGS));
 		return Plugin_Handled;
 	}
 	
@@ -82,11 +77,9 @@ Action Command_Preferences(int client, int args)
 // Toggle English language
 void Command_English(int client)
 {	
-	Player player = new Player(client);
-	
-	if (player.HasFlag(FLAG_PREF_ENGLISH))
+	if (Player(client).HasFlag(FLAG_PREF_ENGLISH))
 	{
-		player.RemoveFlag(FLAG_PREF_ENGLISH);
+		Player(client).RemoveFlag(FLAG_PREF_ENGLISH);
 		char language[32];
 		if (GetClientInfo(client, "cl_language", language, sizeof(language)))
 		{
@@ -102,7 +95,7 @@ void Command_English(int client)
 	}
 	else
 	{
-		player.AddFlag(FLAG_PREF_ENGLISH);
+		Player(client).AddFlag(FLAG_PREF_ENGLISH);
 		ChatMessage(client, Msg_Reply, "Your language has been been set to English");
 		SetClientLanguage(client, 0);
 	}
@@ -123,12 +116,10 @@ Action AdminCommand_PlayerData(int client, int args)
 	
 	for (int i = 1; i <= MaxClients; i++)
 	{
-		Player player = new Player(i);
-		
-		if (player.InGame)
+		if (Player(i).InGame)
 		{
-			GetClientName(player.Index, name, sizeof(name));
-			steamid = player.SteamID;
+			GetClientName(i, name, sizeof(name));
+			steamid = Player(i).SteamID;
 		}
 		else
 		{
@@ -136,7 +127,7 @@ Action AdminCommand_PlayerData(int client, int args)
 			steamid = 0;
 		}
 		
-		PrintToConsole(client, " %5d | %7d | %10d | %32s | %6d | %06b %06b", player.Index, player.ArrayUserID, steamid, name, player.Points, ((player.Flags & MASK_SESSION_FLAGS) >> 16), (player.Flags & MASK_STORED_FLAGS));
+		PrintToConsole(client, " %5d | %7d | %10d | %32s | %6d | %06b %06b", i, Player(i).ArrayUserID, steamid, name, Player(i).Points, ((Player(i).Flags & MASK_SESSION_FLAGS) >> 16), (Player(i).Flags & MASK_STORED_FLAGS));
 			// This bit shift operation should take the resulting bits and shift them all down to the 'stored' range for display purposes
 	}
 	
@@ -189,8 +180,8 @@ Action AdminCommand_SetClass(int client, int args)
 	{
 		for (int i = 0; i < iTargetCount; i++)
 		{
-			Player player = new Player(iTarget[i]);
-			player.SetClass(class);
+			int player = iTarget[i];
+			Player(player).SetClass(class);
 			if (client == iTarget[i])
 				ChatMessage(iTarget[i], Msg_Reply, "You are now a %s", sClass);
 			else
@@ -233,8 +224,8 @@ Action AdminCommand_SetSpeed(int client, int args)
 	{
 		for (int i = 0; i < iTargetCount; i++)
 		{
-			Player player = new Player(iTarget[i]);
-			player.SetSpeed(speed);
+			int player = iTarget[i];
+			Player(player).SetSpeed(speed);
 			if (client == iTarget[i])
 				ChatMessage(iTarget[i], Msg_Reply, "Your speed has been set to %du/s", speed);
 			else
@@ -273,14 +264,13 @@ Action AdminCommand_AwardPoints(int client, int args)
 	}
 	else
 	{
-		Player player = new Player(iTarget);
-		player.AddPoints(iPoints);
+		Player(iTarget).AddPoints(iPoints);
 		char sTargetName[MAX_NAME_LENGTH];
 		GetClientName(client, sTargetName, sizeof(sTargetName));
 		
-		ChatMessage(iTarget, Msg_Reply, "%t", "received queue points from an admin", sTargetName, iPoints, player.Points);
+		ChatMessage(iTarget, Msg_Reply, "%t", "received queue points from an admin", sTargetName, iPoints, Player(iTarget).Points);
 		
-		ChatAdmins(Msg_Reply, "%N awarded %N %d queue points. New total: %d", client, iTarget, iPoints, player.Points);
+		ChatAdmins(Msg_Reply, "%N awarded %N %d queue points. New total: %d", client, iTarget, iPoints, Player(iTarget).Points);
 		LogMessage("%L awarded %L %d queue points", client, iTarget, iPoints);
 		
 		return Plugin_Handled;
@@ -342,8 +332,7 @@ Action AdminCommand_ResetUser(int client, int args)
 		else
 		{
 			ReplyToCommand(client, "%t Deleting %N from the database...", "prefix_reply", iTarget);
-			Player player = new Player(iTarget);
-			player.DeleteRecord(client);
+			Player(iTarget).DeleteRecord(client);
 		}
 	}
 	
@@ -434,7 +423,6 @@ Action CmdListener_Builds(int client, const char[] command, int args)
 
 	if (g_ConVars[P_Buildings].IntValue != 0)
 	{
-		Player player = new Player(client);
 		char arg1[2], arg2[2];
 		GetCmdArg(1, arg1, sizeof(arg1));
 		GetCmdArg(2, arg2, sizeof(arg2));
@@ -463,7 +451,7 @@ Action CmdListener_Builds(int client, const char[] command, int args)
 		}
 		
 		// build 3 is for backwards compatability of the deprecated build argument to build a tele exit
-		if (iArg1 == 3 && (g_ConVars[P_Buildings].IntValue & BUILDING_TELE_EXIT) == BUILDING_TELE_EXIT && player.Class == Class_Engineer)
+		if (iArg1 == 3 && (g_ConVars[P_Buildings].IntValue & BUILDING_TELE_EXIT) == BUILDING_TELE_EXIT && Player(client).Class == Class_Engineer)
 		{
 			ChatMessage(client, Msg_Reply, "Sorry, you aren't allowed to build teleporter exits");
 			return Plugin_Handled;

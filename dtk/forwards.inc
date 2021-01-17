@@ -83,7 +83,7 @@ public void OnPluginStart()
 	g_ConVars[P_ChatKillFeed]		= CreateConVar("dtk_kill_feed", "1", "Show clients what caused their death in chat");
 	g_ConVars[P_RoundStartMessage]	= CreateConVar("dtk_round_start_message", "1", "Show round start messages");
 	g_ConVars[P_BossBar]			= CreateConVar("dtk_boss_bar", "1", "Allow activator and entity health to be displayed as a boss health bar");
-	g_ConVars[P_Activators]			= CreateConVar("dtk_activators", "1", "Number of activators");
+	g_ConVars[P_Activators]			= CreateConVar("dtk_activators", "1", "Number of activators. -1 = use ratio set in dtk_wip_activator_ratio", _, true, -1.0, true, (MaxClients - 1.0));
 	g_ConVars[P_LockActivator]		= CreateConVar("dtk_lock_activator", "1", "Prevent activators from suiciding or switching teams during rounds");
 	//g_ConVars[P_Ghosts]				= CreateConVar("dtk_ghosts", "0", "When a player dies, make them ethereal and give them an outline visible to the dead");
 	
@@ -104,6 +104,7 @@ public void OnPluginStart()
 	
 	// Work-in-Progress Features
 	g_ConVars[P_BlueBoost]			= CreateConVar("dtk_wip_blue_boost", "0", "Allow Blue player to sprint using the +speed input");
+	g_ConVars[P_ActivatorRatio]		= CreateConVar("dtk_wip_activator_ratio", "0.2", "Activator ratio. Decimal fraction of the number of participants to become activators. e.g. 0.2 is one fifth of participants become an activator");
 	
 	if (!(game.IsGame(FLAG_OF)))			g_ConVars[S_FirstBlood]	= FindConVar("tf_arena_first_blood");
 	if (game.IsGame(FLAG_OF))				g_ConVars[S_Pushaway] 	= FindConVar("of_teamplay_collision");
@@ -143,13 +144,12 @@ public void OnPluginStart()
 		LogMessage("Plugin loaded late. Initialising the player data array");
 		for (int i = 1; i <= MaxClients; i++)
 		{
-			Player player = new Player(i);
-			if (player.InGame)
+			if (Player(i).InGame)
 			{
-				player.CheckArray();
+				Player(i).CheckArray();
 				
 				// Hook Player Damage Received
-				SDKHook(player.Index, SDKHook_OnTakeDamageAlive, Hook_OnTakeDamage);
+				SDKHook(i, SDKHook_OnTakeDamageAlive, Hook_OnTakeDamage);
 			}
 		}
 	}
@@ -172,9 +172,8 @@ public void OnPluginEnd()
 	{
 		for (int i = 1; i <= MaxClients; i++)
 		{
-			Player player = new Player(i);
-			if (player.InGame && !player.IsBot)
-				player.SaveData();
+			if (Player(i).InGame && !Player(i).IsBot)
+				Player(i).SaveData();
 		}
 	}
 	
@@ -249,8 +248,7 @@ public void OnMapEnd()
  */
 public void OnClientAuthorized(int client, const char[] auth)
 {
-	Player player = new Player(client);
-	player.CheckPlayer();
+	Player(client).CheckPlayer();
 }
 
 
@@ -265,8 +263,7 @@ public void OnClientPutInServer(int client)
 		return;
 	
 	// Hook Player Damage Received
-	Player player = new Player(client);
-	SDKHook(player.Index, SDKHook_OnTakeDamageAlive, Hook_OnTakeDamage);
+	SDKHook(client, SDKHook_OnTakeDamageAlive, Hook_OnTakeDamage);
 }
 
 
@@ -278,9 +275,8 @@ public void OnClientPutInServer(int client)
 public void OnClientDisconnect(int client)
 {
 	// Save Player Data
-	Player player = new Player(client);
-	if (g_ConVars[P_Database].BoolValue && g_db != null && !player.IsBot)
-		player.SaveData();
+	if (g_ConVars[P_Database].BoolValue && g_db != null && !Player(client).IsBot)
+		Player(client).SaveData();
 
 	if (!g_ConVars[P_Enabled].BoolValue)
 		return;
@@ -361,15 +357,11 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 			{
 				if (game.IsGame(FLAG_TF))
 				{
-					//Player player = new Player(client);
-					//player.SetSpeed(360);
+					//Player(client).SetSpeed(360);
 					TF2_AddCondition(client, TFCond_SpeedBuffAlly, TFCondDuration_Infinite);
 				}
 				else
-				{
-					Player player = new Player(client);
-					player.SetSpeed(500);
-				}
+					Player(client).SetSpeed(500);
 				
 				boosting[client] = true;
 			}
@@ -391,8 +383,7 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 			}
 			else
 			{
-				Player player = new Player(client);
-				player.SetSpeed();
+				Player(client).SetSpeed();
 			}
 			
 			boosting[client] = false;
@@ -408,8 +399,7 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 				if (game.IsGame(FLAG_TF))
 					TF2_RemoveCondition(client, TFCond_SpeedBuffAlly);
 				
-				Player player = new Player(client);
-				player.SetSpeed();
+				Player(client).SetSpeed();
 				boosting[client] = false;
 			}
 			

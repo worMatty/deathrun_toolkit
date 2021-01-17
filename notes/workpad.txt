@@ -230,6 +230,8 @@ We could set the property to true when we receive a class change instruction, or
 If we need to give them weapons, we check if they are regenerating. If not, give them weapons. If they are, we add the
 weapons to a global dynamic array and check again in one frame, or when the inventory event has been fired.
 
+Separate map instructions to separate plugin.
+
 
 
 

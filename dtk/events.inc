@@ -12,13 +12,12 @@ void Event_RoundRestart(Event event, const char[] name, bool dontBroadcast)
 	// Reset Player Flags
 	for (int i = 1; i <= MaxClients; i++)
 	{
-		Player player = new Player(i);
-		if (player.InGame)
+		if (Player(i).InGame)
 		{
-			player.RemoveFlag(FLAG_ACTIVATOR);
-			player.RemoveFlag(FLAG_RUNNER);
-			player.RemoveFlag(FLAG_POINTS_ELIGIBLE);
-			ApplyPlayerAttributes(player);
+			Player(i).RemoveFlag(FLAG_ACTIVATOR);
+			Player(i).RemoveFlag(FLAG_RUNNER);
+			Player(i).RemoveFlag(FLAG_POINTS_ELIGIBLE);
+			ApplyPlayerAttributes(i);
 		}
 	}
 	
@@ -84,11 +83,10 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 		// Make red players eligible for queue points
 	for (int i = 1; i <= MaxClients; i++)
 	{
-		Player player = new Player(i);
-		if (player.InGame && player.Team == Team_Red)
+		if (Player(i).InGame && Player(i).Team == Team_Red)
 		{
-			player.AddFlag(FLAG_POINTS_ELIGIBLE);
-			Debug("Granted %N the FLAG_POINTS_ELIGIBLE flag", player.Index);
+			Player(i).AddFlag(FLAG_POINTS_ELIGIBLE);
+			Debug("Granted %N the FLAG_POINTS_ELIGIBLE flag", i);
 		}
 	}
 }
@@ -102,12 +100,11 @@ void Event_RoundEnd(Event event, const char[] name, bool dontBroadcast)
 	// Grant Queue Points
 	for (int i = 1; i <= MaxClients; i++)
 	{
-		Player player = new Player(i);
-		if (player.InGame && player.HasFlag(FLAG_POINTS_ELIGIBLE) && player.HasFlag(FLAG_PREF_ACTIVATOR))
+		if (Player(i).InGame && Player(i).HasFlag(FLAG_POINTS_ELIGIBLE) && Player(i).HasFlag(FLAG_PREF_ACTIVATOR))
 		{
-			int awarded = (player.HasFlag(FLAG_PREF_FULLQP)) ? QP_Full : QP_Partial;
-			player.AddPoints(awarded);
-			ChatMessage(player.Index, Msg_Reply, "%t", "round end queue points received", awarded, player.Points);
+			int awarded = (Player(i).HasFlag(FLAG_PREF_FULLQP)) ? QP_Full : QP_Partial;
+			Player(i).AddPoints(awarded);
+			ChatMessage(i, Msg_Reply, "%t", "round end queue points received", awarded, Player(i).Points);
 		}
 	}
 	
@@ -130,7 +127,7 @@ void Event_PlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 {
 	//return; // BUG 
 	
-	Player player = new Player(GetClientOfUserId(event.GetInt("userid")));
+	int client = GetClientOfUserId(event.GetInt("userid"));
 	
 	//if (g_iGhost[player.Index] && !IsFakeClient(player.Index))
 	//{
@@ -139,7 +136,7 @@ void Event_PlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 	//}
 	
 	if (game.RoundState == Round_Freeze || game.RoundState == Round_Active)
-		RequestFrame(ApplyPlayerAttributes, player);
+		RequestFrame(ApplyPlayerAttributes, client);
 }
 
 
@@ -147,20 +144,20 @@ void Event_PlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 
 void Event_InventoryApplied(Event event, const char[] name, bool dontBroadcast)
 {
-	Player player = new Player(GetClientOfUserId(event.GetInt("userid")));
-	RequestFrame(NextFrame_InventoryApplied, player);
+	int client = GetClientOfUserId(event.GetInt("userid"));
+	RequestFrame(NextFrame_InventoryApplied, client);
 }
 
-void NextFrame_InventoryApplied(Player player)
+void NextFrame_InventoryApplied(int client)
 {
 	// Melee only
 	if (g_ConVars[P_RedMelee].BoolValue)
-		if (player.Team == Team_Red)
-			player.MeleeOnly();
+		if (Player(client).Team == Team_Red)
+			Player(client).MeleeOnly();
 	
 	// Boss Health Bar
-	if (game.IsHealthBarActive && player.Index == g_iBoss)
-		player.UpdateHealthBar();
+	if (game.IsHealthBarActive && client == g_iBoss)
+		Player(client).UpdateHealthBar();
 	
 
 	/**
@@ -173,7 +170,7 @@ void NextFrame_InventoryApplied(Player player)
 	int itemDefIndex;
 	
 	// Secondary Weapons
-	if ((weapon = player.GetWeapon(Weapon_Secondary)) != -1)
+	if ((weapon = Player(client).GetWeapon(Weapon_Secondary)) != -1)
 		itemDefIndex = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
 	
 	switch (itemDefIndex)
@@ -191,13 +188,13 @@ void NextFrame_InventoryApplied(Player player)
 		}
 		case 812, 833:	// Cleaver
 		{
-			ReplaceWeapon(player.Index, weapon, 23, "tf_weapon_pistol");
+			ReplaceWeapon(client, weapon, 23, "tf_weapon_pistol");
 		}
 	}
 	
 	
 	// Melee Weapons
-	if ((weapon = player.GetWeapon(Weapon_Melee)) != -1)
+	if ((weapon = Player(client).GetWeapon(Weapon_Melee)) != -1)
 	{
 		itemDefIndex = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
 	}
@@ -206,7 +203,7 @@ void NextFrame_InventoryApplied(Player player)
 	{
 		case 589:	// Eureka Effect
 		{
-			ReplaceWeapon(player.Index, weapon, 7, "tf_weapon_wrench");
+			ReplaceWeapon(client, weapon, 7, "tf_weapon_wrench");
 		}
 	}
 }
@@ -245,14 +242,14 @@ void Event_PlayerHealed(Event event, const char[] name, bool dontBroadcast)
 
 void Event_ChangeClass(Event event, const char[] name, bool dontBroadcast)
 {
-	Player player = new Player(GetClientOfUserId(event.GetInt("userid")));
+	int client = GetClientOfUserId(event.GetInt("userid"));
 	
-	if (!player.HasFlag(FLAG_WELCOMED))
+	if (!Player(client).HasFlag(FLAG_WELCOMED))
 	{
 		char sName[MAX_NAME_LENGTH];
-		GetClientName(player.Index, sName, sizeof(sName));
-		ChatMessage(player.Index, Msg_Reply, "%t", "welcome player to deathrun toolkit", sName);
-		player.AddFlag(FLAG_WELCOMED);
+		GetClientName(client, sName, sizeof(sName));
+		ChatMessage(client, Msg_Reply, "%t", "welcome player to deathrun toolkit", sName);
+		Player(client).AddFlag(FLAG_WELCOMED);
 	}
 }
 
@@ -331,12 +328,12 @@ Action Event_PlayerDeath(Event event, const char[] name, bool dontBroadcast)
 
 Action Event_TeamsChanged(Event event, const char[] name, bool dontBroadcast)
 {
-	Player player = new Player(GetClientOfUserId(event.GetInt("userid")));
+	int client = GetClientOfUserId(event.GetInt("userid"));
 	
 	// Assign a random class
-	if (!player.IsBot && player.Class == Class_Unknown)
+	if (!Player(client).IsBot && Player(client).Class == Class_Unknown)
 	{
-		player.SetClass(GetRandomInt(1, 9));
+		Player(client).SetClass(GetRandomInt(1, 9));
 	}
 	// Note: This doesn't work on puppet bots. They are on the leaderboard but don't spawn. !player.IsBot added to prevent this.
 	
@@ -353,10 +350,10 @@ Action Event_TeamsChanged(Event event, const char[] name, bool dontBroadcast)
 	//	// I think the problem was forcing them back to Red without first disabling the 'watch for player changes' gBool? 
 	//}
 	
-	if (event.GetInt("oldteam") == Team_Blue && player.IsActivator)
+	if (event.GetInt("oldteam") == Team_Blue && Player(client).IsActivator)
 	{
-		Debug("Activator %N switched away from Blue so we're removing FLAG_ACTIVATOR from them", player.Index);
-		player.RemoveFlag(FLAG_ACTIVATOR);
+		Debug("Activator %N switched away from Blue so we're removing FLAG_ACTIVATOR from them", client);
+		Player(client).RemoveFlag(FLAG_ACTIVATOR);
 		// TODO Tell them to opt out if they don't want to be activator
 	}
 	
