@@ -83,7 +83,7 @@ public void OnPluginStart()
 	g_ConVars[P_ChatKillFeed]		= CreateConVar("dtk_kill_feed", "1", "Show clients what caused their death in chat");
 	g_ConVars[P_RoundStartMessage]	= CreateConVar("dtk_round_start_message", "1", "Show round start messages");
 	g_ConVars[P_BossBar]			= CreateConVar("dtk_boss_bar", "1", "Allow activator and entity health to be displayed as a boss health bar");
-	g_ConVars[P_Activators]			= CreateConVar("dtk_activators", "1", "Number of activators. -1 = use ratio set in dtk_wip_activator_ratio", _, true, -1.0, true, (MaxClients - 1.0));
+	g_ConVars[P_Activators]			= CreateConVar("dtk_activators", "1", "Cap on the number of activators. -1 = no cap");
 	g_ConVars[P_LockActivator]		= CreateConVar("dtk_lock_activator", "1", "Prevent activators from suiciding or switching teams during rounds");
 	//g_ConVars[P_Ghosts]				= CreateConVar("dtk_ghosts", "0", "When a player dies, make them ethereal and give them an outline visible to the dead");
 	
@@ -149,7 +149,8 @@ public void OnPluginStart()
 				Player(i).CheckArray();
 				
 				// Hook Player Damage Received
-				SDKHook(i, SDKHook_OnTakeDamageAlive, Hook_OnTakeDamage);
+				if (GetFeatureStatus(FeatureType_Native, "SDKHook") == FeatureStatus_Available)
+					SDKHook(i, SDKHook_OnTakeDamageAlive, Hook_OnTakeDamage);
 			}
 		}
 	}
@@ -263,7 +264,8 @@ public void OnClientPutInServer(int client)
 		return;
 	
 	// Hook Player Damage Received
-	SDKHook(client, SDKHook_OnTakeDamageAlive, Hook_OnTakeDamage);
+	if (GetFeatureStatus(FeatureType_Native, "SDKHook") == FeatureStatus_Available)
+		SDKHook(client, SDKHook_OnTakeDamageAlive, Hook_OnTakeDamage);
 }
 
 

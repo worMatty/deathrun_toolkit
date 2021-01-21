@@ -346,7 +346,11 @@ When the player is killed by an obj_sentrygun2, the chat kill feed should say "a
 
 Not reverting to the QP system when only two players opt in ??
 
+Possibly TF2C: Sometimes a "health: 0" appears on the top of the screen during the setup timer even when I have activator health bar turned off.
 
+Possibly TF2C but not likely: also sometimes i don't see the boost text as an activator, does this happen when some other text in the map is using the same channel?
+
+From Berke: Boost still sometimes gets stuck on round start(edited) you have to type -speed
 
 
 

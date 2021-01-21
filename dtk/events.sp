@@ -232,7 +232,15 @@ void Event_PlayerHealed(Event event, const char[] name, bool dontBroadcast)
 	if (!g_ConVars[P_BossBar].BoolValue)
 		return;
 	
-	int patient = GetClientOfUserId(event.GetInt("patient"));
+	int patient;
+	
+	// Grab player index from player_healed event
+	if (StrEqual("player_healed", name))
+		patient = GetClientOfUserId(event.GetInt("patient"));
+	
+	// Grab player index from player_healonhit event (TF2C uses this exclusively for health kits)
+	if (StrEqual("player_healonhit", name))
+		patient = event.GetInt("entindex");
 	
 	if (patient == g_iBoss)
 		RequestFrame(UpdateHealthBar, patient);

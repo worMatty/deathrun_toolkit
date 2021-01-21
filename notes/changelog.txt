@@ -22,7 +22,7 @@ Removed:
 Added:
 :small_blue_diamond: WIP activator speed boost by binding +speed. Works like HL2 sprint.
 :small_blue_diamond: Sounds to some text chat messages.
-:small_blue_diamond: 
+:small_blue_diamond: WIP ratio of activators. dtk_activators now functions as a cap.
 :small_blue_diamond: 
 :small_blue_diamond: 
 :small_blue_diamond: 
@@ -40,8 +40,8 @@ Changed:
 
 Fixed:
 :small_blue_diamond: Periodic team checks in OF to start a round when enough players are present.
-:small_blue_diamond: 
-:small_blue_diamond: 
+:small_blue_diamond: In TF2C and OF, Health: 0 is no longer displayed on round restart
+:small_blue_diamond: In TF2C, picking up a health kit updates the boss health text
 :small_blue_diamond: 
 :small_blue_diamond: 
 :small_blue_diamond: 

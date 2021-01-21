@@ -245,15 +245,7 @@ void SelectActivatorPoints()
 	
 	// If we need activators and have enough on red to supply and not empty the team, move someone
 	int i = 0;
-	
-	// TODO Test this
-	int activators = g_ConVars[P_Activators].IntValue;
-	if (g_ConVars[P_Activators].IntValue == -1)
-	{
-		activators = RoundFloat(game.Participants * g_ConVars[P_ActivatorRatio].FloatValue);
-		ClampInt(activators, 1, game.Participants - 1);
-		Debug("There are %d participants and the ratio is %f so we need %d activators", game.Participants, g_ConVars[P_ActivatorRatio].FloatValue, activators);
-	}
+	int activators = GetNumberActivators();
 	
 	while (game.Blues < activators && game.Reds > 1)
 	{
@@ -328,7 +320,7 @@ void SelectActivatorTurn()
 	//if (client > MaxClients)
 		//client = 1;
 	
-	// TODO Test this
+	/*
 	int activators = g_ConVars[P_Activators].IntValue;
 	if (g_ConVars[P_Activators].IntValue == -1)
 	{
@@ -336,6 +328,9 @@ void SelectActivatorTurn()
 		ClampInt(activators, 1, game.Participants - 1);
 		Debug("There are %d participants and the ratio is %f so we need %d activators", game.Participants, g_ConVars[P_ActivatorRatio].FloatValue, activators);
 	}
+	*/
+	
+	int activators = GetNumberActivators();
 	
 	// If we need activators and have enough on red to supply and not empty the team, move someone
 	while (game.Blues < activators && game.Reds > 1)
@@ -395,6 +390,24 @@ void SelectActivatorTurn()
 			//RemoveEdict(iRespawn);
 		}
 	}
+}
+
+
+
+
+/**
+ * Get number of activators needed
+ * 
+ * @return		int		Number of activators
+ */
+int GetNumberActivators()
+{
+	int activators = RoundFloat(game.Participants * g_ConVars[P_ActivatorRatio].FloatValue);
+	if (g_ConVars[P_Activators].IntValue > -1)
+		ClampInt(activators, 1, g_ConVars[P_Activators].IntValue);
+	ClampInt(activators, 1, game.Participants - 1);
+	
+	return activators;
 }
 
 
@@ -816,6 +829,7 @@ void HookStuff(bool enabled)
 		HookEvent("player_team", Event_TeamsChanged);										// Player chooses a team
 		HookEvent("player_changeclass", Event_ChangeClass);									// Player changes class
 		HookEvent("player_healed", Event_PlayerHealed);										// Player healed
+		HookEvent("player_healonhit", Event_PlayerHealed);									// Player healed by health kit
 		HookEvent("player_death", Event_PlayerDeath);										// Player dies
 		HookEvent("player_hurt", Event_PlayerDamaged);										// Player is damaged
 		
@@ -832,6 +846,7 @@ void HookStuff(bool enabled)
 		UnhookEvent("player_team", Event_TeamsChanged);
 		UnhookEvent("player_changeclass", Event_ChangeClass);
 		UnhookEvent("player_healed", Event_PlayerHealed);
+		UnhookEvent("player_healonhit", Event_PlayerHealed);
 		UnhookEvent("player_death", Event_PlayerDeath);
 		UnhookEvent("player_hurt", Event_PlayerDamaged);
 		
@@ -1090,7 +1105,9 @@ stock void SetHealthBar(int health = 0, int maxhealth = 0, int entity = 0)
 	}
 	else
 	{
-		if (Player(entity).IsValid)
+		if (!health)
+			HealthText();
+		else if (Player(entity).IsValid)
 			HealthText("%N: %d", entity, health);
 		else
 			HealthText("%t: %d", "dtk_health", health);

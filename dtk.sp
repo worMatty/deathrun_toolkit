@@ -310,13 +310,13 @@ public Plugin myinfo =
  * ----------------------------------------------------------------------------------------------------
  */
 
-#include "dtk/methodmaps"
-#include "dtk/stocks"
-#include "dtk/forwards"
-#include "dtk/functions"
-#include "dtk/events"
-#include "dtk/hooks"
-#include "dtk/commands"
-#include "dtk/menus"
-#include "dtk/timers"
-#include "dtk/funstuff"
+#include "dtk/methodmaps.sp"
+#include "dtk/stocks.sp"
+#include "dtk/forwards.sp"
+#include "dtk/functions.sp"
+#include "dtk/events.sp"
+#include "dtk/hooks.sp"
+#include "dtk/commands.sp"
+#include "dtk/menus.sp"
+#include "dtk/timers.sp"
+#include "dtk/funstuff.sp"
