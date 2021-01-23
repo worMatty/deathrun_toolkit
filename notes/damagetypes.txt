@@ -322,19 +322,17 @@ HL2 Dissolver 3		DMG_DISSOLVE
 
 
 
-DMG_LASTGENERICFLAG											1073741824
-	DMG_SLASH			Decapitation						1073741828
-	DMG_PHYSGUN			Electrocution						1082130432
-	DMG_SLOWBURN		Burn								1075838976
-	DMG_ENERGYBEAM		Ash									1073742848
-	DMG_PLASMA			Cow Mangler							1090519040
-		DMG_ALWAYSGIB	Cow Mangler Gib						1090527232
-	DMG_PARALYZE		Paralyze							1073774592
-		DMG_DIRECT		Paralyze Freeze						1342210048
-		DMG_BUCKSHOT	Paralyze Gold						1610645504
-	DMG_DISSOLVE		Burn, float and dissolve			1140850688
-		DMG_DIRECT		Burn and dissolve					1409286144
-		DMG_BUCKSHOT	Dissolve immediately				1677721600
-
-
+DMG_LASTGENERICFLAG		No effect on its own		1073741824
+	DMG_SLASH			Decapitation				1073741828
+	DMG_PHYSGUN			Electrocution				1082130432
+	DMG_SLOWBURN		Burn						1075838976
+	DMG_ENERGYBEAM		Ash							1073742848
+	DMG_PLASMA			Cow Mangler					1090519040
+		DMG_ALWAYSGIB	Cow Mangler Gib				1090527232
+	DMG_PARALYZE		Paralyze					1073774592
+		DMG_DIRECT		Paralyze Freeze				1342210048
+		DMG_BUCKSHOT	Paralyze Gold				1610645504
+	DMG_DISSOLVE		Burn, float and dissolve	1140850688
+		DMG_DIRECT		Burn and dissolve			1409286144
+		DMG_BUCKSHOT	Dissolve immediately		1677721600
 

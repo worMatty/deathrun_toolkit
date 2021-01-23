@@ -583,6 +583,7 @@ stock void ProcessMapInstruction(int client, const char[] instruction, const cha
 	char buffers[16][256];
 	ExplodeString(properties, ",", buffers, 16, 256, true);
 
+	// Give weapon
 	if (StrEqual(instruction, "weapon", false))
 	{
 		int weapon = Player(client).GetWeapon(StringToInt(buffers[0]));
@@ -592,6 +593,7 @@ stock void ProcessMapInstruction(int client, const char[] instruction, const cha
 		}
 	}
 	
+	// Remove weapon
 	if (StrEqual(instruction, "remove_weapon", false))
 	{
 		int weapon = Player(client).GetWeapon(StringToInt(buffers[0]));
@@ -602,6 +604,7 @@ stock void ProcessMapInstruction(int client, const char[] instruction, const cha
 		}
 	}
 	
+	// Give weapon attribute
 	if (StrEqual(instruction, "weapon_attribute", false))
 	{
 		int weapon = Player(client).GetWeapon(StringToInt(buffers[0]));
@@ -616,32 +619,38 @@ stock void ProcessMapInstruction(int client, const char[] instruction, const cha
 		}
 	}
 	
+	// Switch to slot
 	if (StrEqual(instruction, "switch_to_slot", false))
 	{
 		Player(client).SetSlot(StringToInt(buffers[0]));
 	}
 	
+	// Change class
 	if (StrEqual(instruction, "class", false))
 	{
 		int class = ProcessClassString(buffers[0]);
 		Player(client).SetClass(class);
 	}
 	
+	// Set speed
 	if (StrEqual(instruction, "speed", false))
 	{
 		Player(client).SetSpeed(StringToInt(buffers[0]));
 	}
 	
+	// Set health
 	if (StrEqual(instruction, "health", false))
 	{
 		Player(client).SetHealth(StringToInt(buffers[0]));
 	}
 	
+	// Set max health
 	if (StrEqual(instruction, "maxhealth", false))
 	{
 		Player(client).SetMaxHealth(StringToFloat(buffers[0]));
 	}
 	
+	// Scale max health (Activator)
 	if (StrEqual(instruction, "scalehealth", false))
 	{
 		// Scale max health - plugin default
@@ -652,6 +661,7 @@ stock void ProcessMapInstruction(int client, const char[] instruction, const cha
 			Player(client).ScaleHealth(1);
 	}
 	
+	// Set move type
 	if (StrEqual(instruction, "movetype", false))
 	{
 		if (StrEqual(buffers[0], "fly", false))
@@ -664,11 +674,13 @@ stock void ProcessMapInstruction(int client, const char[] instruction, const cha
 		}
 	}
 	
+	// Chat message
 	if (StrEqual(instruction, "message", false))
 	{
 		ChatMessage(client, Msg_Normal, "%s", buffers[0]);
 	}
 	
+	// Melee only
 	if (StrEqual(instruction, "meleeonly", false))
 	{
 		if (StrEqual(buffers[0], "yes", false))
@@ -680,6 +692,59 @@ stock void ProcessMapInstruction(int client, const char[] instruction, const cha
 			Player(client).MeleeOnly(false);
 		}
 	}
+	
+	// Use class animations for custom model
+	if (StrEqual(instruction, "use_class_animations", false))
+	{
+		if (StrEqual(buffers[0], "true", false) || buffers[0][0] == '\0')
+		{
+			SetEntProp(client, Prop_Send, "m_bUseClassAnimations", 1);
+			Debug("Enabled m_bUseClassAnimations for %N", client);
+		}
+		if (StrEqual(buffers[0], "false", false))
+		{
+			SetEntProp(client, Prop_Send, "m_bUseClassAnimations", 0);
+			Debug("Disabled m_bUseClassAnimations for %N", client);
+		}
+	}
+	
+	// Set custom model
+	if (StrEqual(instruction, "setmodel", false))
+	{
+		// TODO Check if model is precached
+		
+		if (StrEqual(buffers[0], "none", false) || buffers[0][0] == '\0')
+		{
+			SetVariantString("");
+		}
+		else
+		{
+			SetVariantString(buffers[0]);
+		}
+		
+		AcceptEntityInput(client, "SetCustomModel", client, client);
+		Debug("Set %N's custom model to %s", client, buffers[0]);
+	}
+	
+	// TODO: Add something to hide cosmetics. Consider resetting custom model on round restart or death
+	// Is it possible to parent a model to the player, bone merge it (effect flag 129) and make it visible (EF_NODRAW)?
+	
+	/*
+	// Custom model rotates
+	if (StrEqual(instruction, "model_rotates", false))
+	{
+		if (StrEqual(buffers[0], "true", false) || buffers[0][0] == '\0')
+		{
+			SetEntProp(client, Prop_Send, "m_bCustomModelRotates", 1);
+			Debug("Enabled m_bCustomModelRotates for %N", client);
+		}
+		if (StrEqual(buffers[0], "false", false))
+		{
+			SetEntProp(client, Prop_Send, "m_bCustomModelRotates", 0);
+			Debug("Disabled m_bCustomModelRotates for %N", client);
+		}
+	}
+	*/
 }
 
 

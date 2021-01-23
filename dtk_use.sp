@@ -33,7 +33,7 @@ ConVar g_cEnabled;
 
 public Plugin myinfo = 
 {
-	name = "DTK +use",
+	name = "[DTK] QoL +use",
 	author = "worMatty",
 	description = "A QoL plugin that simulates +use functionality on maps with buttons that only have OnDamaged outputs",
 	version = PLUGIN_VERSION,
