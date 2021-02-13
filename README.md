@@ -13,7 +13,7 @@ It's a set of plugins for deathrun servers. The base plugin detects deathrun map
 
 For the base deathrun experience you only need dtk.smx and the translation file. You can ignore the other plugins. 
 
-### Dependencies
+### Optional Libraries
 - [Asherkin's TF2 Attributes plugin](https://forums.alliedmods.net/showthread.php?t=210221) is used to set attributes on players and weapons to restrict them. This is recommended because most deathrun maps have some weaknesses that can be exploited by rocket jumpers, scout double jumps and so on.
 - [Source Chat Relay](https://forums.alliedmods.net/showthread.php?p=2617899) is used to send the round start, end, and activator selection messages to a Discord channel.
 - The [SteamTools extension](https://forums.alliedmods.net/showthread.php?t=236206) changes your game server's description.
@@ -32,7 +32,7 @@ The plugin has all the bells and whistles you would expect of a deathrun plugin.
 ### Cool Things
 
 * Activator health is shown via the use of the boss health bar during combat, and overhealing in a text element
-* Mappers can change use logic to change a player's properties or give them weapons
+* Mappers can use logic to change a player's properties or give them weapons
 * Mappers can use logic to trigger activator health scaling when appropriate, e.g. in an arena or fight mini game
 * The plugin doesn't do anything to players that interferes with the workings of a map such as negate fall damage, grant resistances or force speed on every game frame
 
@@ -53,7 +53,7 @@ The plugin has all the bells and whistles you would expect of a deathrun plugin.
 
 ## Note About The Current State
 
-DTK is work in progress.
+The plugin has a lack of weapon and ability restrictions so you probably won't be able to use it on your existing rotation without some problems. Blast jumping is disabled by hooking and negating self-damage. Spies can only cloak for a fraction of a second. Scouts can't double jump but they can use the Force-a-Nature by design as it requires skill. 
 
 ## Design Philosophy and Important Differences
 
@@ -62,30 +62,42 @@ DTK is work in progress.
 * Glowing outlines, because it ruins hide and seek on maps
 * Setting all classes to the same run speed as supplied
 * Melee-only as supplied
-* Disabling spy disguises (why? What is the harm?)
 
-My philosophy is that wherever possible, map-makers should fix problems in their maps and design them better, and that plugin makers shouldn't be compensating for shoddy practices in maps because we end up with new mappers thinking that deathrun maps are melee-only, and that every class is the same speed, and so on. We end up with a very flat experience where the only difference is the choice of character model. In order for the game mode to grow, we need class variety to add cool new ways to play, so we can't continue to restrict everything.
+My philosophy is that wherever possible, map-makers should fix problems in their maps and design them better. If we depend on plugin makers to patch these issues all the time, new mappers get the impression that by default, deathrun maps are melee-only, or that every class has the same speed, and so on. We didn't get to this point because it was better for the game mode. We got to it because of successive and perhaps thoughtless 'fixes' to bad maps, and now people think that's all that deathrun is. If things continue this way we will end up with a very flat experience similar to CSS and GMod deathrun, where the only difference is the choice of character model. In order for the game mode to grow, we need to being back class variety so we can come up with cool new ways to play. Restricting everything reduces exploits limits creative freedom.
 
-I build options in the plugin for speed changing and melee-only for backwards compatability with old maps with exploits or poor design.
+I have built options into the plugin for speed changing and melee-only just for backwards compatability with old maps with exploits or poor design. I appreciate though, that some mappers will want to provide a pure experience and melee-only is required for that, but there are ways for the map-maker to achieve this themselves using game logic! If you need help, come to our Discord server: https://steamcommunity.com/groups/death_experiments
 
 * Customised replacement weapons
 
-What weapons are given to the player are plain because I do not want to fuck around with the economy and devalue people's earned weapons.
+Weapons given to the player are plain because I do not want to fuck around with the economy and devalue people's earned weapons.
 
-## Boring Technical Things for Studs
+* Disabling spy disguises (why? What is the harm?)
 
-* Player aspects such as run speed and cloak level are modified by adding TF2 attributes, instead of having their properties set on every game frame like how Deathrun Redux does it. This method does not prevent the map from affecting a player's speed using things like stun triggers, pickups, boost pads etc. Nor does it prevent the use of movement-enhancing abilities.
-* DTK doesn't require that the map has a tf_logic_arena. Mappers are free to make maps that don't have Sudden Death as a core mechanic. They could for example have dead players respawn in a waiting area, or make a new variant of deathrun that revolves around having lives.
-* Activator selection and replacement is more robust that on Deathrun Redux. If an activator switches teams or leaves the server during freeze time the next player in the queue takes their place immediately.
-* Health scaling for the activator is handled a bit differently. By default the activator has the same amount of health as a normal player, but in combat mini games the map author can trigger health scaling using map logic. The health of the activator is then scaled up to a suitable figure based on the number of remaining red players. Their health pool is increased and contribution from health packs scaled down accordingly to keep it fair. 
-* The potential for map authors to change player properties they normally can't using map logic. See 'Mapper Control'.
+## Detailed Technical Things for Studs
+
+Player aspects such as run speed and cloak level are modified by adding TF2 attributes, instead of having their properties set on every game frame like how Deathrun Redux does it. This method does not prevent the map from affecting a player's speed using things like stun triggers, pickups, boost pads etc. Nor does it prevent the use of movement-enhancing abilities.
+
+DTK doesn't require that the map has a tf_logic_arena. Mappers are free to make maps that don't have Sudden Death as a core mechanic. They could for example have dead players respawn in a waiting area, or make a new variant of deathrun that revolves around having lives.
+
+Activator selection and replacement is more robust that on Deathrun Redux. If an activator switches teams or leaves the server during freeze time the next player in the queue takes their place immediately.
+
+Health scaling for the activator is handled a bit differently. By default the activator has the same amount of health as a normal player, but in combat mini games the map author can trigger health scaling using map logic. The health of the activator is then scaled up to a suitable figure based on the number of remaining red players. Their health pool is increased and contribution from health packs scaled down accordingly to keep it fair. 
+
+The potential for map authors to change player properties they normally can't using map logic. See 'Mapper Control'.
 
 ## Mapper Control (Special Functions for Mappers)
 
-Right now you can change a player's class; set their speed; move type; give them weapons; remove weapons; give a weapon attributes; set the player's health, max health and scale it up (if they're an activator); send a message to their chat; switch them to a specific slot; force them to be melee-only; set a custom model for them and make it use class animations.
+You can use normal logic entities to change a player's properties, which is useful for making special mini games. 
+
+Right now you can change a player's class; set their speed; move type; give them weapons; remove weapons; give a weapon attributes; set the player's health, max health and scale it up (if they're an activator); send a message to their chat; switch them to a specific slot; force them to be melee-only; set a custom model for them and make it use class animations (the last thing is not possible using map logic).
 
 If you'd like to add such functionality to your map, hop along to the Death Experiments Discord server and ask us about it.
 
 ## Plans for the Future
 
-A decent enough weapon restriction system that uses several ready-to-use options for maps that require varying levels of mobility and weapon restrictions. e.g. Some maps need melee-only, some demand no special mobility, some can get away with small jump boosts or trimping.
+A decent enough weapon restriction system that uses several ready-to-use configs for maps that require varying tiers of mobility and weapon restrictions. e.g. Some maps need melee-only, some demand no special mobility, some can get away with small jump boosts or trimping.
+
+Expansions to the map instructions feature to let mappers use the boss bar for a boss 'entity' using a math_counter. Options to display or track health of more
+than one target.
+
+I plan a rewrite for version 0.4 because I know how to code better now. I'll be converting some old systems to better ones and simplifying some existing ones to remove unneeded functionality I added because I was excited about it. I have both a turn and queue point-based system which will be combined, and I'll add 'tokens' so players who join the server while a map is in progress won't be made the activator until all existing players have had a turn. 
