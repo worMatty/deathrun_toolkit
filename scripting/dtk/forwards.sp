@@ -10,15 +10,15 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 	
 	GetGameFolderName(game_folder, sizeof(game_folder));
 	
-	if 		(StrEqual(game_folder, "tf"))				game.SetGame(FLAG_TF);
-	else if (StrEqual(game_folder, "open_fortress"))	game.SetGame(FLAG_OF);
-	else if (StrEqual(game_folder, "tf2classic"))		game.SetGame(FLAG_TF2C);
+	if 		(StrEqual(game_folder, "tf"))				game.SetGame(Mod_TF);
+	else if (StrEqual(game_folder, "open_fortress"))	game.SetGame(Mod_OF);
+	else if (StrEqual(game_folder, "tf2classic"))		game.SetGame(Mod_TF2C);
 	else	LogError("DTK is designed for TF2. Some things may not work!");
 	
 	MarkNativeAsOptional("Steam_SetGameDescription");
 	MarkNativeAsOptional("SCR_SendEvent");
 	
-	if (late) game.AddFlag(FLAG_LOADED_LATE);
+	if (late) game.AddFlag(GF_LateLoad);
 	
 	return APLRes_Success;
 }
@@ -79,6 +79,7 @@ public void OnPluginStart()
 	g_ConVars[P_Database]			= CreateConVar("dtk_database", "1", "Store player data in the database");
 	g_ConVars[P_SCR]				= CreateConVar("dtk_source_chat_relay", "1", "Use Source Chat Relay if available");
 	g_ConVars[P_MapInstructions]	= CreateConVar("dtk_map_instructions", "1", "Allow maps to change player properties and weapons");
+	g_ConVars[P_Description]		= CreateConVar("dtk_game_description", "{plugin_name} | {plugin_version}", "Game description that appears in the server browser when the game mode is enabled. Leave blank to not change it at all");
 	
 	g_ConVars[P_ChatKillFeed]		= CreateConVar("dtk_kill_feed", "1", "Show clients what caused their death in chat");
 	g_ConVars[P_RoundStartMessage]	= CreateConVar("dtk_round_start_message", "1", "Show round start messages");
@@ -106,9 +107,9 @@ public void OnPluginStart()
 	g_ConVars[P_BlueBoost]			= CreateConVar("dtk_wip_blue_boost", "0", "Allow Blue player to sprint using the +speed input");
 	g_ConVars[P_ActivatorRatio]		= CreateConVar("dtk_wip_activator_ratio", "0.2", "Activator ratio. Decimal fraction of the number of participants to become activators. e.g. 0.2 is one fifth of participants become an activator");
 	
-	if (!(game.IsGame(FLAG_OF)))			g_ConVars[S_FirstBlood]	= FindConVar("tf_arena_first_blood");
-	if (game.IsGame(FLAG_OF))				g_ConVars[S_Pushaway] 	= FindConVar("of_teamplay_collision");
-	if (game.IsGame(FLAG_TF|FLAG_TF2C))		g_ConVars[S_Pushaway] 	= FindConVar("tf_avoidteammates_pushaway");
+	if (!(game.IsGame(Mod_OF)))				g_ConVars[S_FirstBlood]	= FindConVar("tf_arena_first_blood");
+	if (game.IsGame(Mod_OF))				g_ConVars[S_Pushaway] 	= FindConVar("of_teamplay_collision");
+	if (game.IsGame(Mod_TF|Mod_TF2C))		g_ConVars[S_Pushaway] 	= FindConVar("tf_avoidteammates_pushaway");
 
 	// Cycle through and hook each ConVar
 	for (int i = 0; i < ConVars_Max; i++)
@@ -138,7 +139,7 @@ public void OnPluginStart()
 	g_hSounds = SoundList();
 	
 	// Late Loading
-	if (game.HasFlag(FLAG_LOADED_LATE))
+	if (game.HasFlag(GF_LateLoad))
 	{
 		// Initialise Player Data Array
 		LogMessage("Plugin loaded late. Initialising the player data array");
@@ -303,141 +304,14 @@ public void OnClientDisconnect(int client)
  */
 public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float vel[3], const float angles[3], int weapon, int subtype, int cmdnum, int tickcount, int seed, const int mouse[2])
 {
-	if (!g_ConVars[P_Enabled].BoolValue)// || game.IsGame(FLAG_OF))// || game.RoundState != Round_Active)
+	if (!g_ConVars[P_Enabled].BoolValue)
 		return;
 	
-	// Teleport ghosts to a live player
-/*	if (g_iGhost[client])
-	{
-		static int attack2[MAXPLAYERS + 1];
-		
-		if (buttons & IN_ATTACK2 && !attack2[client])
-		{
-			attack2[client] = true;
-			
-			if (game.AliveReds > 0)	// TODO Does this count ghosts
-			{
-				static int spectarget[MAXPLAYERS + 1];
-				spectarget[client] += 1;
-				
-				// Check each player. Stop when they are in game, alive and on the red team.
-				// Teleport to them
-					
-				
-				
-				while (!IsClient(spectarget[client]) || !IsClientInGame(spectarget[client]) || !IsPlayerAlive(spectarget[client]) || GetClientTeam(spectarget[client]) != Team_Red)
-				{
-					spectarget[client] += 1;
-					if (spectarget[client] > MaxClients)
-						spectarget[client] = 1;
-				}
-				float pos[3], tAngles[3];
-				GetClientAbsOrigin(spectarget[client], pos);
-				GetClientAbsAngles(spectarget[client], tAngles);
-				TeleportEntity(client, pos, tAngles, NULL_VECTOR);
-			}
-		}
-		else if (!(buttons & IN_ATTACK2) && attack2[client])
-		{
-			attack2[client] = false;
-		}
-	}
-*/	
+	// Modulate player speeds
+	ModulateSpeed(client);
 	
-	// Activator Speed Boosting
-	static float boost[MAXPLAYERS] =  { 396.0, ... };
-	static int boosting[MAXPLAYERS];
-	
-	if (GetClientTeam(client) != Team_Blue || !g_ConVars[P_BlueBoost].BoolValue)
-		return;
-	
-	if (buttons & IN_SPEED)	// TODO Find an alternative way to boost speed in OF. Sprinting?
-	{
-		if (boost[client] > 0.0)
-		{
-			if (!boosting[client] && boost[client] > 132.0)
-			{
-				if (game.IsGame(FLAG_TF))
-				{
-					//Player(client).SetSpeed(360);
-					TF2_AddCondition(client, TFCond_SpeedBuffAlly, TFCondDuration_Infinite);
-				}
-				else
-					Player(client).SetSpeed(500);
-				
-				boosting[client] = true;
-			}
-			
-			if (boosting[client])
-			{
-				boost[client] -= 1.0;
-			}
-			else
-			{
-				boost[client] += 0.5;
-			}
-		}
-		else if (boost[client] <= 0.0)
-		{
-			if (game.IsGame(FLAG_TF))
-			{
-				TF2_RemoveCondition(client, TFCond_SpeedBuffAlly);
-			}
-			else
-			{
-				Player(client).SetSpeed();
-			}
-			
-			boosting[client] = false;
-			boost[client] += 0.5;
-		}
-	}
-	else if (!(buttons & IN_SPEED))
-	{
-		if (boost[client] < 396.0)
-		{
-			if (boosting[client])
-			{
-				if (game.IsGame(FLAG_TF))
-					TF2_RemoveCondition(client, TFCond_SpeedBuffAlly);
-				
-				Player(client).SetSpeed();
-				boosting[client] = false;
-			}
-			
-			boost[client] += 0.5;
-		}
-	}
-	
-	// Tick timer for boost HUD
-	static int ticktimer;
-	
-	if (!ticktimer)
-		ticktimer = tickcount;
-	
-	// Show Boost HUD every half second
-	if ((tickcount) > (ticktimer + 33))
-	{
-		ticktimer = tickcount;
-		BoostHUD(client, boost[client]);
-	}
-	
-	// Example of a key press checker
-	/*
-	static int attack2[MAXPLAYERS + 1];
-	
-	if (buttons & IN_ATTACK2 && !attack2[client])
-	{
-		attack2[client] = true;
-		
-		PrintToChat(client, "Attack 2 pressed");
-	}
-	else if (!(buttons & IN_ATTACK2) && attack2[client])
-	{
-		PrintToChat(client, "Attack 2 unpressed");
-		attack2[client] = false;
-	}
-	*/
+	// Monitor and apply activator boosts
+	ActivatorBoost(client, buttons, tickcount);
 }
 
 

@@ -49,10 +49,10 @@ Action Command_Preferences(int client, int args)
 	
 	if (args < 1)
 	{
-		if (!Player(client).HasFlag(FLAG_PREF_ACTIVATOR))
+		if (!Player(client).HasFlag(PF_PrefActivator))
 			ChatMessage(client, Msg_Reply, "%t", "current preference is to never be the activator");
 		else
-			ChatMessage(client, Msg_Reply, "%t", "current preference is to receive i points per round", (Player(client).HasFlag(FLAG_PREF_FULLQP)) ? QP_Full : QP_Partial);
+			ChatMessage(client, Msg_Reply, "%t", "current preference is to receive i points per round", (Player(client).HasFlag(PF_PrefFullQP)) ? QP_Full : QP_Partial);
 		
 		PrintToConsole(client, " %s Your preference bit flags: Session: %06b Stored: %06b", PREFIX_SERVER, (Player(client).Flags & MASK_SESSION_FLAGS), (Player(client).Flags & MASK_STORED_FLAGS));
 		return Plugin_Handled;
@@ -77,9 +77,9 @@ Action Command_Preferences(int client, int args)
 // Toggle English language
 void Command_English(int client)
 {	
-	if (Player(client).HasFlag(FLAG_PREF_ENGLISH))
+	if (Player(client).HasFlag(PF_PrefEnglish))
 	{
-		Player(client).RemoveFlag(FLAG_PREF_ENGLISH);
+		Player(client).RemoveFlag(PF_PrefEnglish);
 		char language[32];
 		if (GetClientInfo(client, "cl_language", language, sizeof(language)))
 		{
@@ -95,7 +95,7 @@ void Command_English(int client)
 	}
 	else
 	{
-		Player(client).AddFlag(FLAG_PREF_ENGLISH);
+		Player(client).AddFlag(PF_PrefEnglish);
 		ChatMessage(client, Msg_Reply, "Your language has been been set to English");
 		SetClientLanguage(client, 0);
 	}
@@ -429,29 +429,29 @@ Action CmdListener_Builds(int client, const char[] command, int args)
 		int iArg1 = StringToInt(arg1);
 		int iArg2 = StringToInt(arg2);
 		
-		if (iArg1 == 0 && (g_ConVars[P_Buildings].IntValue & BUILDING_DISPENSER) == BUILDING_DISPENSER)
+		if (iArg1 == 0 && (g_ConVars[P_Buildings].IntValue & Build_Dispenser) == Build_Dispenser)
 		{
 			ChatMessage(client, Msg_Reply, "Sorry, you aren't allowed to build dispensers");
 			return Plugin_Handled;
 		}
-		if (iArg1 == 1 && iArg2 == 0 && (g_ConVars[P_Buildings].IntValue & BUILDING_TELE_ENTRANCE) == BUILDING_TELE_ENTRANCE)
+		if (iArg1 == 1 && iArg2 == 0 && (g_ConVars[P_Buildings].IntValue & Build_TeleEnt) == Build_TeleEnt)
 		{
 			ChatMessage(client, Msg_Reply, "Sorry, you aren't allowed to build teleporter entrances");
 			return Plugin_Handled;
 		}
-		if (iArg1 == 1 && iArg2 == 1 && (g_ConVars[P_Buildings].IntValue & BUILDING_TELE_EXIT) == BUILDING_TELE_EXIT)
+		if (iArg1 == 1 && iArg2 == 1 && (g_ConVars[P_Buildings].IntValue & Build_TeleEx) == Build_TeleEx)
 		{
 			ChatMessage(client, Msg_Reply, "Sorry, you aren't allowed to build teleporter exits");
 			return Plugin_Handled;
 		}
-		if (iArg1 == 2 && (g_ConVars[P_Buildings].IntValue & BUILDING_SENTRY) == BUILDING_SENTRY)
+		if (iArg1 == 2 && (g_ConVars[P_Buildings].IntValue & Build_Sentry) == Build_Sentry)
 		{
 			ChatMessage(client, Msg_Reply, "Sorry, you aren't allowed to build sentries");
 			return Plugin_Handled;
 		}
 		
 		// build 3 is for backwards compatability of the deprecated build argument to build a tele exit
-		if (iArg1 == 3 && (g_ConVars[P_Buildings].IntValue & BUILDING_TELE_EXIT) == BUILDING_TELE_EXIT && Player(client).Class == Class_Engineer)
+		if (iArg1 == 3 && (g_ConVars[P_Buildings].IntValue & Build_TeleEx) == Build_TeleEx && Player(client).Class == Class_Engineer)
 		{
 			ChatMessage(client, Msg_Reply, "Sorry, you aren't allowed to build teleporter exits");
 			return Plugin_Handled;

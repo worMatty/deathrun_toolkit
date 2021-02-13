@@ -10,7 +10,7 @@
  * Game
  * ----------------------------------------------------------------------------------------------------
  */
-methodmap Game < Handle
+methodmap Game
 {
 	public Game()
 	{
@@ -57,7 +57,7 @@ methodmap Game < Handle
 	{
 		public get()
 		{
-			return this.HasFlag(FLAG_HEALTH_BAR_ACTIVE);
+			return this.HasFlag(GF_HPBarActive);
 		}
 	}
 	
@@ -65,9 +65,9 @@ methodmap Game < Handle
 	public void SetHealthBarActive(bool active)
 	{
 		if (active)
-			this.AddFlag(FLAG_HEALTH_BAR_ACTIVE);
+			this.AddFlag(GF_HPBarActive);
 		else
-			this.RemoveFlag(FLAG_HEALTH_BAR_ACTIVE);
+			this.RemoveFlag(GF_HPBarActive);
 	}
 	
 	// Round State
@@ -196,7 +196,7 @@ methodmap Player < BasePlayer
 	{
 		public get()
 		{
-			if (g_iPlayers[this.Index][Player_Flags] & FLAG_RUNNER)
+			if (g_iPlayers[this.Index][Player_Flags] & PF_Runner)
 				return true;
 			else
 				return false;
@@ -208,7 +208,7 @@ methodmap Player < BasePlayer
 	{
 		public get()
 		{
-			if (g_iPlayers[this.Index][Player_Flags] & FLAG_ACTIVATOR)
+			if (g_iPlayers[this.Index][Player_Flags] & PF_Activator)
 				return true;
 			else
 				return false;
@@ -265,7 +265,7 @@ methodmap Player < BasePlayer
 		}
 		
 		// If the player wants SourceMod translations in English, set their language
-		if (g_iPlayers[this.Index][Player_Flags] & FLAG_PREF_ENGLISH)
+		if (g_iPlayers[this.Index][Player_Flags] & PF_PrefEnglish)
 		{
 			SetClientLanguage(this.Index, 0);
 		}
@@ -413,7 +413,7 @@ methodmap Player < BasePlayer
 			}
 		}
 		
-		if (this.HasFlag(FLAG_PREF_ENGLISH))
+		if (this.HasFlag(PF_PrefEnglish))
 			SetClientLanguage(this.Index, 0);
 	}
 	
@@ -439,7 +439,7 @@ methodmap Player < BasePlayer
 			//if (g_bTF2Attributes) TF2Attrib_SetByName(this.Index, "health from packs decreased", largehealthkit / health);
 			AddAttribute(this.Index, "health from packs decreased", largehealthkit / health);
 		}
-		this.SetHealth(RoundToNearest(health));
+		this.Health = RoundToNearest(health);
 		//TF2Attrib_SetByName(this.Index, "cannot be backstabbed", 1.0); // This is a weapon attr
 		
 		/*

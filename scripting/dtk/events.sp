@@ -14,9 +14,9 @@ void Event_RoundRestart(Event event, const char[] name, bool dontBroadcast)
 	{
 		if (Player(i).InGame)
 		{
-			Player(i).RemoveFlag(FLAG_ACTIVATOR);
-			Player(i).RemoveFlag(FLAG_RUNNER);
-			Player(i).RemoveFlag(FLAG_POINTS_ELIGIBLE);
+			Player(i).RemoveFlag(PF_Activator);
+			Player(i).RemoveFlag(PF_Runner);
+			Player(i).RemoveFlag(PF_PointsEligible);
 			ApplyPlayerAttributes(i);
 		}
 	}
@@ -38,7 +38,7 @@ void Event_RoundRestart(Event event, const char[] name, bool dontBroadcast)
 
 void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 {
-	game.RemoveFlag(FLAG_WATCHMODE);	// No need to watch for team changes now
+	game.RemoveFlag(GF_WatchMode);	// No need to watch for team changes now
 	
 	// Round Start Message
 	if (g_ConVars[P_RoundStartMessage].BoolValue)
@@ -65,7 +65,7 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 		SCR_SendEvent(PREFIX_SERVER, "The round is now active");
 	
 	// OF starts the round regardless if there aren't enough players
-	if (game.IsGame(FLAG_OF))
+	if (game.IsGame(Mod_OF))
 	{
 		Debug("Open Fortress: Server has %d alive reds and %d alive blues", game.AliveReds, game.AliveBlues);
 		
@@ -85,8 +85,8 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 	{
 		if (Player(i).InGame && Player(i).Team == Team_Red)
 		{
-			Player(i).AddFlag(FLAG_POINTS_ELIGIBLE);
-			Debug("Granted %N the FLAG_POINTS_ELIGIBLE flag", i);
+			Player(i).AddFlag(PF_PointsEligible);
+			Debug("Granted %N the PF_PointsEligible flag", i);
 		}
 	}
 }
@@ -100,9 +100,9 @@ void Event_RoundEnd(Event event, const char[] name, bool dontBroadcast)
 	// Grant Queue Points
 	for (int i = 1; i <= MaxClients; i++)
 	{
-		if (Player(i).InGame && Player(i).HasFlag(FLAG_POINTS_ELIGIBLE) && Player(i).HasFlag(FLAG_PREF_ACTIVATOR))
+		if (Player(i).InGame && Player(i).HasFlag(PF_PointsEligible) && Player(i).HasFlag(PF_PrefActivator))
 		{
-			int awarded = (Player(i).HasFlag(FLAG_PREF_FULLQP)) ? QP_Full : QP_Partial;
+			int awarded = (Player(i).HasFlag(PF_PrefFullQP)) ? QP_Full : QP_Partial;
 			Player(i).AddPoints(awarded);
 			ChatMessage(i, Msg_Reply, "%t", "round end queue points received", awarded, Player(i).Points);
 		}
@@ -252,12 +252,12 @@ void Event_ChangeClass(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"));
 	
-	if (!Player(client).HasFlag(FLAG_WELCOMED))
+	if (!Player(client).HasFlag(PF_Welcomed))
 	{
 		char sName[MAX_NAME_LENGTH];
 		GetClientName(client, sName, sizeof(sName));
 		ChatMessage(client, Msg_Reply, "%t", "welcome player to deathrun toolkit", sName);
-		Player(client).AddFlag(FLAG_WELCOMED);
+		Player(client).AddFlag(PF_Welcomed);
 	}
 }
 
@@ -297,7 +297,7 @@ Action Event_PlayerDeath(Event event, const char[] name, bool dontBroadcast)
 	{
 		char classname[64];
 		
-		if (game.IsGame(FLAG_TF))
+		if (game.IsGame(Mod_TF))
 			event.GetString("weapon_logclassname", classname, sizeof(classname));
 		else
 			event.GetString("weapon", classname, sizeof(classname));
@@ -306,7 +306,7 @@ Action Event_PlayerDeath(Event event, const char[] name, bool dontBroadcast)
 		{
 			char targetname[256];
 			
-			if (game.IsGame(FLAG_TF))
+			if (game.IsGame(Mod_TF))
 			{
 				GetEntPropString(event.GetInt("inflictor_entindex"), Prop_Data, "m_iName", targetname, sizeof(targetname));
 		
@@ -360,13 +360,13 @@ Action Event_TeamsChanged(Event event, const char[] name, bool dontBroadcast)
 	
 	if (event.GetInt("oldteam") == Team_Blue && Player(client).IsActivator)
 	{
-		Debug("Activator %N switched away from Blue so we're removing FLAG_ACTIVATOR from them", client);
-		Player(client).RemoveFlag(FLAG_ACTIVATOR);
+		Debug("Activator %N switched away from Blue so we're removing PF_Activator from them", client);
+		Player(client).RemoveFlag(PF_Activator);
 		// TODO Tell them to opt out if they don't want to be activator
 	}
 	
 	// If we're watching for player changes during freeze time:
-	if (game.HasFlag(FLAG_WATCHMODE))	// TODO Can this be replaced by a roundstate check?
+	if (game.HasFlag(GF_WatchMode))	// TODO Can this be replaced by a roundstate check?
 		RequestFrame(CheckForPlayers);
 }
 

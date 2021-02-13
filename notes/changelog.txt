@@ -23,8 +23,8 @@ Added:
 :small_blue_diamond: WIP activator speed boost by binding +speed. Works like HL2 sprint.
 :small_blue_diamond: Sounds to some text chat messages.
 :small_blue_diamond: WIP ratio of activators. dtk_activators now functions as a cap.
-:small_blue_diamond: 
-:small_blue_diamond: 
+:small_blue_diamond: Map instructions to set custom model and use class animations.
+:small_blue_diamond: ConVar to customise the game description that's displayed in the server browser
 :small_blue_diamond: 
 :small_blue_diamond: 
 

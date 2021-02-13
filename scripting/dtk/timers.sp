@@ -10,7 +10,7 @@ stock Action TimerCB_HealthBar(Handle timer)
 	if (g_iEnts[Ent_MonsterRes] != -1)
 		SetEntProp(g_iEnts[Ent_MonsterRes], Prop_Send, "m_iBossHealthPercentageByte", 0);
 	HealthText();
-	game.RemoveFlag(FLAG_HEALTH_BAR_ACTIVE);
+	game.RemoveFlag(GF_HPBarActive);
 	g_hTimers[Timer_HealthBar] = null;	// Matty you must remember to null handles when the timer is done
 }
 

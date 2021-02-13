@@ -101,20 +101,20 @@ void AdjustPreference(int client, int selection)
 	{
 		case 0:
 		{
-			Player(client).RemoveFlag(FLAG_PREF_ACTIVATOR);
-			Player(client).RemoveFlag(FLAG_PREF_FULLQP);
+			Player(client).RemoveFlag(PF_PrefActivator);
+			Player(client).RemoveFlag(PF_PrefFullQP);
 			ChatMessage(client, Msg_Reply, "%t", "no longer receive queue points");
 		}
 		case 1:
 		{
-			Player(client).AddFlag(FLAG_PREF_ACTIVATOR);
-			Player(client).RemoveFlag(FLAG_PREF_FULLQP);
+			Player(client).AddFlag(PF_PrefActivator);
+			Player(client).RemoveFlag(PF_PrefFullQP);
 			ChatMessage(client, Msg_Reply, "%t", "you will now receive fewer queue points");
 		}
 		case 2:
 		{
-			Player(client).AddFlag(FLAG_PREF_ACTIVATOR);
-			Player(client).AddFlag(FLAG_PREF_FULLQP);
+			Player(client).AddFlag(PF_PrefActivator);
+			Player(client).AddFlag(PF_PrefFullQP);
 			ChatMessage(client, Msg_Reply, "%t", "you will receive the maximum amount of queue points");
 		}
 	}	
@@ -154,23 +154,23 @@ void CheckForPlayers()
 	*/
 
 	// Watching for Player Changes, Too Few Blue Players, Enough Participants <-- Post Team Change
-	if (game.HasFlag(FLAG_WATCHMODE) && game.Blues < desired_activators && game.Participants > desired_activators)
+	if (game.HasFlag(GF_WatchMode) && game.Blues < desired_activators && game.Participants > desired_activators)
 	{
-		game.RemoveFlag(FLAG_WATCHMODE);
+		game.RemoveFlag(GF_WatchMode);
 		Debug("Team change detected. Too few blue players");
 		RequestFrame(RedistributePlayers);
 		return;
 	}
 	
 	// Watching for Player Changes, Enough Blues <-- Team Change Amongst Reds
-	if (game.HasFlag(FLAG_WATCHMODE) && game.Blues == desired_activators)
+	if (game.HasFlag(GF_WatchMode) && game.Blues == desired_activators)
 	{
 		Debug("Team change detected but no action required as we have enough Blue players");
 		return;
 	}
 
 	// Not Watching for Player Changes, Enough Participants <-- New Round
-	if (!game.HasFlag(FLAG_WATCHMODE))
+	if (!game.HasFlag(GF_WatchMode))
 	{
 		if (game.Participants > 1)
 		{
@@ -180,7 +180,7 @@ void CheckForPlayers()
 		else
 		{
 			Debug("Not enough participants to start a round. Gone into waiting mode");
-			game.AddFlag(FLAG_WATCHMODE);
+			game.AddFlag(GF_WatchMode);
 		}
 	}
 }
@@ -207,7 +207,7 @@ void RedistributePlayers()
 	
 	for (int i = 1; i <= MaxClients; i++)
 	{
-		if (Player(i).HasFlag(FLAG_PREF_ACTIVATOR))
+		if (Player(i).HasFlag(PF_PrefActivator))
 			prefers += 1;
 	}
 	
@@ -219,7 +219,7 @@ void RedistributePlayers()
 	else
 		SelectActivatorPoints();
 	
-	game.AddFlag(FLAG_WATCHMODE);		// Go into watch mode to replace activator if needed
+	game.AddFlag(GF_WatchMode);		// Go into watch mode to replace activator if needed
 }
 
 
@@ -251,14 +251,14 @@ void SelectActivatorPoints()
 	{
 		int player = points_order[i][0];
 		
-		if (Player(player).InGame && Player(player).Team == Team_Red && Player(player).HasFlag(FLAG_PREF_ACTIVATOR))
+		if (Player(player).InGame && Player(player).Team == Team_Red && Player(player).HasFlag(PF_PrefActivator))
 		{
 			PrintToServer("%s The points-based activator selection system has selected %N", PREFIX_SERVER, player);
 			if (g_bSCR && g_ConVars[P_SCR].BoolValue)
 				SCR_SendEvent(PREFIX_SERVER, "%N is now the activator", player);
-			Player(player).AddFlag(FLAG_ACTIVATOR);
-			if (Player(player).HasFlag(FLAG_ACTIVATOR))
-				Debug("%N has been given FLAG_ACTIVATOR", player);
+			Player(player).AddFlag(PF_Activator);
+			if (Player(player).HasFlag(PF_Activator))
+				Debug("%N has been given PF_Activator", player);
 			Player(player).SetTeam(Team_Blue);
 			Player(player).SetPoints(QP_Consumed);
 			ChatMessage(player, Msg_Reply, "%t", "queue points consumed");
@@ -275,7 +275,7 @@ void SelectActivatorPoints()
 	}
 	
 	// If running in Open Fortress or TF2C, respawn all players
-	if (game.IsGame(FLAG_OF|FLAG_TF2C)) // TODO Change to a check if the native is available
+	if (game.IsGame(Mod_OF|Mod_TF2C)) // TODO Change to a check if the native is available
 	{
 		int iRespawn = CreateEntityByName("game_forcerespawn");
 		if (iRespawn == -1)
@@ -340,9 +340,9 @@ void SelectActivatorTurn()
 			PrintToServer("%s The turn-based activator selection system has selected %N", PREFIX_SERVER, client);
 			if (g_bSCR && g_ConVars[P_SCR].BoolValue)
 				SCR_SendEvent(PREFIX_SERVER, "%N is now the activator", client);
-			Player(client).AddFlag(FLAG_ACTIVATOR);
-			if (Player(client).HasFlag(FLAG_ACTIVATOR))
-				Debug("Selected activator %N has been given FLAG_ACTIVATOR", client);
+			Player(client).AddFlag(PF_Activator);
+			if (Player(client).HasFlag(PF_Activator))
+				Debug("Selected activator %N has been given PF_Activator", client);
 			Player(client).SetTeam(Team_Blue);
 			g_iBoss = client;
 			Debug("Set g_iBoss to %d (%N)", client, client);
@@ -358,7 +358,7 @@ void SelectActivatorTurn()
 	}
 	
 	// If running in Open Fortress or TF2C, respawn all players
-	//if (game.IsGame(FLAG_OF|FLAG_TF2C)) // TODO Change to a check if the native is available
+	//if (game.IsGame(Mod_OF|Mod_TF2C)) // TODO Change to a check if the native is available
 	
 	// If TF2_RespawnPlayer is not available, use a game_forcerespawn entity to respawn everyone
 	if (GetFeatureStatus(FeatureType_Native, "TF2_RespawnPlayer") != FeatureStatus_Available) // TODO Does this work?
@@ -425,12 +425,15 @@ int GetNumberActivators()
  */
 void ApplyPlayerAttributes(int client)
 {
-	if (!game.IsGame(FLAG_TF))
+	if (!game.IsGame(Mod_TF))
 		return;
 
 	// Reset player attributes
 	if (RemoveAllAttributes(client))
 		Debug("Removed all attributes from %N", client);
+	
+	// Reset desired speed
+	g_flSpeeds[client][Speed_Desired] = 0.0;
 
 	// Blue Speed
 	if (Player(client).Team == Team_Blue)
@@ -521,6 +524,119 @@ int ReplaceWeapon(int client, int weapon, int itemDefIndex, char[] classname)
 	}
 	
 	return -1;
+}
+
+
+
+
+void ModulateSpeed(int client)
+{
+	if (GetEntPropFloat(client, Prop_Send, "m_flMaxspeed") != g_flSpeeds[client][Speed_Last] && g_flSpeeds[client][Speed_Desired])
+	{
+		// Calculate how much to multiply player's max speed by
+		float modifier = g_flSpeeds[client][Speed_Desired] / Player(client).ClassRunSpeed;
+		
+		// Calculate new max speed property
+		float newmaxspeed = GetEntPropFloat(client, Prop_Send, "m_flMaxspeed") * modifier;
+		
+		// Set new max speed property
+		SetEntPropFloat(client, Prop_Send, "m_flMaxspeed", newmaxspeed);
+		
+		// Save new max speed for comparison
+		g_flSpeeds[client][Speed_Last] = newmaxspeed;
+		
+		// Resetting player speed to class speed
+		if (g_flSpeeds[client][Speed_Desired] == Player(client).ClassRunSpeed)
+			g_flSpeeds[client][Speed_Desired] = 0.0;
+		
+		//PrintCenterText(client, "g_flSpeeds[client][Speed_Last] == %f\ng_flSpeeds[client][Speed_Desired] == %f\nm_flMaxspeed == %f\nm_flSpeed == %f", g_flSpeeds[client][Speed_Last], g_flSpeeds[client][Speed_Desired], GetEntPropFloat(client, Prop_Send, "m_flMaxspeed"), GetEntPropFloat(client, Prop_Data, "m_flSpeed"));
+	}
+}
+
+
+
+
+void ActivatorBoost(int client, int buttons, int tickcount)
+{
+	if (GetClientTeam(client) != Team_Blue || g_ConVars[P_BlueBoost].BoolValue)
+		return;
+	
+	// Activator Speed Boosting
+	static float boost[MAXPLAYERS] =  { 396.0, ... };
+	static int boosting[MAXPLAYERS];
+	
+	if (buttons & IN_SPEED)	// TODO Find an alternative way to boost speed in OF. Sprinting?
+	{
+		if (boost[client] > 0.0)
+		{
+			if (!boosting[client] && boost[client] > 132.0)
+			{
+				if (game.IsGame(Mod_TF))
+				{
+					//Player(client).SetSpeed(360);
+					TF2_AddCondition(client, TFCond_SpeedBuffAlly, TFCondDuration_Infinite);
+				}
+				//else
+					//Player(client).SetSpeed(500);
+				
+				boosting[client] = true;
+			}
+			
+			if (boosting[client])
+			{
+				boost[client] -= 1.0;
+			}
+			else
+			{
+				boost[client] += 0.5;
+			}
+		}
+		else if (boost[client] <= 0.0)
+		{
+			if (game.IsGame(Mod_TF))
+			{
+				TF2_RemoveCondition(client, TFCond_SpeedBuffAlly);
+				
+				//Player(client).SetSpeed();
+			}
+			//else
+			//{
+			//	Player(client).SetSpeed();
+			//}
+			
+			boosting[client] = false;
+			boost[client] += 0.5;
+		}
+	}
+	else if (!(buttons & IN_SPEED))
+	{
+		if (boost[client] < 396.0)
+		{
+			if (boosting[client])
+			{
+				if (game.IsGame(Mod_TF))
+					TF2_RemoveCondition(client, TFCond_SpeedBuffAlly);
+				
+				//Player(client).SetSpeed();
+				boosting[client] = false;
+			}
+			
+			boost[client] += 0.5;
+		}
+	}
+	
+	// Tick timer for boost HUD
+	static int ticktimer;
+	
+	if (!ticktimer)
+		ticktimer = tickcount;
+	
+	// Show Boost HUD every half second
+	if ((tickcount) > (ticktimer + 33))
+	{
+		ticktimer = tickcount;
+		BoostHUD(client, boost[client]);
+	}
 }
 
 
@@ -641,7 +757,7 @@ stock void ProcessMapInstruction(int client, const char[] instruction, const cha
 	// Set health
 	if (StrEqual(instruction, "health", false))
 	{
-		Player(client).SetHealth(StringToInt(buffers[0]));
+		Player(client).Health = StringToInt(buffers[0]);
 	}
 	
 	// Set max health
@@ -767,7 +883,7 @@ void DisplayNextActivators()
 	
 	for (int i = 1; i <= MaxClients; i++)
 	{
-		if (Player(i).HasFlag(FLAG_PREF_ACTIVATOR))
+		if (Player(i).HasFlag(PF_PrefActivator))
 			willing += 1;
 	}
 	
@@ -797,7 +913,7 @@ void DisplayNextActivators()
 		int player = points_order[i][0];
 		//client = points_order[i][0];
 	
-		if (Player(player).InGame && Player(player).IsParticipating && points_order[i][1] > 0 && Player(player).HasFlag(FLAG_PREF_ACTIVATOR))
+		if (Player(player).InGame && Player(player).IsParticipating && points_order[i][1] > 0 && Player(player).HasFlag(PF_PrefActivator))
 		//if (IsClientInGame(client) && points_order[i][1] > 0 && (g_iFlags[client] & PREF_ACTIVATOR) == PREF_ACTIVATOR)
 		{
 			players[count] = player;
@@ -898,7 +1014,7 @@ void HookStuff(bool enabled)
 		HookEvent("player_death", Event_PlayerDeath);										// Player dies
 		HookEvent("player_hurt", Event_PlayerDamaged);										// Player is damaged
 		
-		if (game.IsGame(FLAG_TF))
+		if (game.IsGame(Mod_TF))
 			HookEvent("post_inventory_application", Event_InventoryApplied);
 	}
 	else
@@ -915,7 +1031,7 @@ void HookStuff(bool enabled)
 		UnhookEvent("player_death", Event_PlayerDeath);
 		UnhookEvent("player_hurt", Event_PlayerDamaged);
 		
-		if (game.IsGame(FLAG_TF))
+		if (game.IsGame(Mod_TF))
 			UnhookEvent("post_inventory_application", Event_InventoryApplied);
 	}
 	
@@ -968,7 +1084,7 @@ void ConVar_ChangeHook(ConVar convar, const char[] oldValue, const char[] newVal
 		if (g_ConVars[P_Enabled].BoolValue)
 		{
 			HookStuff(true);
-			game.AddFlag(FLAG_WATCHMODE);	// Watch for players connecting after the map change
+			game.AddFlag(GF_WatchMode);	// Watch for players connecting after the map change
 											// Server doesn't fire a round reset or start event unless there are players
 			if (g_bSteamTools)
 				GameDescription(true);
@@ -1012,7 +1128,7 @@ void ConVar_ChangeHook(ConVar convar, const char[] oldValue, const char[] newVal
  *
  * @noreturn
  */
-stock void GameDescription(bool enabled)
+/*stock void GameDescription(bool enabled)
 {
 	if (!g_bSteamTools)
 		return;
@@ -1021,9 +1137,9 @@ stock void GameDescription(bool enabled)
 	
 	if (!enabled) // Plugin not enabled
 	{
-		if 			(game.IsGame(FLAG_TF))		Format(description, sizeof(description), "Team Fortress");
-		else if 	(game.IsGame(FLAG_OF))		Format(description, sizeof(description), "Open Fortress");
-		else if 	(game.IsGame(FLAG_TF2C))	Format(description, sizeof(description), "Team Fortress 2 Classic");
+		if 			(game.IsGame(Mod_TF))		Format(description, sizeof(description), "Team Fortress");
+		else if 	(game.IsGame(Mod_OF))		Format(description, sizeof(description), "Open Fortress");
+		else if 	(game.IsGame(Mod_TF2C))	Format(description, sizeof(description), "Team Fortress 2 Classic");
 		else 									Format(description, sizeof(description), DEFAULT_GAME_DESC);
 	}
 	else
@@ -1031,8 +1147,42 @@ stock void GameDescription(bool enabled)
 	
 	Steam_SetGameDescription(description);
 	PrintToServer("%s Set game description to \"%s\"", PREFIX_SERVER, description);
-}
+}*/
 
+
+/**
+ * Set the server's game description.
+ *
+ * @noreturn
+ */
+stock void GameDescription(bool enabled)
+{
+	// If SteamTools is not found or the ConVar is empty, stop
+	if (!g_bSteamTools)
+		return;
+
+	char description[256];
+	g_ConVars[P_Description].GetString(description, sizeof(description));
+	
+	if (description[0] == '\0')
+		return;
+	
+	if (!enabled) // Plugin not enabled
+	{
+		if 			(game.IsGame(Mod_TF))		Format(description, sizeof(description), "Team Fortress");
+		else if 	(game.IsGame(Mod_OF))		Format(description, sizeof(description), "Open Fortress");
+		else if 	(game.IsGame(Mod_TF2C))	Format(description, sizeof(description), "Team Fortress 2 Classic");
+		else 									Format(description, sizeof(description), DEFAULT_GAME_DESC);
+	}
+	else
+	{
+		ReplaceString(description, sizeof(description), "{plugin_name}", PLUGIN_SHORTNAME, false);
+		ReplaceString(description, sizeof(description), "{plugin_version}", PLUGIN_VERSION, false);
+	}
+	
+	Steam_SetGameDescription(description);
+	PrintToServer("%s Set game description to \"%s\"", PREFIX_SERVER, description);
+}
 
 
 
@@ -1177,7 +1327,7 @@ stock void SetHealthBar(int health = 0, int maxhealth = 0, int entity = 0)
 		else
 			HealthText("%t: %d", "dtk_health", health);
 	}
-	game.AddFlag(FLAG_HEALTH_BAR_ACTIVE);
+	game.AddFlag(GF_HPBarActive);
 	
 	delete g_hTimers[Timer_HealthBar];
 	g_hTimers[Timer_HealthBar] = CreateTimer(10.0, TimerCB_HealthBar);

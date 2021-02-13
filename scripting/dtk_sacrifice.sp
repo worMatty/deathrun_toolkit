@@ -10,7 +10,6 @@
 #pragma newdecls required
 
 #define DEBUG
-#define PLUGIN_SHORTNAME 	"Sacrifice"
 #define PLUGIN_NAME 		"[DTK] Sacrifice"
 #define PLUGIN_VERSION 		"0.2.1"
 #define SERVERMSG_PREFIX	"[DTK] [Sac]"

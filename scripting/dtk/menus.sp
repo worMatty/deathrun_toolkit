@@ -26,7 +26,7 @@ stock void NewMenuFunction(int client, const char[] sMenu)
 	 */
 	if (StrEqual(sMenu, "menu_main"))
 	{
-		if (Player(client).HasFlag(FLAG_PREF_ACTIVATOR))
+		if (Player(client).HasFlag(PF_PrefActivator))
 	 	{
 	 		Format(title, sizeof(title), "%s%T\n \n", title, "menu queue points", client, Player(client).Points);
 	 	}
@@ -49,11 +49,11 @@ stock void NewMenuFunction(int client, const char[] sMenu)
 	 */
 	if (StrEqual(sMenu, "menu_prefs"))
 	{
-		if (Player(client).HasFlag(FLAG_PREF_ACTIVATOR) && Player(client).HasFlag(FLAG_PREF_FULLQP))
+		if (Player(client).HasFlag(PF_PrefActivator) && Player(client).HasFlag(PF_PrefFullQP))
 	 	{
 	 		Format(title, sizeof(title), "%s%T\n \n", title, "menu full queue points", client, Player(client).Points);
 	 	}
- 		else if (Player(client).HasFlag(FLAG_PREF_ACTIVATOR) && !Player(client).HasFlag(FLAG_PREF_FULLQP))
+ 		else if (Player(client).HasFlag(PF_PrefActivator) && !Player(client).HasFlag(PF_PrefFullQP))
 	 	{
 	 		Format(title, sizeof(title), "%s%T\n \n", title, "menu fewer queue points", client, Player(client).Points);
 	 	}
@@ -118,7 +118,7 @@ stock void NewMenuFunction(int client, const char[] sMenu)
 		for (int i = 0; i < MaxClients; i++)
 		{
 			int iPlayer = points_order[i][0];
-			if (Player(iPlayer).InGame && Player(iPlayer).HasFlag(FLAG_PREF_ACTIVATOR))
+			if (Player(iPlayer).InGame && Player(iPlayer).HasFlag(PF_PrefActivator))
 			{
 				Format(sItem, sizeof(sItem), "%N: %d", iPlayer, Player(iPlayer).Points);
 				menu.AddItem("points_item", sItem, ITEMDRAW_DISABLED);

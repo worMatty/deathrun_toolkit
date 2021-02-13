@@ -73,20 +73,6 @@ enum {
 	QP_Consumed = 0,		// Selected activators have their QP reset to this
 }
 
-// Default Class Run Speeds
-enum {
-	RunSpeed_NoClass = 0,
-	RunSpeed_Scout = 400,
-	RunSpeed_Sniper = 300,
-	RunSpeed_Soldier = 240,
-	RunSpeed_DemoMan = 280,
-	RunSpeed_Medic = 320,
-	RunSpeed_Heavy = 230,
-	RunSpeed_Pyro = 300,
-	RunSpeed_Spy = 320,
-	RunSpeed_Engineer = 300,
-}
-
 // Life States
 enum {
 	LifeState_Alive,		// alive
@@ -127,6 +113,13 @@ enum {
 	Player_Max
 }
 
+// Player Speed Array
+enum {
+	Speed_Last,
+	Speed_Desired,
+	Speed_Max
+}
+
 // ConVars
 enum {
 	// Plugin Server Settings
@@ -137,6 +130,7 @@ enum {
 	P_Database,
 	P_SCR,
 	P_MapInstructions,
+	P_Description,
 	
 	// Player Interface
 	P_ChatKillFeed,
@@ -216,38 +210,45 @@ enum {
  * ----------------------------------------------------------------------------------------------------
  */
 
-// Player Preferences
-#define FLAG_PREF_ACTIVATOR		( 1 << 0 )
-#define FLAG_PREF_FULLQP		( 1 << 1 )
-#define FLAG_PREF_ENGLISH		( 1 << 4 )
+// Player Flags
+enum {
+	PF_PrefActivator = 0x1,
+	PF_PrefFullQP = 0x2,
+	PF_PrefEnglish = 0x4,
+	
+	PF_Welcomed = 0x10000,
+	PF_Activator = 0x20000,
+	PF_Runner = 0x40000,
+	PF_PointsEligible = 0x80000,
+	PF_CanBoost = 0x140000,
+}
 
-// Session
-#define FLAG_WELCOMED			( 1 << 16 )
-#define FLAG_ACTIVATOR			( 1 << 17 )
-#define FLAG_RUNNER				( 1 << 18 )
-#define FLAG_POINTS_ELIGIBLE	( 1 << 19 )
-#define FLAG_CAN_BOOST			( 1 << 20 )
-
-// Game State
-#define FLAG_LOADED_LATE		( 1 << 0 )
-#define FLAG_HEALTH_BAR_ACTIVE	( 1 << 1 )
-#define FLAG_WATCHMODE			( 1 << 2 )
-
-// Games or Source Mods
-#define FLAG_TF					( 1 << 0 )
-#define FLAG_OF					( 1 << 1 )
-#define FLAG_TF2C				( 1 << 2 )
-
-// Masks
-#define MASK_NEW_PLAYER			( FLAG_PREF_ACTIVATOR | FLAG_PREF_FULLQP )
-#define MASK_STORED_FLAGS		( FLAG_PREF_ACTIVATOR | FLAG_PREF_FULLQP | FLAG_PREF_ENGLISH )
+// Player Flag Masks
+#define MASK_NEW_PLAYER			( PF_PrefActivator | PF_PrefFullQP )
+#define MASK_STORED_FLAGS		( PF_PrefActivator | PF_PrefFullQP | PF_PrefEnglish )
 #define MASK_SESSION_FLAGS		( 0xFFFF0000 )
 
+// Game Flags
+enum {
+	GF_LateLoad = 0x1,
+	GF_HPBarActive = 0x2,
+	GF_WatchMode = 0x4,
+}
+
+// TF Mod
+enum {
+	Mod_TF = 0x1,
+	Mod_OF = 0x2,
+	Mod_TF2C = 0x4,
+}
+
 // Engineer Buildings
-#define BUILDING_SENTRY			( 1 << 0 )
-#define BUILDING_DISPENSER		( 1 << 1 )
-#define BUILDING_TELE_ENTRANCE	( 1 << 2 )
-#define BUILDING_TELE_EXIT		( 1 << 3 )
+enum {
+	Build_Sentry = 0x1,
+	Build_Dispenser = 0x2,
+	Build_TeleEnt = 0x4,
+	Build_TeleEx = 0x8,
+}
 
 
 
@@ -259,11 +260,14 @@ enum {
 
 bool g_bSteamTools;
 bool g_bSCR;
+bool g_bTF2Attributes;
+
+float g_flSpeeds[MAXPLAYERS + 1][Speed_Max];
 
 int g_iGame;
 int g_iGameState;
 int g_iRoundState;
-int g_iPlayers[MAXPLAYERS+1][Player_Max];
+int g_iPlayers[MAXPLAYERS + 1][Player_Max];
 int g_iBoss;
 int g_iEnts[Ent_Max];
 

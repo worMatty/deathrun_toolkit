@@ -246,7 +246,7 @@ Play Test
 Bugs
 ====
 
-No boss on first round? Could be caused by wrong state.
+No boss on first round? Could be caused by wrong state. Oh the teams aren't distributed either.
 
 I somehow broke Arena mode when joining blue when there was already an activator. When the red bot died it didn't end the round.
 
@@ -352,6 +352,8 @@ Possibly TF2C but not likely: also sometimes i don't see the boost text as an ac
 
 From Berke: Boost still sometimes gets stuck on round start(edited) you have to type -speed
 
+Speed boost HUD can go missing for some reason.
+
 
 
 Observations
@@ -371,6 +373,10 @@ Activator can kill themselves with stickies.
 'Next activators' should show correct order if turn-based system is being used.
 
 A 5144 byte trie is created by morecolors.
+
+Setting a speed attribute on a player using a trigger changes their speed immediately. However, if you remove this attribute
+it doesn't reset the speed. When you give a player a speed attribute after they spawn, the effect works, but if you remove it,
+the speed change is not lost for some reason.
 
 
 
