@@ -11,6 +11,10 @@
  */
 stock void SetUpEnts()
 {
+	// Clear NPC array
+	g_NPCs.Clear();
+	g_NPCs.Resize(1);
+	
 	// monster_resource
 	if ((g_iEnts[Ent_MonsterRes] = FindEntityByClassname(-1, "monster_resource")) == -1)
 	{
@@ -41,12 +45,29 @@ stock void SetUpEnts()
 	while ((i = FindEntityByClassname(i, "math_counter")) != -1)
 	{
 		GetEntPropString(i, Prop_Data, "m_iName", targetname, sizeof(targetname));
-		if (StrContains(targetname, DRENT_HEALTH_MATH, false) == 0)
+		
+		if (StrContains(targetname, DRENT_MATH_BOSS, false) == 0)
 		{
 			HookSingleEntityOutput(i, "OutValue", Hook_HealthEnts);
 			HookSingleEntityOutput(i, "OnUser1", Hook_HealthEnts);
 			HookSingleEntityOutput(i, "OnUser2", Hook_HealthEnts);
-			Debug("Hooked OutValue, OnUser1, OnUser2 outputs of math_counter %d named %s", i, targetname);
+			
+			// The first boss math_counter will be at index 0
+			g_NPCs.Set(0, i);
+			
+			Debug("Hooked boss math_counter %d named %s", i, targetname);
+		}
+		
+		else if (StrContains(targetname, DRENT_MATH_MINIBOSS, false) == 0)
+		{
+			HookSingleEntityOutput(i, "OutValue", Hook_HealthEnts);
+			HookSingleEntityOutput(i, "OnUser1", Hook_HealthEnts);
+			HookSingleEntityOutput(i, "OnUser2", Hook_HealthEnts);
+			
+			// Add math_counter to NPC array
+			g_NPCs.Push(i);
+			
+			Debug("Hooked mini-boss math_counter %d named %s", i, targetname);
 		}
 	}
 
@@ -90,34 +111,68 @@ stock void SetUpEnts()
 
 
 
+void LoadKVFiles()
+{
+	g_Restrictions = new KeyValues("restrictions");
+	if (!g_Restrictions.ImportFromFile(WEAPON_RESTRICTIONS_CFG))
+	{
+		LogError("Failed to load weapon restriction config \"%s\"", WEAPON_RESTRICTIONS_CFG);
+	}
+	
+	g_Replacements = new KeyValues("replacements");
+	if (!g_Replacements.ImportFromFile(WEAPON_REPLACEMENTS_CFG))
+	{
+		LogError("Failed to load weapon replacement config \"%s\"", WEAPON_REPLACEMENTS_CFG);
+	}
+}
+
+
+
+
+StringMap BuildSoundList()
+{
+	StringMap hSounds = new StringMap();
+	hSounds.SetString("chat_warning",	"common/warning.wav");
+	hSounds.SetString("chat_reply", (FileExists("sound/ui/chat_display_text.wav", true)) ? "ui/chat_display_text.wav" : "misc/talk.wav");
+		// TF2: sound/ui/chat_display_text.wav  HL2: ui/buttonclickrelease.wav
+	
+	return hSounds;
+}
+
+
+
+
 /**
  * Player Preferences
  * ----------------------------------------------------------------------------------------------------
  */
-
-void AdjustPreference(int client, int selection)
-{
-	switch (selection)
+ 
+// Toggle English language
+void ToggleEnglish(int client)
+{	
+	if (Player(client).HasFlag(PF_PrefEnglish))
 	{
-		case 0:
+		Player(client).RemoveFlag(PF_PrefEnglish);
+		char language[32];
+		
+		if (GetClientInfo(client, "cl_language", language, sizeof(language)))
 		{
-			Player(client).RemoveFlag(PF_PrefActivator);
-			Player(client).RemoveFlag(PF_PrefFullQP);
-			ChatMessage(client, Msg_Reply, "%t", "no longer receive queue points");
+			int iLanguage = GetLanguageByName(language);
+			if (iLanguage == -1)
+				ChatMessage(client, "When you next connect, your client language will be used");
+			else
+			{
+				SetClientLanguage(client, iLanguage);
+				ChatMessage(client, "Your client language of '%s' will now be used", language);
+			}
 		}
-		case 1:
-		{
-			Player(client).AddFlag(PF_PrefActivator);
-			Player(client).RemoveFlag(PF_PrefFullQP);
-			ChatMessage(client, Msg_Reply, "%t", "you will now receive fewer queue points");
-		}
-		case 2:
-		{
-			Player(client).AddFlag(PF_PrefActivator);
-			Player(client).AddFlag(PF_PrefFullQP);
-			ChatMessage(client, Msg_Reply, "%t", "you will receive the maximum amount of queue points");
-		}
-	}	
+	}
+	else
+	{
+		Player(client).AddFlag(PF_PrefEnglish);
+		ChatMessage(client, "Your language has been set to English");
+		SetClientLanguage(client, 0);
+	}
 }
 
 
@@ -130,285 +185,228 @@ void AdjustPreference(int client, int selection)
 
 
 /**
- * Check for players when an activator is needed or a team changed detected
- * during pre-round freeze time.
+ * Check teams to see if we have the required number of players on each team
  * 
  * @noreturn
  */
-void CheckForPlayers()
+void CheckTeams()
 {
-	// The number of activators we want
-	int desired_activators = g_ConVars[P_Activators].IntValue;
-
-	Debug("Checking for players...");
-
-
 	/*
-		Select an Activator
-		Move them to Blue and the rest to Red		
-
-		Team Change Detected
-		Are there enough players on Blue?
-		If yes, then do nothing.
-		If not, Select an Activator.
+		While the plugin makes changes to teams, it disables Watch Mode.
+		This prevents it from reacting to changes as if they were caused by players,
+		or from going into an infinite loop of activator selection.
+		
+		Disable Watch Mode before performing team distrubution, and enable it when you're done.
 	*/
-
-	// Watching for Player Changes, Too Few Blue Players, Enough Participants <-- Post Team Change
-	if (game.HasFlag(GF_WatchMode) && game.Blues < desired_activators && game.Participants > desired_activators)
-	{
-		game.RemoveFlag(GF_WatchMode);
-		Debug("Team change detected. Too few blue players");
-		RequestFrame(RedistributePlayers);
-		return;
-	}
 	
-	// Watching for Player Changes, Enough Blues <-- Team Change Amongst Reds
-	if (game.HasFlag(GF_WatchMode) && game.Blues == desired_activators)
+	// Monitor Activators During Freeze Time
+	if (game.InWatchMode)
 	{
-		Debug("Team change detected but no action required as we have enough Blue players");
-		return;
-	}
-
-	// Not Watching for Player Changes, Enough Participants <-- New Round
-	if (!game.HasFlag(GF_WatchMode))
-	{
-		if (game.Participants > 1)
+		int activators = GetNumActivatorsRequired();
+		
+		if (game.Activators < activators && game.Participants > activators)
 		{
-			Debug("We have enough participants to start a round!");
-			RedistributePlayers();
-		}
-		else
-		{
-			Debug("Not enough participants to start a round. Gone into waiting mode");
-			game.AddFlag(GF_WatchMode);
+			Debug("We have enough participants so we'll select some Activators");
+			
+			game.InWatchMode = false;
+			RequestFrame(SelectActivators);
 		}
 	}
-}
-
-
-
-/**
- * Select an activator and redistribute players to the right teams.
- * 
- * @noreturn
- */
-void RedistributePlayers()
-{
-	Debug("Redistributing the players");
-	
-	// Move all blue players to the red team
-	for (int i = 1; i <= MaxClients; i++)
+	/*
+	// Fixed by enabling the Unbalance cvar at < 2 participants
+	else if (!game.InWatchMode && game.Participants < 2)	// Go into Watch Mode when insufficient participants
 	{
-		if (Player(i).InGame && Player(i).Team == Team_Blue)
-			Player(i).SetTeam(Team_Red);
+		Debug("Insufficient participants for a round, so Watch Mode will be enabled");
+		game.InWatchMode = true;
 	}
-
-	int prefers;
+	*/
 	
-	for (int i = 1; i <= MaxClients; i++)
+	// The Unbalancing ConVar helps manage Round Restart when the server is empty
+	if (game.Participants > 1)
 	{
-		if (Player(i).HasFlag(PF_PrefActivator))
-			prefers += 1;
-	}
-	
-	if (prefers <= MINIMUM_ACTIVATORS)
-	{
-		SelectActivatorTurn();
-		ChatMessageAll(Msg_Normal, "%t", "not enough activators");
+		g_ConVars[S_Unbalance].IntValue = 0;
 	}
 	else
-		SelectActivatorPoints();
-	
-	game.AddFlag(GF_WatchMode);		// Go into watch mode to replace activator if needed
+	{
+		g_ConVars[S_Unbalance].RestoreDefault();
+	}
 }
 
 
 
+
 /**
- * Select an activator by using the queue point system. 
+ * Select and move eligible activators
  * 
  * @noreturn
  */
-void SelectActivatorPoints()
-{
-	// First sort our player points array by points in descending order
-	int points_order[MAXPLAYERS][2];
-		// 0 will be client index. 1 will be points.
+void SelectActivators()
+{	
+	Debug("Selecting activators");
 	
-	for (int i = 0; i < MaxClients; i++)
-	{
-		points_order[i][0] = Player(i + 1).Index;
-		points_order[i][1] = Player(i + 1).Points;
-	}
-	
-	SortCustom2D(points_order, MaxClients, SortByPoints);
+	int len = game.ActivatorPool;
+	int[] list = new int[len];
+	CreateActivatorList(list);
 	
 	// If we need activators and have enough on red to supply and not empty the team, move someone
 	int i = 0;
-	int activators = GetNumberActivators();
+	int activators = GetNumActivatorsRequired();
 	
-	while (game.Blues < activators && game.Reds > 1)
+	while (game.Blues < activators && game.Reds > 1 && i < len)
 	{
-		int player = points_order[i][0];
+		Player player = Player(list[i]);
 		
-		if (Player(player).InGame && Player(player).Team == Team_Red && Player(player).HasFlag(PF_PrefActivator))
+		if (player.InGame && player.Team == Team_Red)
 		{
-			PrintToServer("%s The points-based activator selection system has selected %N", PREFIX_SERVER, player);
-			if (g_bSCR && g_ConVars[P_SCR].BoolValue)
-				SCR_SendEvent(PREFIX_SERVER, "%N is now the activator", player);
-			Player(player).AddFlag(PF_Activator);
-			if (Player(player).HasFlag(PF_Activator))
-				Debug("%N has been given PF_Activator", player);
-			Player(player).SetTeam(Team_Blue);
-			Player(player).SetPoints(QP_Consumed);
-			ChatMessage(player, Msg_Reply, "%t", "queue points consumed");
-			g_iBoss = player;
+			Debug("Selected %N as an activator and moving them to Blue", player.Index);
 			
-			if (g_ConVars[P_BlueBoost].BoolValue)
-				ChatMessage(player, Msg_Reply, "Bind +speed to use the Activator speed boost");
-		}
-		
-		if (i == MaxClients - 1)
-			i = 0;
-		else
-			i++;
-	}
-	
-	// If running in Open Fortress or TF2C, respawn all players
-	if (game.IsGame(Mod_OF|Mod_TF2C)) // TODO Change to a check if the native is available
-	{
-		int iRespawn = CreateEntityByName("game_forcerespawn");
-		if (iRespawn == -1)
-		{
-			LogError("Unable to create game_forcerespawn");
-		}
-		else
-		{
-			if (!DispatchSpawn(iRespawn))
+			player.MakeActivator();
+			player.SetTeam(Team_Blue);
+			
+			if (game.RoundState != Round_Waiting)
 			{
-				LogError("Unable to spawn game_forcerespawn");
-			}
-			else
-			{
-				if (!AcceptEntityInput(iRespawn, "ForceRespawn"))
+				player.SetPoints(QP_Consumed);
+				player.ActivatorLast = GetTime();
+				
+				ChatMessage(player.Index, "%t", "you_are_an_activator");
+				
+				if (g_ConVars[P_BlueBoost] != null && g_ConVars[P_BlueBoost].BoolValue)
 				{
-					LogError("game_forcerespawn wouldn't accept our ForceRespawn input");
+					ChatMessage(player.Index, "Bind +speed to use the Activator speed boost");
 				}
-				else
+				
+				if (g_bSCR && g_ConVars[P_SCR].BoolValue)
 				{
-					Debug("Respawned all players by creating a game_forcerespawn");
+					SCR_SendEvent(PREFIX_SERVER, "%N has been made activator", player.Index);
+				}
+				
+				if (activators == 1)
+				{
+					char name[32];
+					GetClientName(player.Index, name, sizeof(name));
+					ChatMessageAllEx(player.Index, "%t", "name_has_been_made_activator", name);
 				}
 			}
-			
-			AcceptEntityInput(iRespawn, "Kill");
-			//RemoveEdict(iRespawn);
 		}
-	}
-}
 
-
-
-/**
- * Select an activator by using the fall-back turn-based system.
- * 
- * @noreturn
- */
-void SelectActivatorTurn()
-{
-	static int client = 1;
-	
-	//if (client > MaxClients)
-		//client = 1;
-	
-	/*
-	int activators = g_ConVars[P_Activators].IntValue;
-	if (g_ConVars[P_Activators].IntValue == -1)
-	{
-		activators = RoundFloat(game.Participants * g_ConVars[P_ActivatorRatio].FloatValue);
-		ClampInt(activators, 1, game.Participants - 1);
-		Debug("There are %d participants and the ratio is %f so we need %d activators", game.Participants, g_ConVars[P_ActivatorRatio].FloatValue, activators);
-	}
-	*/
-	
-	int activators = GetNumberActivators();
-	
-	// If we need activators and have enough on red to supply and not empty the team, move someone
-	while (game.Blues < activators && game.Reds > 1)
-	{
-		if (Player(client).InGame && Player(client).Team == Team_Red)
-		{
-			PrintToServer("%s The turn-based activator selection system has selected %N", PREFIX_SERVER, client);
-			if (g_bSCR && g_ConVars[P_SCR].BoolValue)
-				SCR_SendEvent(PREFIX_SERVER, "%N is now the activator", client);
-			Player(client).AddFlag(PF_Activator);
-			if (Player(client).HasFlag(PF_Activator))
-				Debug("Selected activator %N has been given PF_Activator", client);
-			Player(client).SetTeam(Team_Blue);
-			g_iBoss = client;
-			Debug("Set g_iBoss to %d (%N)", client, client);
-			
-			if (g_ConVars[P_BlueBoost].BoolValue)
-				ChatMessage(client, Msg_Reply, "Bind +speed to use the Activator speed boost");
-		}
-		
-		if (client == MaxClients)
-			client = 1;
-		else
-			client++;
+		i++;
 	}
 	
-	// If running in Open Fortress or TF2C, respawn all players
-	//if (game.IsGame(Mod_OF|Mod_TF2C)) // TODO Change to a check if the native is available
-	
-	// If TF2_RespawnPlayer is not available, use a game_forcerespawn entity to respawn everyone
-	if (GetFeatureStatus(FeatureType_Native, "TF2_RespawnPlayer") != FeatureStatus_Available) // TODO Does this work?
+	// Respawn teams if OF or TF2C
+	if (game.IsGame(Mod_TF2C|Mod_OF) && GetFeatureStatus(FeatureType_Native, "TF2_RespawnPlayer") != FeatureStatus_Available) // TODO Does this work?
 	{
-		int iRespawn = CreateEntityByName("game_forcerespawn");
-		if (iRespawn == -1)
-		{
-			LogError("Unable to create game_forcerespawn");
-		}
-		else
-		{
-			if (!DispatchSpawn(iRespawn))
-			{
-				LogError("Unable to spawn game_forcerespawn");
-			}
-			else
-			{
-				if (!AcceptEntityInput(iRespawn, "ForceRespawn"))
-				{
-					LogError("game_forcerespawn wouldn't accept our ForceRespawn input");
-				}
-				else
-				{
-					Debug("Respawned all players by creating a game_forcerespawn");
-				}
-			}
-			
-			AcceptEntityInput(iRespawn, "Kill");
-			//RemoveEdict(iRespawn);
-		}
+		RespawnTeamsUsingEntity();
 	}
+	
+	// Go into watch mode to replace activator if needed
+	game.InWatchMode = true;
 }
 
 
 
 
 /**
- * Get number of activators needed
+ * Get the number of activators needed
  * 
  * @return		int		Number of activators
  */
-int GetNumberActivators()
+int GetNumActivatorsRequired()
 {
+	// Get the ratio of activators to participants
 	int activators = RoundFloat(game.Participants * g_ConVars[P_ActivatorRatio].FloatValue);
-	if (g_ConVars[P_Activators].IntValue > -1)
-		ClampInt(activators, 1, g_ConVars[P_Activators].IntValue);
+	
+	// If we have specified an activator cap, clamp to it
+	if (g_ConVars[P_ActivatorsMax].IntValue > -1)
+	{
+		ClampInt(activators, 1, g_ConVars[P_ActivatorsMax].IntValue);
+	}
+
+	// else, clamp between 1 and participants -1
 	ClampInt(activators, 1, game.Participants - 1);
+	
+	Debug("We need %d activators", activators);
 	
 	return activators;
 }
+
+
+
+
+/**
+ * Populate a 1D array of client indexes in order of activator queue position
+ * 
+ * @noreturn
+ */
+stock void CreateActivatorList(int[] list)
+{
+	int len = game.ActivatorPool;
+	bool optout = (game.WillingActivators >= MINIMUM_WILLING);
+
+	if (!len) return;
+
+	int[][] sort = new int[len][3];
+	int count;
+	
+	for (int i = 1; i <= MaxClients; i++)
+	{
+		Player player = Player(i);
+		
+		if (player.InGame && player.IsParticipating)
+		{
+			if (!player.HasFlag(PF_PrefActivator) && optout)
+				continue;
+
+			sort[count][0] = player.Index;
+			sort[count][1] = player.Points;
+			sort[count][2] = player.ActivatorLast;
+			count++;
+		}
+	}
+	
+	SortCustom2D(sort, len, SortPlayers);
+	
+	for (int i = 0; i < len; i++)
+	{
+		list[i] = sort[i][0];
+	}
+}
+
+
+
+
+/**
+ * Sorting function used by SortCustom2D. Sorts players by queue points
+ * and last activator time.
+ * 
+ * @return	int	
+ */
+stock int SortPlayers(int[] a, int[] b, const int[][] array, Handle hndl)
+{
+	if (b[1] == a[1])			// B and A have the same points
+	{
+		if (b[2] < a[2])			// B has an earlier Activator time than A
+		{
+			return 1;
+		}
+		else if (b[2] > a[2])		// B has a later Activator time than A
+		{
+			return -1;
+		}
+		else						// B and A have the same Activator time
+		{
+			return 0;
+		}	
+	}
+	else if (b[1] > a[1])		// B has more points than A
+	{
+		return 1;
+	}
+	else						// B has fewer points than A
+	{
+		return -1;
+	}
+}
+
 
 
 
@@ -428,42 +426,40 @@ void ApplyPlayerAttributes(int client)
 	if (!game.IsGame(Mod_TF))
 		return;
 
-	// Reset player attributes
-	if (RemoveAllAttributes(client))
-		Debug("Removed all attributes from %N", client);
-	
-	// Reset desired speed
-	g_flSpeeds[client][Speed_Desired] = 0.0;
+	Player player = Player(client);
 
+	// Reset player attributes
+	RemoveAllAttributes(client);
+	
 	// Blue Speed
-	if (Player(client).Team == Team_Blue)
+	if (player.Team == Team_Blue)
 		if (g_ConVars[P_BlueSpeed].FloatValue != 0.0)
-			Player(client).SetSpeed(g_ConVars[P_BlueSpeed].IntValue);
+			player.SetSpeed(g_ConVars[P_BlueSpeed].IntValue);
 
 	// Red
-	if (Player(client).Team == Team_Red)
+	if (player.Team == Team_Red)
 	{
 		// Red Speed
 		if (g_ConVars[P_RedSpeed].FloatValue != 0.0)
-			Player(client).SetSpeed(g_ConVars[P_RedSpeed].IntValue);
+			player.SetSpeed(g_ConVars[P_RedSpeed].IntValue);
 		
 		// Red Scout Speed
-		else if (g_ConVars[P_RedScoutSpeed].FloatValue != 0.0 && Player(client).Class == Class_Scout)
-			Player(client).SetSpeed(g_ConVars[P_RedScoutSpeed].IntValue);
+		else if (g_ConVars[P_RedScoutSpeed].FloatValue != 0.0 && player.Class == Class_Scout)
+			player.SetSpeed(g_ConVars[P_RedScoutSpeed].IntValue);
 		
 		// Double Jump
-		if (g_ConVars[P_RedAirDash].BoolValue == false && Player(client).Class == Class_Scout)
+		if (!g_ConVars[P_RedAirDash].BoolValue && player.Class == Class_Scout)
 			AddAttribute(client, "no double jump", 1.0);
 		
 		// Spy Cloak
-		if (Player(client).Class == Class_Spy)
+		if (player.Class == Class_Spy)
 		{
 			AddAttribute(client, "mult cloak meter consume rate", 8.0);
 			AddAttribute(client, "mult cloak meter regen rate", 0.25);
 		}
 
 		// Demo Charging
-		if (Player(client).Class == Class_DemoMan)
+		if (player.Class == Class_DemoMan)
 		{
 			switch (2)
 			{
@@ -487,48 +483,81 @@ void ApplyPlayerAttributes(int client)
 /**
  * Remove a player's weapon and replace it with a new one.
  * 
- * @param	int	Client index.
- * @param	int	Current weapon entity index.
- * @param	int	Chosen item definition index.
- * @param	char	Classname of chosen weapons.
- * @return	int	Entity index of the new weapon
+ * @param		int		Client index
+ * @param		int		Current weapon
+ * @param		int		New weapon item definition index
+ * @param		char	New weapon classname
+ * @return		int		Entity index of new weapon. -1 if failed to create
  */
-int ReplaceWeapon(int client, int weapon, int itemDefIndex, char[] classname)
+int ReplaceWeapon(int client, int oldweapon, int itemDefIndex, char[] classname)
 {
-	RemoveEdict(weapon);
+	int weapon = CreateWeapon(itemDefIndex, classname);
 	
-	weapon = CreateEntityByName(classname);
-	if (weapon == -1)
+	if (weapon != -1)
 	{
-		LogError("Couldn't create %s for %N", classname, client);
+		RemoveEntity(oldweapon);
+		GiveWeapon(client, weapon);
 	}
 	else
+	{
+		LogError("Failed to create a new weapon for %N");
+	}
+	
+	return weapon;
+}
+
+
+
+
+/**
+ * Create a new weapon
+ * 
+ * @param		int		New weapon item definition index
+ * @param		char	New weapon classname
+ * @return		int		New weapon entity index
+ */
+int CreateWeapon(int itemDefIndex, char[] classname)
+{
+	int weapon = CreateEntityByName(classname);
+	
+	if (weapon != -1)
 	{
 		SetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex", itemDefIndex);
 		SetEntProp(weapon, Prop_Send, "m_iEntityLevel", 0);
 		SetEntProp(weapon, Prop_Send, "m_iEntityQuality", 0);
 		SetEntProp(weapon, Prop_Send, "m_bValidatedAttachedEntity", true);
 		SetEntProp(weapon, Prop_Send, "m_bInitialized", 1);
-		SetEntProp(weapon, Prop_Send, "m_hOwnerEntity", client);
 		
 		if (!DispatchSpawn(weapon))
 		{
-			LogError("Couldn't spawn %s for %N", classname, client);
-		}
-		else
-		{
-			EquipPlayerWeapon(client, weapon);
-			Debug("Replaced a weapon belonging to %N with %s %d", client, classname, itemDefIndex);
-			return weapon;
+			RemoveEntity(weapon);
+			weapon = -1;
 		}
 	}
 	
-	return -1;
+	return weapon;
 }
 
 
 
 
+/**
+ * Equip a player with a weapon and assign them as owner
+ * 
+ * @param		int		Client index
+ * @param		int		Weapon entity index
+ * @noreturn
+ */
+void GiveWeapon(int client, int weapon)
+{
+	SetEntProp(weapon, Prop_Send, "m_hOwnerEntity", client);
+	EquipPlayerWeapon(client, weapon);
+}
+
+
+
+
+/*
 void ModulateSpeed(int client)
 {
 	if (GetEntPropFloat(client, Prop_Send, "m_flMaxspeed") != g_flSpeeds[client][Speed_Last] && g_flSpeeds[client][Speed_Desired])
@@ -552,13 +581,19 @@ void ModulateSpeed(int client)
 		//PrintCenterText(client, "g_flSpeeds[client][Speed_Last] == %f\ng_flSpeeds[client][Speed_Desired] == %f\nm_flMaxspeed == %f\nm_flSpeed == %f", g_flSpeeds[client][Speed_Last], g_flSpeeds[client][Speed_Desired], GetEntPropFloat(client, Prop_Send, "m_flMaxspeed"), GetEntPropFloat(client, Prop_Data, "m_flSpeed"));
 	}
 }
+*/
 
 
 
 
 void ActivatorBoost(int client, int buttons, int tickcount)
 {
-	if (GetClientTeam(client) != Team_Blue || g_ConVars[P_BlueBoost].BoolValue)
+	if (g_ConVars[P_BlueBoost] == null)
+		return;
+	
+	Player player = Player(client);
+	
+	if (!g_ConVars[P_BlueBoost].BoolValue || !player.IsActivator || !player.IsAlive)
 		return;
 	
 	// Activator Speed Boosting
@@ -573,11 +608,8 @@ void ActivatorBoost(int client, int buttons, int tickcount)
 			{
 				if (game.IsGame(Mod_TF))
 				{
-					//Player(client).SetSpeed(360);
 					TF2_AddCondition(client, TFCond_SpeedBuffAlly, TFCondDuration_Infinite);
 				}
-				//else
-					//Player(client).SetSpeed(500);
 				
 				boosting[client] = true;
 			}
@@ -596,13 +628,7 @@ void ActivatorBoost(int client, int buttons, int tickcount)
 			if (game.IsGame(Mod_TF))
 			{
 				TF2_RemoveCondition(client, TFCond_SpeedBuffAlly);
-				
-				//Player(client).SetSpeed();
 			}
-			//else
-			//{
-			//	Player(client).SetSpeed();
-			//}
 			
 			boosting[client] = false;
 			boost[client] += 0.5;
@@ -617,7 +643,6 @@ void ActivatorBoost(int client, int buttons, int tickcount)
 				if (game.IsGame(Mod_TF))
 					TF2_RemoveCondition(client, TFCond_SpeedBuffAlly);
 				
-				//Player(client).SetSpeed();
 				boosting[client] = false;
 			}
 			
@@ -638,6 +663,220 @@ void ActivatorBoost(int client, int buttons, int tickcount)
 		BoostHUD(client, boost[client]);
 	}
 }
+
+
+
+
+/*
+	Health Scaling
+	--------------
+	
+	Modes
+	-----
+	BUG These don't seem to be right. 1 is overheal and 3 is max
+	
+	1. Overheal and multiply internal value
+	2. Overheal and multiply set value
+	3. Overheal and multiply based on max health
+	4. Expand pool to a multiple of internal value
+	5. Expand pool to a multiple of set value
+	6. Expand pool to a multiple of max health
+	
+	Revised: 
+	
+	Pool
+		Plugin default scaling
+		Multiply by given health value
+	
+	Overheal
+		Plugin default scaling
+		Multiply by given health value
+	
+	
+	Back stab
+	Fall damage
+*/
+
+
+
+/**
+ * Scale activator health
+ * If a value is not specified, health will be scaled up using DTK's internal
+ * health scaling calculation, which is tested for balancing
+ * 
+ * @param		bool	Overheal or increase health pool
+ * @param		int		Multiply health by this number * live reds
+ * @param		int		Apply scaling to a specific client
+ * @noreturn
+ */
+int ScaleActivatorHealth(bool overheal = false, int value = 0, int client = 0)
+{
+	/*
+		How it Works
+		------------
+		
+		Take a 'base' of 300
+		Set percentage float to 1.0
+		Get the client's max health (substitute with an average of all activators when scaling all?
+			Or give each client a different amount based on their existing max health?)
+		Store the player's max health in a float so we can use it to reduce health pack contribution
+			by a corresponding amount
+		
+		Get number of live reds
+		For each live red, add 'base' times 'percentage' to a variable containing the player's max health value.
+		Multiply percentage by 1.15. This is equivalent to increasing the percentage multiplier by 15%.
+		
+		Set player's health to new max.
+		Scale HP contribution.
+		Set player's health to new figure.
+		
+		
+		Thoughts
+		--------
+		
+		Why am I using a base? Why did I choose 300?
+		
+		
+		Method
+		------
+		
+		If client == 0
+			get average max health of activators
+			if value != 0
+				Get new max health from scaling maths
+			else
+				Get new max health from multiply maths
+			Give each activator the health pack attribute using their stored max health
+			Give each player the new health divided by number of live acts
+		else if client is specified
+			get class health of activator
+			if value != 0
+				Get new max health from scaling maths
+			else
+				Get new max health from multiply maths
+			Give the client the health pack attribute using their stored max health divided by number of live acts
+			Give the client the new health divided by number of live acts
+	*/
+	
+	
+	
+	int activators = game.AliveActivators;
+	int reds = game.AliveReds;
+	int ihealth;
+	
+	if (activators >= reds || !activators)	// Don't scale if teams are even or there are no activators
+		return 0;
+	
+	if (client != 0)
+	{
+		Player player = Player(client);
+		
+		if (!player.IsAlive || !player.InGame || !player.IsActivator)
+			return 0;
+		
+		float health = float(player.ClassHealth);
+		float p = 1.0;
+		
+		if (value == 0)	// Scale
+		{
+			for (int i = 1; i < reds; i++)
+			{
+				health += (HEALTH_SCALE_BASE * p);
+				p *= 1.15;
+			}
+		}
+		else	// Multiply
+		{
+			health = float(value * reds);
+		}
+		
+		ihealth = RoundToNearest(health / activators);
+		
+		AddAttribute(client, "health from packs decreased", float(player.ClassHealth / ihealth));
+		
+		if (!overheal) player.SetMaxHealth(ihealth);
+		player.Health = ihealth;
+		
+		int index = g_Activators.FindValue(client);
+		g_Activators.Set(index, ihealth, AL_MaxHealth);
+		g_Activators.Set(index, ihealth, AL_Health);
+	}
+	else
+	{
+		float health;
+		int len = g_Activators.Length;
+		
+		for (int i = 0; i < len; i++)
+		{
+			Player player = Player(g_Activators.Get(i));
+			
+			if (player.InGame && player.IsAlive)
+				health += player.ClassHealth;
+		}
+		
+		health /= activators;
+		
+		float p = 1.0;
+		
+		if (value == 0)	// Scale
+		{
+			for (int i = 1; i < reds; i++)
+			{
+				health += (HEALTH_SCALE_BASE * p);
+				p *= 1.15;
+			}
+		}
+		else	// Multiply
+		{
+			health = float(value * reds);
+		}
+		
+		ihealth = RoundToNearest(health / activators);
+		
+		for (int i = 0; i < len; i++)
+		{
+			Player player = Player(g_Activators.Get(i));
+			
+			if (player.InGame && player.IsAlive)
+			{
+				AddAttribute(client, "health from packs decreased", float(player.ClassHealth / ihealth));
+				
+				if (!overheal) player.SetMaxHealth(ihealth);
+				player.Health = ihealth;
+				
+				g_Activators.Set(i, ihealth, AL_MaxHealth);
+				g_Activators.Set(i, ihealth, AL_Health);
+			}
+		}
+	}
+	
+	return ihealth;
+}
+
+
+	/*
+	float base = (value == -1) ? HEALTH_SCALE_BASE : float(value);
+	float percentage = 1.0;
+	float health = float(this.MaxHealth);
+	float largehealthkit = float(this.MaxHealth);
+	int count = game.AliveReds;
+
+	for (int i = 2; i <= count; i++)
+	{
+		health += (base * percentage);
+		percentage *= 1.15;
+	}
+
+	// TODO Don't do any of this if the health has not been scaled
+	if (mode > 2)
+	{
+		this.SetMaxHealth(health);
+		AddAttribute(this.Index, "health from packs decreased", largehealthkit / health);
+	}
+	this.Health = RoundToNearest(health);
+	*/
+
+
 
 
 
@@ -696,23 +935,24 @@ stock void ProcessLogicCase(const char[] output, int caller, int activator, floa
  */
 stock void ProcessMapInstruction(int client, const char[] instruction, const char[] properties)
 {
+	Player player = Player(client);
 	char buffers[16][256];
 	ExplodeString(properties, ",", buffers, 16, 256, true);
 
 	// Give weapon
 	if (StrEqual(instruction, "weapon", false))
 	{
-		int weapon = Player(client).GetWeapon(StringToInt(buffers[0]));
+		int weapon = player.GetWeapon(StringToInt(buffers[0]));
 		if (weapon != -1)
 		{
-			ReplaceWeapon(Player(client).Index, weapon, StringToInt(buffers[1]), buffers[2]);
+			ReplaceWeapon(player.Index, weapon, StringToInt(buffers[1]), buffers[2]);
 		}
 	}
 	
 	// Remove weapon
 	if (StrEqual(instruction, "remove_weapon", false))
 	{
-		int weapon = Player(client).GetWeapon(StringToInt(buffers[0]));
+		int weapon = player.GetWeapon(StringToInt(buffers[0]));
 		if (weapon != -1)
 		{
 			RemoveEdict(weapon);
@@ -723,7 +963,7 @@ stock void ProcessMapInstruction(int client, const char[] instruction, const cha
 	// Give weapon attribute
 	if (StrEqual(instruction, "weapon_attribute", false))
 	{
-		int weapon = Player(client).GetWeapon(StringToInt(buffers[0]));
+		int weapon = player.GetWeapon(StringToInt(buffers[0]));
 		if (weapon != -1)
 		{
 			int itemDefIndex = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
@@ -738,43 +978,57 @@ stock void ProcessMapInstruction(int client, const char[] instruction, const cha
 	// Switch to slot
 	if (StrEqual(instruction, "switch_to_slot", false))
 	{
-		Player(client).SetSlot(StringToInt(buffers[0]));
+		player.SetSlot(StringToInt(buffers[0]));
 	}
 	
 	// Change class
 	if (StrEqual(instruction, "class", false))
 	{
 		int class = ProcessClassString(buffers[0]);
-		Player(client).SetClass(class);
+		player.SetClass(class);
 	}
 	
 	// Set speed
 	if (StrEqual(instruction, "speed", false))
 	{
-		Player(client).SetSpeed(StringToInt(buffers[0]));
+		player.SetSpeed(StringToInt(buffers[0]));
 	}
 	
 	// Set health
 	if (StrEqual(instruction, "health", false))
 	{
-		Player(client).Health = StringToInt(buffers[0]);
+		player.Health = StringToInt(buffers[0]);
 	}
 	
 	// Set max health
 	if (StrEqual(instruction, "maxhealth", false))
 	{
-		Player(client).SetMaxHealth(StringToFloat(buffers[0]));
+		player.SetMaxHealth(StringToInt(buffers[0]));
 	}
 	
+	/*
 	// Scale max health (Activator)
 	if (StrEqual(instruction, "scalehealth", false))
 	{
 		// Scale max health - plugin default
 		if (buffers[0][0] == '\0' || StrEqual(buffers[0], "pool", false))
-			Player(client).ScaleHealth(3);
+			player.ScaleHealth(3);
 		
 		if (StrEqual(buffers[0], "overheal", false))
-			Player(client).ScaleHealth(1);
+			player.ScaleHealth(1);
+	}
+	*/
+	
+	// Scale max health (Activator) TODO Add hard multiply value
+	if (StrEqual(instruction, "scalehealth", false))
+	{
+		// Pool
+		if (buffers[0][0] == '\0' || StrEqual(buffers[0], "pool", false))
+			ScaleActivatorHealth(false, _, client);
+		
+		// Overheal
+		if (StrEqual(buffers[0], "overheal", false))
+			ScaleActivatorHealth(true, _, client);
 	}
 	
 	// Set move type
@@ -793,7 +1047,7 @@ stock void ProcessMapInstruction(int client, const char[] instruction, const cha
 	// Chat message
 	if (StrEqual(instruction, "message", false))
 	{
-		ChatMessage(client, Msg_Normal, "%s", buffers[0]);
+		ChatMessage(client, "%s", buffers[0]);
 	}
 	
 	// Melee only
@@ -801,11 +1055,11 @@ stock void ProcessMapInstruction(int client, const char[] instruction, const cha
 	{
 		if (StrEqual(buffers[0], "yes", false))
 		{
-			Player(client).MeleeOnly();
+			player.MeleeOnly();
 		}
 		if (StrEqual(buffers[0], "no", false))
 		{
-			Player(client).MeleeOnly(false);
+			player.MeleeOnly(false);
 		}
 	}
 	
@@ -876,85 +1130,290 @@ stock void ProcessMapInstruction(int client, const char[] instruction, const cha
  * 
  * @noreturn
  */
-void DisplayNextActivators()
+int FormatNextActivators(char[] buffer, int max = 3)
 {
-	// Count the number of willing activators
-	int willing;
+	// Get number of activators
+	int len = game.ActivatorPool;
+	int[] list = new int[len];
+	int cells;
 	
-	for (int i = 1; i <= MaxClients; i++)
+	// Create activator list
+	CreateActivatorList(list);
+
+	// Format the message
+	if (list[0])
 	{
-		if (Player(i).HasFlag(PF_PrefActivator))
-			willing += 1;
-	}
-	
-	// If we don't have enough willing activators, don't display the message
-	if (willing <= MINIMUM_ACTIVATORS)
-		return;
-	
-	// Create a temporary array to store client index[0] and points[1]
-	int points_order[MAXPLAYERS][2];
-	
-	// Populate with player data
-	for (int i = 0; i < MaxClients; i++)
-	{
-		points_order[i][0] = i + 1;
-		points_order[i][1] = Player(i + 1).Points;
-	}
-	
-	// Sort by points descending
-	SortCustom2D(points_order, MaxClients, SortByPoints);
-	
-	// Get the top three players with points
-	//int players[3], count, client;
-	int players[3], count;
-	
-	for (int i = 0; i < MaxClients && count < 3; i++)
-	{
-		int player = points_order[i][0];
-		//client = points_order[i][0];
-	
-		if (Player(player).InGame && Player(player).IsParticipating && points_order[i][1] > 0 && Player(player).HasFlag(PF_PrefActivator))
-		//if (IsClientInGame(client) && points_order[i][1] > 0 && (g_iFlags[client] & PREF_ACTIVATOR) == PREF_ACTIVATOR)
+		cells += Format(buffer, MAX_CHAT_MESSAGE, "%t", (len == 1 || max == 1) ? "next_activator" : "next_activators");
+		
+		for (int i = 0; max > i < len; i++)
 		{
-			players[count] = player;
-			//players[count] = client;
-			count++;
+			if (i == 0)
+			{
+				cells += Format(buffer, MAX_CHAT_MESSAGE, "%s%N", buffer, list[i]);
+			}
+			else
+			{
+				cells += Format(buffer, MAX_CHAT_MESSAGE, "%s, %N", buffer, list[i]);
+			}
 		}
 	}
 	
-	// Display the message
-	if (players[0] != 0)
+	return cells;
+}
+
+
+
+
+/**
+ * Messages
+ * ----------------------------------------------------------------------------------------------------
+ */
+
+/**
+ * ChatMessage
+ * Send a message to a player with sound effect and prefix based on the 'message type' parameter.
+ *
+ * @param		int		Client index
+ * @param		char	Message string
+ * @param		any		...
+ */
+stock void ChatMessage(int client, const char[] string, any...)
+{
+	SetGlobalTransTarget(client);
+	int len = strlen(string) + 255;
+	char[] buffer = new char[len];
+	VFormat(buffer, len, string, 3);
+	Format(buffer, len, "%t%s", "chat_prefix_client", buffer);
+	
+	FormatChatColours(buffer, len);
+	
+	char effect[256];
+	g_hSounds.GetString("chat_reply", effect, sizeof(effect));
+	
+	if (!client)
 	{
-		char string1[MAX_NAME_LENGTH];
-		char string2[MAX_NAME_LENGTH];
-		char string3[MAX_NAME_LENGTH];
+		PrintToServer(buffer);
+	}
+	else
+	{
+		BfWrite say = UserMessageToBfWrite(StartMessageOne("SayText2", client, USERMSG_BLOCKHOOKS));
 		
-		Format(string1, sizeof(string1), "%N", players[0]);
+		if (say != null)
+		{
+			say.WriteByte(client); 
+			say.WriteByte(true);
+			say.WriteString(buffer);
+			EndMessage();
+		}
+		else
+		{
+			PrintToChat(client, buffer);
+		}
+	}
+	
+	if (effect[0] && client) EmitSoundToClient(client, effect);
+}
+
+
+
+
+/**
+ * ChatMessage wrapper that sends a message to all clients
+ *
+ * @param		int		Msg_Type
+ * @param		char	Message string
+ * @param		any		...
+ */
+stock void ChatMessageAll(const char[] string, any...)
+{
+	int len = strlen(string) + 255;
+	char[] buffer = new char[len];
+	
+	for (int i = 1; i <= MaxClients; i++)
+	{
+		if (!IsClientInGame(i))
+			continue;
 		
-		if (players[1] > 0)
-			Format(string2, sizeof(string2), ", %N", players[1]);
+		SetGlobalTransTarget(i);
+		VFormat(buffer, len, string, 2);
+		Format(buffer, len, "%t%s", "chat_prefix_all", buffer);
 		
-		if (players[2] > 0)
-			Format(string3, sizeof(string3), ", %N", players[2]);
+		FormatChatColours(buffer, len);
 		
-		ChatMessageAll(Msg_Normal, "%t", "next activators", string1, string2, string3);
+		BfWrite say = UserMessageToBfWrite(StartMessageOne("SayText2", i, USERMSG_BLOCKHOOKS));
+		if (say != null)
+		{
+			say.WriteByte(i); 
+			say.WriteByte(true);
+			say.WriteString(buffer);
+			EndMessage();
+		}
+		else
+		{
+			PrintToChat(i, buffer);
+		}
 	}
 }
 
 
+
 /**
- * Sorting function used by SortCustom2D. Sorts players by queue points.
- * 
- * @return	int	
+ * ChatMessage wrapper that sends a message to all clients except one
+ *
+ * @param		int		Client index
+ * @param		int		Msg_Type
+ * @param		char	Message string
+ * @param		any		...
  */
-int SortByPoints(int[] a, int[] b, const int[][] array, Handle hndl)
+stock void ChatMessageAllEx(int client, const char[] string, any...)
 {
-	if (b[1] == a[1])
-		return 0;
-	else if (b[1] > a[1])
-		return 1;
-	else
-		return -1;
+	int len = strlen(string) + 255;
+	char[] buffer = new char[len];
+	
+	for (int i = 1; i <= MaxClients; i++)
+	{
+		if (!IsClientInGame(i) || i == client)
+			continue;
+		
+		SetGlobalTransTarget(i);
+		VFormat(buffer, len, string, 3);
+		Format(buffer, len, "%t%s", "chat_prefix_all", buffer);
+		
+		FormatChatColours(buffer, len);
+		
+		BfWrite say = UserMessageToBfWrite(StartMessageOne("SayText2", i, USERMSG_BLOCKHOOKS));
+		if (say != null)
+		{
+			say.WriteByte(i); 
+			say.WriteByte(true);
+			say.WriteString(buffer);
+			EndMessage();
+		}
+		else
+		{
+			PrintToChat(i, buffer);
+		}
+	}
+}
+
+
+
+/**
+ * ChatMessage wrapper that sends a message to all admins
+ *
+ * @param		int		Msg_Type
+ * @param		char	Message string
+ * @param		any		...
+ */
+stock void ChatAdmins(const char[] string, any ...)
+{
+	int len = strlen(string) + 255;
+	char[] buffer = new char[len];
+	
+	for (int i = 1; i <= MaxClients; i++)
+	{
+		if (!IsClientInGame(i) || GetUserAdmin(i) == INVALID_ADMIN_ID)
+			continue;
+		
+		SetGlobalTransTarget(i);
+		VFormat(buffer, len, string, 2);
+		ChatMessage(i, buffer);
+	}
+}
+
+
+
+/**
+ * ChatMessage wrapper that sends a message to all admins except one
+ *
+ * @param		int		Client index
+ * @param		int		Msg_Type
+ * @param		char	Message string
+ * @param		any		...
+ */
+stock void ChatAdminsEx(int client, const char[] string, any...)
+{
+	int len = strlen(string) + 255;
+	char[] buffer = new char[len];
+	
+	for (int i = 1; i <= MaxClients; i++)
+	{
+		if (!IsClientInGame(i) || GetUserAdmin(i) == INVALID_ADMIN_ID || i == client)
+			continue;
+		
+		SetGlobalTransTarget(i);
+		VFormat(buffer, len, string, 3);
+		ChatMessage(i, string);
+	}
+}
+
+
+
+/**
+ * Displays a debug message in server console when the plugin's debug ConVar is enabled.
+ *
+ * @param 		char	Formatting rules
+ * @param 		...		Variable number of formatting arguments
+ * @noreturn
+ */
+stock void Debug(const char[] string, any...)
+{
+	if (!g_ConVars[P_Debug].BoolValue)
+		return;
+	
+	SetGlobalTransTarget(LANG_SERVER);
+	int len = strlen(string) + 255;
+	char[] buffer = new char[len];
+	VFormat(buffer, len, string, 2);
+	
+	PrintToServer("%s %s", PREFIX_DEBUG, buffer);
+}
+
+
+
+/**
+ * Displays a debug message in server console when the plugin's debug ConVar is enabled.
+ * Ex: Also displays to client in chat.
+ *
+ * @param		int		Client index
+ * @param		char	Formatting rules
+ * @param		...		Variable number of formatting arguments
+ * @noreturn
+ */
+stock void DebugEx(int client, const char[] string, any...)
+{
+	if (!g_ConVars[P_Debug].BoolValue)
+		return;
+	
+	SetGlobalTransTarget(client);
+	int len = strlen(string) + 255;
+	char[] buffer = new char[len];
+	VFormat(buffer, len, string, 3);
+	
+	char effect[256];
+	g_hSounds.GetString("chat_warning", effect, sizeof(effect));
+	
+	PrintToChat(client, "%t%s", "chat_prefix_client", buffer);
+	if (effect[0]) EmitSoundToClient(client, effect);
+	
+	PrintToServer("%s %s", PREFIX_DEBUG, buffer);
+}
+
+
+
+
+stock void FormatChatColours(char[] string, int len)
+{
+	char replacement[32];
+	
+	Format(replacement, 32, "%t", "{default}");
+	ReplaceString(string, len, "{default}", replacement);
+	
+	Format(replacement, 32, "%t", "{highlight}");
+	ReplaceString(string, len, "{highlight}", replacement);
+	
+	Format(replacement, 32, "%t", "{killing_entity}");
+	ReplaceString(string, len, "{killing_entity}", replacement);
 }
 
 
@@ -976,12 +1435,12 @@ void HookStuff(bool enabled)
 	// ConVars
 	if (enabled)
 	{
-		g_ConVars[S_Unbalance].IntValue 		= 0;
+		//g_ConVars[S_Unbalance].IntValue 		= 0;
 		g_ConVars[S_AutoBalance].IntValue 		= 0;
 		g_ConVars[S_Scramble].IntValue 			= 0;
 		g_ConVars[S_Queue].IntValue 			= 0;
 		g_ConVars[S_WFPTime].IntValue 			= 0;	// Needed in OF and TF2C
-		g_ConVars[S_Pushaway].SetBool(false);
+		g_ConVars[S_Pushaway].BoolValue			= (g_ConVars[P_Pushaway].BoolValue);
 		
 		if (g_ConVars[S_FirstBlood] != null)
 			g_ConVars[S_FirstBlood].IntValue = 0;
@@ -1010,12 +1469,14 @@ void HookStuff(bool enabled)
 		HookEvent("player_team", Event_TeamsChanged);										// Player chooses a team
 		HookEvent("player_changeclass", Event_ChangeClass);									// Player changes class
 		HookEvent("player_healed", Event_PlayerHealed);										// Player healed
-		HookEvent("player_healonhit", Event_PlayerHealed);									// Player healed by health kit
 		HookEvent("player_death", Event_PlayerDeath);										// Player dies
 		HookEvent("player_hurt", Event_PlayerDamaged);										// Player is damaged
 		
 		if (game.IsGame(Mod_TF))
-			HookEvent("post_inventory_application", Event_InventoryApplied);
+			HookEvent("post_inventory_application", Event_InventoryApplied);				// Player receives weapons
+			
+		if (game.IsGame(Mod_TF2C))
+			HookEvent("player_healonhit", Event_PlayerHealed);								// Player healed by health kit
 	}
 	else
 	{
@@ -1027,12 +1488,14 @@ void HookStuff(bool enabled)
 		UnhookEvent("player_team", Event_TeamsChanged);
 		UnhookEvent("player_changeclass", Event_ChangeClass);
 		UnhookEvent("player_healed", Event_PlayerHealed);
-		UnhookEvent("player_healonhit", Event_PlayerHealed);
 		UnhookEvent("player_death", Event_PlayerDeath);
 		UnhookEvent("player_hurt", Event_PlayerDamaged);
 		
 		if (game.IsGame(Mod_TF))
 			UnhookEvent("post_inventory_application", Event_InventoryApplied);
+		
+		if (game.IsGame(Mod_TF2C))
+			UnhookEvent("player_healonhit", Event_PlayerHealed);
 	}
 	
 	// Command Listeners
@@ -1069,38 +1532,60 @@ void HookStuff(bool enabled)
  */
 void ConVar_ChangeHook(ConVar convar, const char[] oldValue, const char[] newValue)
 {
-	// TODO Replace string comparisons with handle comparisons
-	
 	char name[64];
 	convar.GetName(name, sizeof(name));
 	
 	if (StrContains(name, "dtk_", false) == 0)
+	{
 		PrintToServer("%s %s has been changed from %s to %s", PREFIX_SERVER, name, oldValue, newValue);
+		ChatAdmins("%s has been changed from %s to %s", name, oldValue, newValue);
+	}
 	
 	// Enabled
-	if (StrEqual(name, "dtk_enabled", false))
+	if (convar == g_ConVars[P_Enabled])
 	{
-		// Enable
-		if (g_ConVars[P_Enabled].BoolValue)
+		// Enable game mode
+		if (convar.BoolValue)
 		{
 			HookStuff(true);
-			game.AddFlag(GF_WatchMode);	// Watch for players connecting after the map change
-											// Server doesn't fire a round reset or start event unless there are players
-			if (g_bSteamTools)
-				GameDescription(true);
+			//game.InWatchMode = true;
+			/*
+				Here we enable Watch Mode. This will... why do we need to do this again?
+				
+				When a map changes, the server does not fire a round restart or round start event until there
+				are enough players to begin a round. When that happens, the players are spawned and the events
+				fired.
+			*/
+			GameDescription(true);
+			g_TimerQP = CreateTimer(TIMER_GRANTPOINTS, Timer_GrantPoints, _, TIMER_REPEAT);
+			
+			// OF stalled round check
+			if (game.IsGame(Mod_OF))
+				g_Timer_OFTeamCheck = CreateTimer(10.0, Timer_OFTeamCheck, _, TIMER_REPEAT);
 		}
-		// Disable
+		// Disable game mode
 		else
 		{
 			HookStuff(false);
+			GameDescription(false);
 			
-			if (g_bSteamTools)
-				GameDescription(false);
+			if (g_TimerQP != null)
+				delete g_TimerQP;
+			
+			// OF stalled round check
+			if (game.IsGame(Mod_OF) && g_Timer_OFTeamCheck != null)
+				delete g_Timer_OFTeamCheck;
 		}
+	}
+	
+	// Player Push Away
+	else if (convar == g_ConVars[P_Pushaway])
+	{
+		g_ConVars[S_Pushaway].BoolValue = convar.BoolValue;
 	}
 
 	// Red Melee Only
-	else if (StrEqual(name, "dtk_red_melee", false))
+	else if (convar == g_ConVars[P_RedMelee])
 	{
 		for (int i = 1; i <= MaxClients; i++)
 		{
@@ -1110,7 +1595,7 @@ void ConVar_ChangeHook(ConVar convar, const char[] oldValue, const char[] newVal
 	}
 	
 	// Red Speed
-	else if (StrEqual(name, "dtk_red_speed", false))
+	else if (convar == g_ConVars[P_RedSpeed])
 	{
 		for (int i = 1; i <= MaxClients; i++)
 		{
@@ -1128,39 +1613,13 @@ void ConVar_ChangeHook(ConVar convar, const char[] oldValue, const char[] newVal
  *
  * @noreturn
  */
-/*stock void GameDescription(bool enabled)
-{
-	if (!g_bSteamTools)
-		return;
-	
-	char description[32];
-	
-	if (!enabled) // Plugin not enabled
-	{
-		if 			(game.IsGame(Mod_TF))		Format(description, sizeof(description), "Team Fortress");
-		else if 	(game.IsGame(Mod_OF))		Format(description, sizeof(description), "Open Fortress");
-		else if 	(game.IsGame(Mod_TF2C))	Format(description, sizeof(description), "Team Fortress 2 Classic");
-		else 									Format(description, sizeof(description), DEFAULT_GAME_DESC);
-	}
-	else
-		Format(description, sizeof(description), "%s | %s", PLUGIN_SHORTNAME, PLUGIN_VERSION);
-	
-	Steam_SetGameDescription(description);
-	PrintToServer("%s Set game description to \"%s\"", PREFIX_SERVER, description);
-}*/
-
-
-/**
- * Set the server's game description.
- *
- * @noreturn
- */
 stock void GameDescription(bool enabled)
 {
-	// If SteamTools is not found or the ConVar is empty, stop
+	// Stop if SteamTools is not found
 	if (!g_bSteamTools)
 		return;
 
+	// Stop if ConVar is empty
 	char description[256];
 	g_ConVars[P_Description].GetString(description, sizeof(description));
 	
@@ -1201,29 +1660,25 @@ stock void DBCreateTable()
 {
 	char error[255];
 	
-	if (g_ConVars[P_Database].BoolValue)
+	if ((g_db = SQLite_UseDatabase(SQLITE_DATABASE, error, sizeof(error))) == null)
 	{
-		if ((g_db = SQLite_UseDatabase(SQLITE_DATABASE, error, sizeof(error))) == null)
+		LogError("Unable to connect to SQLite database %s: %s", SQLITE_DATABASE, error);
+	}
+	else
+	{
+		char query[255];
+		
+		Format(query, sizeof(query), "CREATE TABLE IF NOT EXISTS %s (steamid INTEGER PRIMARY KEY, \
+		points INTEGER, flags INTEGER, last_seen INTEGER DEFAULT 0)", SQLITE_TABLE);
+		
+		if (!SQL_FastQuery(g_db, query))
 		{
-			LogError("Unable to connect to SQLite database %s: %s", SQLITE_DATABASE, error);
-		}
-		else
-		{
-			PrintToServer("%s Database connection established. Handle is %x", PREFIX_SERVER, g_db);
-			
-			char query[255];
-			
-			Format(query, sizeof(query), "CREATE TABLE IF NOT EXISTS %s (steamid INTEGER PRIMARY KEY, \
-			points INTEGER, flags INTEGER, last_seen INTEGER DEFAULT 0)", SQLITE_TABLE);
-			
-			if (!SQL_FastQuery(g_db, query))
-			{
-				SQL_GetError(g_db, error, sizeof(error));
-				LogError("Unable to create database table %s: %s", SQLITE_TABLE, error);
-			}
+			SQL_GetError(g_db, error, sizeof(error));
+			LogError("Unable to create database table %s: %s", SQLITE_TABLE, error);
 		}
 	}
 }
+
 
 
 
@@ -1239,15 +1694,14 @@ stock void DBPrune()
 	{
 		char query[255];
 		Format(query, sizeof(query), "DELETE FROM %s WHERE last_seen <= %d", SQLITE_TABLE, GetTime() - 2629743);
-		//SQL_FastQuery(g_db, query);
 		
 		DBResultSet resultset = SQL_Query(g_db, query);
-		Debug("Found %d expired records in the database to delete", resultset.AffectedRows);
 		if (resultset.AffectedRows > 0)
 			LogMessage("Deleted %d expired records from the database", resultset.AffectedRows);
 		CloseHandle(resultset);
 	}
 }
+
 
 
 
@@ -1262,14 +1716,14 @@ stock void DBReset(int client)
 	Format(query, sizeof(query), "DROP TABLE %s", SQLITE_TABLE);
 	if (SQL_FastQuery(g_db, query))
 	{
-		ShowActivity2(client, "", "%t Reset player database. Changing the map will reinitialise it", "prefix_notice");
+		ShowActivity(client, "Reset player database. Changing the map will reinitialise it");
 		LogMessage("%L reset the database using the admin command", client);
 	}
 	else
 	{
 		char error[255];
 		SQL_GetError(g_db, error, sizeof(query));
-		ShowActivity2(client, "", "%t Failed: %s", "prefix_notice", error);
+		ShowActivity(client, "Failed to reset database: %s", error);
 		LogError("%L failed to reset the database. Error: %s", client, error);
 	}
 }
@@ -1282,6 +1736,7 @@ stock void DBReset(int client)
  * ----------------------------------------------------------------------------------------------------
  */
 
+#define USE_BOSS_BAR
 
 /**
  * Set the percentage of the boss health bar.
@@ -1290,47 +1745,97 @@ stock void DBReset(int client)
  * @param	int	Max health
  * @noreturn
  */
-stock void SetHealthBar(int health = 0, int maxhealth = 0, int entity = 0)
+void SetHealthBar()
 {
 	/*
-		Does the monster res exist?
-			Display boss bar.
-				Is overheal?
-					Display overheal text.
-		else
-			Use text exclusively including overheal.
-	
+		Priority
+		--------
+		
+		Boss bar: Boss
+		Text: Boss
+		Text: Activators
+		Boss bar: Activators
+		Text: Mini bosses
+		
+		Rules
+		-----
+		
+		Don't hide the boss bar if there is a math boss
+		Don't hide the text if there are mini bosses
+		Make sure bosses disappearing (dying) doesn't trigger activator health display as a side effect
+		
+		Should activator health be suppressed if there are NPCs?
 	*/
 	
-	if (!health && !maxhealth && !entity)
-	{
-		Debug("SetHealthBar called with no arguments. Did the activator die?");
-	}
-	else
-	{
-		Debug("Set boss bar. health: %d  maxhealth: %d  entity: %d", health, maxhealth, entity);
-	}
+	int len = g_Activators.Length;
+	int health, maxhealth;
 	
+	// Prevent the bar being shown if we have no activators
+	if (!len)return;
+
+#if defined USE_BOSS_BAR
 	if (g_iEnts[Ent_MonsterRes] != -1)	// monster_resource exists
 	{
-		int percent = RoundToNearest((float(health) / float(maxhealth)) * 255);
-		SetEntProp(g_iEnts[Ent_MonsterRes], Prop_Send, "m_iBossHealthPercentageByte", (percent > 255) ? 255 : percent);
-		if (health > maxhealth)
-			HealthText("+ %t: %d  ", "dtk_overheal", (health - maxhealth));
-	}
-	else
-	{
-		if (!health)
-			HealthText();
-		else if (Player(entity).IsValid)
-			HealthText("%N: %d", entity, health);
+		// We have a boss math_counter with a health value
+		Debug("TF2 CLASSIC - g_NPCs.Length is %d and g_iEnts[Ent_MonsterRes] is %d", g_NPCs.Length, g_iEnts[Ent_MonsterRes]);
+		int ent = g_NPCs.Get(0);
+		health = RoundToNearest(g_NPCs.Get(0, AL_Health));
+		if (ent && health)
+		{
+			Debug("We have a boss math_counter %d with health %d", ent, health);
+			maxhealth = RoundToNearest(g_NPCs.Get(0, AL_MaxHealth));
+			SetEntProp(g_iEnts[Ent_MonsterRes], Prop_Send, "m_iBossState", 1);
+		}
+		// We will use the activators for the boss bar
 		else
-			HealthText("%t: %d", "dtk_health", health);
+		{
+			for (int i = 0; i < len; i++)
+			{
+				health += g_Activators.Get(i, AL_Health);
+				maxhealth += g_Activators.Get(i, AL_MaxHealth);
+				SetEntProp(g_iEnts[Ent_MonsterRes], Prop_Send, "m_iBossState", 0);
+			}
+			Debug("Activator total health: %d total max: %d", health, maxhealth);
+		}
+		
+		int percent = RoundToNearest( float(health) / float(maxhealth) * 255.0 );
+		SetEntProp(g_iEnts[Ent_MonsterRes], Prop_Send, "m_iBossHealthPercentageByte", (percent > 255) ? 255 : percent);
+		Debug("Setting health bar to %d / 255", percent);
 	}
-	game.AddFlag(GF_HPBarActive);
+	else	// Text alternative
+#endif
+	{
+		char buffer[256];
+		
+		if (game.AliveBlues <= 2)	// Two Activators
+		{
+			for (int i = 0; i < len; i++)
+			{
+				Player player = Player(g_Activators.Get(i));
 	
-	delete g_hTimers[Timer_HealthBar];
-	g_hTimers[Timer_HealthBar] = CreateTimer(10.0, TimerCB_HealthBar);
+				if (player.InGame && player.IsAlive)
+				{
+					Format(buffer, 256, "%s%N: %dHP\n", buffer, player.Index, player.Health);
+				}
+			}
+		}
+		else						// Three or more Activators
+		{
+			for (int i = 0; i < len; i++)
+			{
+				health += g_Activators.Get(i, AL_Health);
+			}
+			
+			Format(buffer, 256, "%t: %dHP", "hud_activators", health);
+		}
+		
+		HealthText(buffer);
+	}
+	
+	game.IsBossBarActive = true;
+	
+	delete g_TimerHPBar;
+	g_TimerHPBar = CreateTimer(10.0, Timer_HealthBar);
 }
 
 
@@ -1354,6 +1859,7 @@ stock void HealthText(const char[] string = "", any ...)
 	SetHudTextParams(-1.0, 0.16, 20.0, 123, 190, 242, 255, _, 0.0, 0.0, 0.0);
 	
 	for (int i = 1; i <= MaxClients; i++)
+	{
 		if (IsClientInGame(i))
 		{
 			if (string[0])
@@ -1363,22 +1869,53 @@ stock void HealthText(const char[] string = "", any ...)
 				ShowSyncHudText(i, hHealthText, buffer);
 			}
 			else
+			{
 				ClearSyncHud(i, hHealthText);
+			}
 		}
+	}
 }
 
 
 
+// TODO Use this to update activator health values in the array without updating the bars
+
 /**
- * Update the boss health bar with a player's health
+ * Update the boss health bar in response to damage to a client
  *
  * @param		int		Client index
  * @noreturn
  */
-stock void UpdateHealthBar(int client)
+void UpdateHealthBar(int client)
 {
-	SetHealthBar(Player(client).Health, Player(client).MaxHealth, client);
+	int index = g_Activators.FindValue(client);
+	Player player = Player(client);
+	
+	if (index != -1)
+	{
+		g_Activators.Set(index, player.Health, AL_Health);		// Store health
+		
+		int maxhealth = g_Activators.Get(index, AL_MaxHealth);	// Get Array max health
+		
+		Debug("%N's stored Array max health is %d", client, maxhealth);
+		
+		if (player.MaxHealth > maxhealth)
+		{
+			g_Activators.Set(index, player.MaxHealth, AL_MaxHealth);
+			
+			Debug("%N's max health is greater than their array stored health (%d > %d)", client, player.MaxHealth, maxhealth);
+		}
+		else if (player.Health > maxhealth)
+		{
+			g_Activators.Set(index, player.Health, AL_MaxHealth);
+			
+			Debug("%N's health is greater than their array stored health (%d > %d)", client, player.Health, maxhealth);
+		}
+	}
+	
+	SetHealthBar();
 }
+
 
 
 
@@ -1390,7 +1927,7 @@ stock void UpdateHealthBar(int client)
  */
 stock void BoostHUD(int client, float value)
 {
-	if (hBoostHUD == null) hBoostHUD = CreateHudSynchronizer();
+	if (g_Text_Boost == null) g_Text_Boost = CreateHudSynchronizer();
 	
 	char buffer[256] = "Boost: ";
 	int characters = RoundToFloor(value / 33);
@@ -1400,48 +1937,6 @@ stock void BoostHUD(int client, float value)
 		Format(buffer, sizeof(buffer), "%s▋", buffer);
 	}
 	
-	SetHudTextParamsEx(0.20, 0.85, 0.5, { 255, 255, 255, 255 }, { 255, 255, 255, 255 }, 0, 0.1, 0.1);
-	ShowSyncHudText(client, hBoostHUD, buffer);
+	SetHudTextParamsEx(0.20, 0.85, 0.5, { 255, 255, 255, 255 }, { 255, 255, 255, 255 }, 0, 0.0, 0.0);
+	ShowSyncHudText(client, g_Text_Boost, buffer);
 }
-
-/*
-https://en.wikipedia.org/wiki/List_of_Unicode_characters
-Block Elements
-Main article: Block Elements (Unicode block)
-See also: Box-drawing characters
-Code 	Glyph 	Description
-U+2580 	▀ 	Upper half block
-U+2581 	▁ 	Lower one eighth block
-U+2582 	▂ 	Lower one quarter block
-U+2583 	▃ 	Lower three eighths block
-U+2584 	▄ 	Lower half block
-U+2585 	▅ 	Lower five eighths block
-U+2586 	▆ 	Lower three quarters block
-U+2587 	▇ 	Lower seven eighths block
-U+2588 	█ 	Full block
-U+2589 	▉ 	Left seven eighths block
-U+258A 	▊ 	Left three quarters block
-U+258B 	▋ 	Left five eighths block
-U+258C 	▌ 	Left half block
-U+258D 	▍ 	Left three eighths block
-U+258E 	▎ 	Left one quarter block
-U+258F 	▏ 	Left one eighth block
-U+2590 	▐ 	Right half block
-U+2591 	░ 	Light shade
-U+2592 	▒ 	Medium shade
-U+2593 	▓ 	Dark shade
-U+2594 	▔ 	Upper one eighth block
-U+2595 	▕ 	Right one eighth block
-U+2596 	▖ 	Quadrant lower left
-U+2597 	▗ 	Quadrant lower right
-U+2598 	▘ 	Quadrant upper left
-U+2599 	▙ 	Quadrant upper left and lower left and lower right
-U+259A 	▚ 	Quadrant upper left and lower right
-U+259B 	▛ 	Quadrant upper left and upper right and lower left
-U+259C 	▜ 	Quadrant upper left and upper right and lower right
-U+259D 	▝ 	Quadrant upper right
-U+259E 	▞ 	Quadrant upper right and lower left
-U+259F 	▟ 	Quadrant upper right and lower left and lower right 
-
-█
-*/

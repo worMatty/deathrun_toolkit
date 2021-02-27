@@ -1,9 +1,9 @@
 /**
  * New menu command handler
  */
-stock Action Command_NewMenu(int client, int args)
+stock Action Command_Menu(int client, int args)
 {
-	NewMenuFunction(client, "menu_main");
+	MenuFunction(client, "menu_main");
  	return Plugin_Handled;
 }
 
@@ -13,63 +13,43 @@ stock Action Command_NewMenu(int client, int args)
 /**
 * New menu function
 */
-stock void NewMenuFunction(int client, const char[] sMenu)
+stock void MenuFunction(int client, const char[] selection)
 {
-	Menu menu = new Menu(NewMenuHandler, MenuAction_DisplayItem);
+	Menu menu = new Menu(MenuHandler, MenuAction_DisplayItem);
 	char title[256];
 	
 	Format(title, sizeof(title), "%s %s\n \n", PLUGIN_SHORTNAME, PLUGIN_VERSION);
 	
 	
 	/**
-	 * Show the main menu
+	 * Main
 	 */
-	if (StrEqual(sMenu, "menu_main"))
+	if (StrEqual(selection, "menu_main"))
 	{
-		if (Player(client).HasFlag(PF_PrefActivator))
-	 	{
-	 		Format(title, sizeof(title), "%s%T\n \n", title, "menu queue points", client, Player(client).Points);
-	 	}
-		
-		menu.AddItem("menu_prefs", "menu item preferences");
-		menu.AddItem("menu_reset", "menu item reset");
-		menu.AddItem("menu_points", "menu item points");
-		menu.AddItem("menu_commands", "menu item commands");
+		menu.AddItem("menu_prefs", "menu_item_preferences");
+		menu.AddItem("menu_queue", "menu_item_queue");
+		menu.AddItem("item_help", "menu_item_help");
 		
 		if (GetAdminFlags(GetUserAdmin(client), Access_Effective))
 		{
-			menu.AddItem("menu_admincommands", "menu item admin commands");
-			menu.AddItem("menu_adminfunstuff", "menu item admin fun stuff");
-		}	
+			menu.AddItem("menu_admin", "menu_item_admin");
+		}
 	}
 	
 	
 	/**
-	 * Show the preferences menu
+	 * Preferences
 	 */
-	if (StrEqual(sMenu, "menu_prefs"))
+	if (StrEqual(selection, "menu_prefs"))
 	{
-		if (Player(client).HasFlag(PF_PrefActivator) && Player(client).HasFlag(PF_PrefFullQP))
-	 	{
-	 		Format(title, sizeof(title), "%s%T\n \n", title, "menu full queue points", client, Player(client).Points);
-	 	}
- 		else if (Player(client).HasFlag(PF_PrefActivator) && !Player(client).HasFlag(PF_PrefFullQP))
-	 	{
-	 		Format(title, sizeof(title), "%s%T\n \n", title, "menu fewer queue points", client, Player(client).Points);
-	 	}
-		else
-	 	{
-	 		Format(title, sizeof(title), "%s%T\n \n", title, "menu not the activator", client);
-	 	}
+		Format(title, sizeof(title), "%T\n \n", "menu_item_preferences", client);
 		
-		menu.AddItem("prefs_full", "menu item full queue points");
-		menu.AddItem("prefs_fewer", "menu item fewer queue points");
-		menu.AddItem("prefs_none", "menu item do not be activator");
-		menu.AddItem("", "", ITEMDRAW_SPACER);
+		menu.ExitBackButton = true;
+		
+		menu.AddItem("prefs_activator", (Player(client).HasFlag(PF_PrefActivator)) ? "menu_item_dont_be_activator" : "menu_item_be_activator");
+		menu.AddItem("menu_reset", "menu_item_reset");
 		menu.AddItem("prefs_english", "menu item toggle english language");
-		menu.AddItem("", "", ITEMDRAW_SPACER);
-		menu.AddItem("menu_main", "menu item back");
-	
+		
 		/**
 		 * AddItem Styles
 		 * 
@@ -84,93 +64,48 @@ stock void NewMenuFunction(int client, const char[] sMenu)
 	
 	
 	/**
-	 * Show the reset points menu
+	 * Reset Points
 	 */
-	if (StrEqual(sMenu, "menu_reset"))
+	if (StrEqual(selection, "menu_reset"))
 	{
-		Format(title, sizeof(title), "%s%T\n \n", title, "menu reset question", client);
-		menu.AddItem("reset_yes", "menu item yes");
-		menu.AddItem("reset_no", "menu item no");
+		Format(title, sizeof(title), "%s%T\n \n", title, "menu_reset_question", client);
+		menu.AddItem("reset_yes", "menu_item_yes");
+		menu.AddItem("reset_no", "menu_item_no");
 	}
 	
 	
 	/**
-	 * Show the list points menu
+	 * Activator Queue
 	 */
-	if (StrEqual(sMenu, "menu_points"))
+	if (StrEqual(selection, "menu_queue"))
 	{
 		menu.ExitBackButton = true;
 		
-		int points_order[MAXPLAYERS][2];
-		// 0 will be client index. 1 will be points.
-		
-		for (int i = 0; i < MaxClients; i++)
-		{
-			int iPlayer = i + 1;
-			points_order[i][0] = Player(iPlayer).Index;
-			points_order[i][1] = Player(iPlayer).Points;
-		}
-		
-		SortCustom2D(points_order, MaxClients, SortByPoints);
-		
+		int len = game.ActivatorPool;
+		int[] list = new int[len];
+		CreateActivatorList(list);
+
 		char sItem[40];
 		
-		for (int i = 0; i < MaxClients; i++)
+		for (int i = 0; i < len; i++)
 		{
-			int iPlayer = points_order[i][0];
-			if (Player(iPlayer).InGame && Player(iPlayer).HasFlag(PF_PrefActivator))
-			{
-				Format(sItem, sizeof(sItem), "%N: %d", iPlayer, Player(iPlayer).Points);
-				menu.AddItem("points_item", sItem, ITEMDRAW_DISABLED);
-			}
+			Player player = Player(list[i]);
+			Format(sItem, sizeof(sItem), "%16N", player.Index);
+			menu.AddItem("points_item", sItem, ITEMDRAW_DISABLED);
 		}
 	}
 	
 	
 	/**
-	 * Show the commands menu
+	 * Admin
 	 */
-	if (StrEqual(sMenu, "menu_commands"))
+	if (StrEqual(selection, "menu_admin"))
 	{
-		menu.AddItem("commands_points", "menu item command points");
-		menu.AddItem("commands_reset", "menu item command reset");
-		menu.AddItem("commands_prefs", "menu item command prefs");
-		menu.AddItem("menu_main", "menu item back");
+		menu.ExitBackButton = true;
 	
-		/**
-		 * AddItem Styles
-		 * 
-		 * ITEMDRAW_CONTROL and ITEMDRAW_DEFAULT presented a normal numbered menu option.
-		 * ITEMDRAW_DISABLED presented a numbered option that cannot be selected.
-		 * ITEMDRAW_IGNORE did not add the item.
-		 * ITEMDRAW_NOTEXT did not add an item, but consumed the number.
-		 * ITEMDRAW_RAWLINE did not add an item. I believe this cannot be done using the Menu helper, only panels.
-		 * ITEMDRAW_SPACER created a completely blank line. It consumed the position number.
-		 */
-	}
-	
-	
-	/**
-	 * Show the admin commands menu
-	 */
-	if (StrEqual(sMenu, "menu_admincommands"))
-	{
-		menu.AddItem("admincommands_award", "menu item admin command award");
-		menu.AddItem("admincommands_setclass", "menu item admin command setclass");
-		menu.AddItem("admincommands_data", "menu item admin command drdata");
-		//menu.AddItem("admincommands_scalehealth", "menu item admin command drscalehealth");		
-		menu.AddItem("menu_main", "menu item back");
-	}
-	
-	
-	/**
-	 * Show the admin fun stuff
-	 */
-	if (StrEqual(sMenu, "menu_adminfunstuff"))
-	{
-		menu.AddItem("adminfunstuff_scalehealth", "menu item admin fun stuff scale activator health");
-		menu.AddItem("adminfunstuff_jetpackgame", "menu item admin fun stuff jetpack game");
-		menu.AddItem("menu_main", "menu item back");
+		menu.AddItem("admin_scalehealth", "menu_item_admin_scale_activator_health");
+		menu.AddItem("admin_jetpackgame", "menu_item_admin_jetpack_game");
+		menu.AddItem("admin_periodicslap", "menu_item_admin_periodic_slap");
 	}
 	
 	menu.SetTitle(title);
@@ -186,93 +121,76 @@ stock void NewMenuFunction(int client, const char[] sMenu)
  */
 
 
-public int NewMenuHandler(Menu menu, MenuAction action, int param1, int param2)
+public int MenuHandler(Menu menu, MenuAction action, int param1, int param2)
 {
 	if (action == MenuAction_Select)
 	{
 		char selection[32];
 		menu.GetItem(param2, selection, sizeof(selection));
 		
+		// Menus
 		if (StrContains(selection, "menu_") == 0)
 		{
-			NewMenuFunction(param1, selection);
+			MenuFunction(param1, selection);
 		}
 		
+		// Preferences
 		else if (StrContains(selection, "prefs_") == 0)
 		{
-			if (StrEqual(selection, "prefs_full"))
+			if (StrEqual(selection, "prefs_activator"))
 			{
-				AdjustPreference(param1, 2);
+				Command_ToggleActivator(param1, 0);
 			}
-			if (StrEqual(selection, "prefs_fewer"))
+			else if (StrEqual(selection, "prefs_english"))
 			{
-				AdjustPreference(param1, 1);
+				ToggleEnglish(param1);
 			}
-			if (StrEqual(selection, "prefs_none"))
-			{
-				AdjustPreference(param1, 0);
-			}
-			if (StrEqual(selection, "prefs_english"))
-			{
-				Command_English(param1);
-			}
+			
+			MenuFunction(param1, "menu_prefs");
 		}
 		
-		else if (StrContains(selection, "commands_") == 0)
+		// Reset
+		else if (StrContains(selection, "reset_") == 0)
 		{
-			if (StrEqual(selection, "commands_points"))
-			{
-				Command_ShowPoints(param1, 0);
-			}
-			if (StrEqual(selection, "commands_reset"))
+			if (StrEqual(selection, "reset_yes"))
 			{
 				Command_ResetPoints(param1, 0);
 			}
-			if (StrEqual(selection, "commands_prefs"))
-			{
-				Command_Preferences(param1, 0);
-			}
+			
+			MenuFunction(param1, "menu_prefs");
 		}
 		
-		else if (StrContains(selection, "admincommands_") == 0)
+		// Help
+		else if (StrEqual(selection, "item_help"))
 		{
-			if (StrEqual(selection, "admincommands_award"))
-			{
-				AdminCommand_AwardPoints(param1, 0);
-			}
-			if (StrEqual(selection, "admincommands_setclass"))
-			{
-				AdminCommand_SetClass(param1, 0);
-			}
-			if (StrEqual(selection, "admincommands_data"))
-			{
-				AdminCommand_PlayerData(param1, 0);
-			}
+			Command_Help(param1, 0);
 		}
 		
-		else if (StrContains(selection, "adminfunstuff_") == 0)
+		// Admin
+		else if (StrContains(selection, "admin_") == 0)
 		{
-			if (StrEqual(selection, "adminfunstuff_scalehealth"))
+			if (StrEqual(selection, "admin_scalehealth"))
 			{
-				FunStuff_ScaleHealth();
+				FunStuff_ScaleHealth(param1);
 			}
-			if (StrEqual(selection, "adminfunstuff_jetpackgame"))
+			else if (StrEqual(selection, "admin_jetpackgame"))
 			{
 				FunStuff_JetpackGame();
 			}
+			else if (StrEqual(selection, "admin_periodicslap"))
+			{
+				FunStuff_PeriodicSlap();
+			}
+			
+			MenuFunction(param1, "menu_admin");
 		}
 		
-		else if (StrEqual(selection, "reset_yes"))
-		{
-			Command_ResetPoints(param1, 0);			
-		}
-		
-		else NewMenuFunction(param1, "menu_main");
+		else MenuFunction(param1, "menu_main");
 	}
 	
 	else if (param2 == MenuCancel_ExitBack)
 	{
-		NewMenuFunction(param1, "menu_main");
+		MenuFunction(param1, "menu_main");
 	}
 	
 	else if (action == MenuAction_End)

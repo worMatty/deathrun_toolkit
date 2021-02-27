@@ -1,3 +1,6 @@
+#define MAX_CHAT_MESSAGE		255
+
+
 /**
  * TF2 Stuff
  * ----------------------------------------------------------------------------------------------------
@@ -25,110 +28,6 @@ stock int ProcessClassString(const char[] string)
 
 
 
-/**
- * Create an item for a player
- * 
- * @param	int		Item definition index
- * @param	char	Classname of item
- * @return	int		Item entity index. -1 if unable to create
- */
-stock int CreateItem(int itemDefIndex, char[] classname)
-{
-	int item = CreateEntityByName(classname);
-	if (item == -1)
-	{
-		LogError("Couldn't create %s", classname);
-	}
-	else
-	{
-		SetEntProp(item, Prop_Send, "m_iItemDefinitionIndex", itemDefIndex);
-		SetEntProp(item, Prop_Send, "m_iEntityLevel", 0);
-		SetEntProp(item, Prop_Send, "m_iEntityQuality", 0);
-		SetEntProp(item, Prop_Send, "m_bValidatedAttachedEntity", true);
-		SetEntProp(item, Prop_Send, "m_bInitialized", 1);
-		//SetEntProp(item, Prop_Send, "m_hOwnerEntity");
-		
-		if (!DispatchSpawn(item))
-		{
-			LogError("Couldn't spawn %s", classname);
-			RemoveEntity(item);
-			item = -1;
-		}
-	}
-	
-	return item;
-}
-
-
-
-// TODO Remove this
-
-int g_iGhost[MAXPLAYERS + 1];
-
-/**
- * Make a player a 'ghost'.
- * They will have the same attributes as before, but they will be invisible and unable to interact with the world.
- * The player's model transmission is hooked using SDKHooks' SetTransmit to a function named Hook_GhostsTransmit.
- * 
- * @param		int		Client
- * @param		bool	Turn them into a ghost or make them 'real'
- * @param		bool	Make them a dead ghost or keep them alive
- * @noreturn
- */
-stock void MakeGhost(int client, bool ghost = true, bool dead = true)
-{
-	if (ghost)
-	{
-		float pos[3], angles[3];
-		GetClientAbsOrigin(client, pos);
-		GetClientAbsAngles(client, angles);
-		
-		TF2_RespawnPlayer(client);
-		TeleportEntity(client, pos, angles, NULL_VECTOR);
-		
-		if (dead)
-			SetEntProp(client, Prop_Send, "m_lifeState", LifeState_Dead);
-		SetEntProp(client, Prop_Send, "m_CollisionGroup", 1); // Debris
-		SetEntProp(client, Prop_Send, "m_usSolidFlags", GetEntProp(client, Prop_Send, "m_usSolidFlags") | 0x0006);
-		
-		SetEntityRenderMode(client, RENDER_TRANSALPHA);
-		SetEntityRenderColor(client, _, _, _, 0);
-		SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", -1);
-		SetEntPropEnt(client, Prop_Send, "m_hLastWeapon", -1);
-		SDKHook(client, SDKHook_SetTransmit, Hook_GhostsTransmit);
-		
-		if (!GetEntProp(client, Prop_Send, "m_bGlowEnabled"))
-			SetEntProp(client, Prop_Send, "m_bGlowEnabled", 1, 1);
-		g_iGhost[client] = true;
-	}
-	else
-	{
-		if (GetEntProp(client, Prop_Send, "m_bGlowEnabled"))
-			SetEntProp(client, Prop_Send, "m_bGlowEnabled", 0, 1);
-		g_iGhost[client] = false;
-		
-		if (IsValidEntity(client))
-		{
-			float pos[3], angles[3];
-			GetClientAbsOrigin(client, pos);
-			GetClientAbsAngles(client, angles);
-		
-			SDKUnhook(client, SDKHook_SetTransmit, Hook_GhostsTransmit);
-			
-			SetEntProp(client, Prop_Send, "m_CollisionGroup", 5);	// Player
-			SetEntProp(client, Prop_Send, "m_usSolidFlags", GetEntProp(client, Prop_Send, "m_usSolidFlags") & ~0x0006);
-			
-			SetEntityRenderMode(client, RENDER_NORMAL);
-			SetEntityRenderColor(client);
-			
-			TF2_RespawnPlayer(client);
-			TeleportEntity(client, pos, angles, NULL_VECTOR);
-		}
-	}
-}
-
-
-
 
 /**
  * Players & Teams
@@ -141,9 +40,9 @@ stock void MakeGhost(int client, bool ghost = true, bool dead = true)
  * @param	int		Team number
  * @return	int		Client index
  */
-stock int PickRandomParticipant(int team)
+stock int PickRandomTeamMember(int team)
 {
-	int table[MaxClients + 1];
+	int table[MaxClients];
 	int index;
 	
 	for (int i = 1; i <= MaxClients; i++)
@@ -159,6 +58,33 @@ stock int PickRandomParticipant(int team)
 	return result;
 }
 
+
+
+
+/**
+ * Respawn all players using a game_forcerespawn
+ * 
+ * @noreturn
+ */
+stock void RespawnTeamsUsingEntity(int team = 0)
+{
+	int ent = CreateEntityByName("game_forcerespawn");
+	
+	if (ent != -1 && DispatchSpawn(ent))
+	{
+		if (!team)
+		{
+			AcceptEntityInput(ent, "ForceRespawn");
+		}
+		else
+		{
+			SetVariantInt(team);
+			AcceptEntityInput(ent, "ForceTeamRespawn");
+		}
+
+		AcceptEntityInput(ent, "Kill");
+	}
+}
 
 
 
@@ -278,7 +204,7 @@ stock bool AreEntsInLOS(int ent1, int ent2, int flags = CONTENTS_SOLID)
 }
 
 // Trace filter for the above function
-bool Trace_AreEntsInLOS(int entity, int contentsMask, int ent1)
+stock bool Trace_AreEntsInLOS(int entity, int contentsMask, int ent1)
 {
 	/*
 		TraceFilter is called for each entity the ray hits.
@@ -434,205 +360,6 @@ stock bool RemoveAttributeTrigger(int client, char[] attribute)
 
 
 /**
- * Messages
- * ----------------------------------------------------------------------------------------------------
- */
-
-/**
- * ChatMessage
- * Send a message to a player with sound effect and prefix based on the 'message type' parameter.
- *
- * @param		int		Client index
- * @param		int		Msg_Type
- * @param		char	Message string
- * @param		any		...
- */
-stock void ChatMessage(int client, int type, const char[] string, any...)
-{
-	SetGlobalTransTarget(client);
-	int len = strlen(string) + 255;
-	char[] buffer = new char[len];
-	VFormat(buffer, len, string, 4);
-	
-	char prefix[13], sound[128];
-	switch (type)
-	{
-		case Msg_Normal:
-		{
-			prefix = "prefix";
-		}
-		case Msg_Reply:
-		{
-			prefix = "prefix_reply";
-			g_hSounds.GetString("chat_reply", sound, sizeof(sound));
-		}
-		case Msg_Plugin:
-		{
-			prefix = "prefix_plugin";
-			g_hSounds.GetString("chat_plugin", sound, sizeof(sound));
-		}
-	}
-	
-	PrintToChat(client, "%t %s", prefix, buffer);
-	if (sound[0]) EmitSoundToClient(client, sound);
-}
-
-
-
-/**
- * ChatMessage wrapper that sends a message to all clients
- *
- * @param		int		Msg_Type
- * @param		char	Message string
- * @param		any		...
- */
-stock void ChatMessageAll(int type, const char[] string, any...)
-{
-	int len = strlen(string) + 255;
-	char[] buffer = new char[len];
-	//VFormat(buffer, len, string, 3);	// BUG Caused incorrect translations
-	
-	for (int i = 1; i <= MaxClients; i++)
-	{
-		if (!IsClientInGame(i))
-			continue;
-		
-		SetGlobalTransTarget(i);
-		VFormat(buffer, len, string, 3);
-		ChatMessage(i, type, buffer);
-	}
-}
-
-
-
-/**
- * ChatMessage wrapper that sends a message to all clients except one
- *
- * @param		int		Client index
- * @param		int		Msg_Type
- * @param		char	Message string
- * @param		any		...
- */
-stock void ChatMessageAllEx(int client, int type, const char[] string, any...)
-{
-	int len = strlen(string) + 255;
-	char[] buffer = new char[len];
-	//VFormat(buffer, len, string, 4);
-	
-	for (int i = 1; i <= MaxClients; i++)
-	{
-		if (!IsClientInGame(i) || i == client)
-			continue;
-			
-		SetGlobalTransTarget(i);
-		VFormat(buffer, len, string, 4);
-		ChatMessage(i, type, buffer);
-	}
-}
-
-
-
-/**
- * ChatMessage wrapper that sends a message to all admins
- *
- * @param		int		Msg_Type
- * @param		char	Message string
- * @param		any		...
- */
-stock void ChatAdmins(int type, const char[] string, any...)
-{
-	int len = strlen(string) + 255;
-	char[] buffer = new char[len];
-	//VFormat(buffer, len, string, 4);
-	
-	for (int i = 1; i <= MaxClients; i++)
-	{
-		if (!IsClientInGame(i) || GetUserAdmin(i) == INVALID_ADMIN_ID)
-			continue;
-		
-		SetGlobalTransTarget(i);
-		VFormat(buffer, len, string, 3);
-		ChatMessage(i, type, buffer);
-	}
-}
-
-
-
-/**
- * ChatMessage wrapper that sends a message to all admins except one
- *
- * @param		int		Client index
- * @param		int		Msg_Type
- * @param		char	Message string
- * @param		any		...
- */
-stock void ChatAdminsEx(int client, int type, const char[] string, any...)
-{
-	int len = strlen(string) + 255;
-	char[] buffer = new char[len];
-	//VFormat(buffer, len, string, 4);
-	
-	for (int i = 1; i <= MaxClients; i++)
-	{
-		if (!IsClientInGame(i) || GetUserAdmin(i) == INVALID_ADMIN_ID || i == client)
-			continue;
-		
-		SetGlobalTransTarget(i);
-		VFormat(buffer, len, string, 4);
-		ChatMessage(i, type, buffer);
-	}
-}
-
-
-
-/**
- * Displays a debug message in server console when the plugin's debug ConVar is enabled.
- *
- * @param 		char	Formatting rules
- * @param 		...		Variable number of formatting arguments
- * @noreturn
- */
-stock void Debug(const char[] string, any...)
-{
-	if (!g_ConVars[P_Debug].BoolValue)
-		return;
-	
-	SetGlobalTransTarget(LANG_SERVER);
-	int len = strlen(string) + 255;
-	char[] buffer = new char[len];
-	VFormat(buffer, len, string, 2);
-	
-	PrintToServer("%s %s", PREFIX_DEBUG, buffer);
-}
-
-
-
-/**
- * Displays a debug message in server console when the plugin's debug ConVar is enabled.
- * Ex: Also displays to client in chat.
- *
- * @param		int		Client index
- * @param		char	Formatting rules
- * @param		...		Variable number of formatting arguments
- * @noreturn
- */
-stock void DebugEx(int client, const char[] string, any...)
-{
-	if (!g_ConVars[P_Debug].BoolValue)
-		return;
-	
-	SetGlobalTransTarget(client);
-	int len = strlen(string) + 255;
-	char[] buffer = new char[len];
-	VFormat(buffer, len, string, 3);
-	
-	PrintToChat(client, "%t %s", "prefix_plugin", buffer);
-	PrintToServer("%s %s", PREFIX_DEBUG, buffer);
-}
-
-
-
-/**
  * Show a training annotation to a player
  *
  * @param		int		Client index
@@ -689,7 +416,8 @@ stock bool ShowAnnotation(int client, int entity, const char[] sound = "", const
  */
 
 /**
- * Clamp an integer
+ * Clamp an integer between two ranges
+ * Min must be lower than max and vice versa
  *
  * @param		int		By-reference variable to clamp
  * @param		int		Minimum clamp boundary
@@ -698,10 +426,38 @@ stock bool ShowAnnotation(int client, int entity, const char[] sound = "", const
  */
 stock void ClampInt(int &value, int min, int max)
 {
-	if (value < min)
+	if (value <= min)
 		value = min;
-	else if (value > max)
+	else if (value >= max)
 		value = max;
+}
+
+
+
+/**
+ * Clamp an integer to a minimum value
+ *
+ * @param		int		By-reference variable to clamp
+ * @param		int		Minimum clamp boundary
+ * @noreturn
+ */
+stock void ClampIntMin(int &value, int min)
+{
+	value = ((value < min) ? min : value);
+}
+
+
+
+/**
+ * Clamp an integer to a maximum value
+ *
+ * @param		int		By-reference variable to clamp
+ * @param		int		Maximum clamp boundary
+ * @noreturn
+ */
+stock void ClampIntMax(int &value, int max)
+{
+	value = ((value > max) ? max : value);
 }
 
 

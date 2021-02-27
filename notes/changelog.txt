@@ -4,20 +4,59 @@ Deathrun Toolkit
 Changelog
 ---------
 
+**Changelog - Version 0.4**
+
+Major Changes
+- Improved team balancing
+- Improved activator queue
+- Improved multiple activator support
+- Added basic configurable weapon restriction system
+
+Minor Changes
+- /prefs gone, /drtoggle toggles activator preference directly
+- New command for Next Activators: /na [number]
+- Menu system simplified and options shortened
+- Players with no class are moved to spec on round start
+- Activator lock extended to pre-round freeze time
+
+Other Stuff:
+- ConVar added for team mate push-away
+- Added a new fun mode: slap every ten seconds
+- Retired some translation phrases and added new ones
+
+__Improved Team Balancing__
+Much better protection against players joining the blue team when they are not designated activators. Improved ‘ready state’ detection in TF2 Classic and Open Fortress to prevent stalled rounds. Fixed a bug where the first round of a map would have two restarts, causing two activator selections, with the first one selected being instantly replaced and their points lost. Potentially fixed a bug where the plugin would not ‘work’ in the first round, players could join any team and the queue system would not function.
+
+__Improved Activator Queue__
+Half and full point awards are not gone. Instead of each red player receiving ten queue points at the end of a round and only if they were present at the beginning of it, all red players receive one queue point every ten seconds. People who opt out of being an activator continue to accrue queue points. Queue points are no longer communicated to players as they are only used to manage the activator queue or for admins to influence by awarding points. It’s still possible to view and reset your points using /points and /reset. When sorting the queue, the plugin now factors in the last time a player was made activator, so if no one has any points or two players have the same points, the order will be fair regardless and no one should ever be activator twice in a very short time.
+
+__Improved Multiple Activator Support__
+There are two cvars for managing activator numbers: dtk_activators_max which acts as a maximum number, and dtk_activators_ratio which defines the fraction of players who will be selected. e.g. If the ratio is 0.2, then one fifth of players will be selected as activator, but only up to the max. There will always be at least one activator and at least one runner.
+
+Now if an activator switches teams during pre-round freeze time, only they will be replaced instead of the whole blue team.
+
+The boss bar now tracks the combined health of all activators, and correctly adapts to overheals by raising and fixing its ceiling. In TF2C and OF where there is no boss bar, up to two activator names and their health are drawn on-screen, and with more than that alive it displays a combined total. This is to prevent screen clutter.
+
+__Next Activator Command__
+/na can be used at any time to show you the next activator. If you specify a number, it will show you that many players in the queue. By default it will show you as many names as there should be activators on the next round (provided the player count is the same).
+
+__Basic Weapon Restriction System__
+This has been a long time coming. There are now the barebones of a system that lets you either replace or modify the attributes of a player’s weapon. Replacements are stored in a separate file. I have only added in a small number of weapons as this system is not finished.
+
+__Team Mate Push-Away ConVar__
+The plugin sets this to 0 when the game mode is enabled but if a server wanted to enable it on a per-map basis using a mapname.cfg file, the plugin would override it. Now a server can add dtk_push_away 1 to the config to enable it.
+
+__Activator Lock During Freeze-Time__
+You can now set dtk_lock_activator to 2 to prevent activators switching away from blue during pre-round freeze time after they have been selected. This is not normally something I recommend you do but it may be useful in some cases.
+
+
+
 **Changelog - Version 0.3**
 
 Complete rewrite.
 
 Removed:
 :small_blue_diamond: System that turned on team mate pushaway at low reds.
-:small_blue_diamond: 
-:small_blue_diamond: 
-:small_blue_diamond: 
-:small_blue_diamond: 
-:small_blue_diamond: 
-:small_blue_diamond: 
-:small_blue_diamond: 
-:small_blue_diamond: 
 
 Added:
 :small_blue_diamond: WIP activator speed boost by binding +speed. Works like HL2 sprint.
@@ -25,8 +64,6 @@ Added:
 :small_blue_diamond: WIP ratio of activators. dtk_activators now functions as a cap.
 :small_blue_diamond: Map instructions to set custom model and use class animations.
 :small_blue_diamond: ConVar to customise the game description that's displayed in the server browser
-:small_blue_diamond: 
-:small_blue_diamond: 
 
 Changed:
 :small_blue_diamond: Standardised and simplified plugin chat messages.
@@ -34,18 +71,11 @@ Changed:
 :small_blue_diamond: Improved the system that prevents players joining Blue.
 :small_blue_diamond: TF2 Attributes is required if you want to change player attributes.
 :small_blue_diamond: Red players only receive queue points on round end if they were there from the start.
-:small_blue_diamond: 
-:small_blue_diamond: 
-:small_blue_diamond: 
 
 Fixed:
 :small_blue_diamond: Periodic team checks in OF to start a round when enough players are present.
 :small_blue_diamond: In TF2C and OF, Health: 0 is no longer displayed on round restart
 :small_blue_diamond: In TF2C, picking up a health kit updates the boss health text
-:small_blue_diamond: 
-:small_blue_diamond: 
-:small_blue_diamond: 
-:small_blue_diamond: 
 
 I like the idea of team mate pushaway because it makes a map need more skill and requires the player to be more patient and cooperate. Saxton Hell has this feature but Voidy disables it in certain parts of maps because it causes issues. In DTK I had a feature that enabled teammate pushway when there were only a few red players left. Through play testing it became clear than no one appreciated this feature other than me so I have removed it.
 

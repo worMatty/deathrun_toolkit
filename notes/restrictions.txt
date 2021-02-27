@@ -2,65 +2,172 @@ Restrictions
 ============
 
 
-Flying
+Method
 ------
-Rocket jumping
-Sticky jumping
-Parachuting
+
+Methods of restriction: Replace, modify.
+Replace exchanges the item with a class default, while modify adjusts its properties.
+
+Special mode methods: Strip ammo? Nullify healing?
+
+Modifications could refer to a master list of modifications that are different depending on the
+level of mobility restriction desired.
+
+Have a list of default replacement weapons for each class and slot.
+If a weapon should be replaced, resort to the default unless a 'profile' is specified.
+A profile would be weapon data to use instead of the default, and would be class-agnostic.
+
+May have to have multiple effects based on the mod. These could be subkeys or keys per mod.
+Then anything else would be 'shared'.
+
+I prefer to remove weapons rather than modify them as this signifies the weapon is useless.
+Modified weapons may not work as expected when used, which could lead to disappointment and confusion.
+
+
+Key:
+	0 - No change
+	1 - Limit via modification
+	2 - Replace/remove/disable a weapon in that order
+	
+	
+Programming
+-----------
+
+Create KV structure globally?
+
+Load the replacements KV into memory on plugin start
+
+Load the restrictions file on configs executed
+
+For loop over the player's occupied slots.
+Get the player's weapon index and look it up in the restriction file.
+If it exists, get the first sub key.
+If attributes, process attributes on the weapon.
+If replacement, get the weapon's slot and player class.
+Look up the class and slot subkeys in the replacements KV.
+Do ReplaceWeapon.
+
+
+Bugs:
+	* As a Scout, my Scattergun replacement is invisible in my hands until I switch to it from another weapon.
+	* 
+
+Todo:
+	* Learn how SZF gives a player a weapon they already own
+
+
+
+Types of Mobility
+=================
+
+
+Flying or Trap evasion Vertical
+-------------------------------
+
+1
+	Rocket jumping blast pushing reduction 
+	Sticky jumping blast pushing reduction
+2	
+	Rocket jumping nullify blast pushing (keep weapon for combat)
+	Sticky jumping nullify blast pushing (keep weapon for combat)
+	Parachute replace
 
 
 Trap evasion horizontal
 -----------------------
-Double jump
-Atomizer
-Jet pack
+
+1
+	Jet pack
+	Double jump
+	Atomizer
+2
+	Jet pack
+	Force-a-Nature
 
 
 Rushing
 -------
-Charging
-Scout speed
+
+1
+	Scout speed
+	Charging distance reduction
+	Disc. action?
+2
+	Charging
+
 
 
 Mini boosting
 -------------
-Scorch shot
-Force-a-nature
-Winger
-Grenade boosting
-Ullapool Caber
+
+2
+	Scorch shot
+	Force-a-nature
+	Winger
+	Grenade boosting
+	Ullapool Caber
 
 
 Teleporting
 -----------
-Teleporters
-Eureka Effect
+
+Teleporters (handled by ConVar)
+Eureka Effect (test this)
 
 
 Avoiding damage
 ---------------
-Cloak
-Dead Ringer
-Spy damage reduction
-Overhealng
-Ubers
-Bonk!
+
+1
+	Cloak limit
+2
+	Cloak watch
+	Dead Ringer
+	Spy damage reduction
+	Overhealng?
+	Ubers
+	Bonk!
 
 
 Healing
 -------
-Medigun healing
-Amputator
-Self-healing
-First aid packs (sandwiches)
-Max HP increase (chocolate, steak)
-Dispenser
+
+Map health pickups?
+Dropped health pickups?
+
+1
+	Max HP increase (chocolate, steak) (single use? why?)
+	Why limit health stuff?
+2
+	Medigun
+	Amputator
+	Self-healing
+	Sandwiches
+	Max HP increase (chocolate, steak)
+	Dispenser healing
 
 
-Combat
-------
-Sentry
-Sapping
+Combat (Special?)
+-----------------
+
+2
+	Sentry
+	Sapper
+
+
+Exploiting
+----------
+
+2
+	Cleaver (812, 833)
+
+
+
+
+Examples of Maps Which Need Restrictions
+========================================
+
+Map name and details about what needs to be restricted.
 
 
 Convenience commands

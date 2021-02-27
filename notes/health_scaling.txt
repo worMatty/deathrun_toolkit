@@ -1,4 +1,5 @@
-Scaling
+Health Scaling
+==============
 
 My own values
 
@@ -75,17 +76,13 @@ New values as a pyro and base of 300:
 
 
 
-
-
-
-
 VSH 1.55 Stuff
 --------------
 
 playing = 10
-HaleHealthMax = RoundFloat (Pow( ( (760.8 + playing) * (playing - 1) ), 1.0341));
-HaleHealthMax = RoundFloat (Pow( ( 770.8 * 9 ), 1.0341));
-HaleHealthMax = RoundFloat (Pow( 6,937.2, 1.0341));
+HaleHealthMax = RoundFloat (Pow(((760.8 + playing) * (playing - 1)), 1.0341));
+HaleHealthMax = RoundFloat (Pow((770.8 * 9), 1.0341));
+HaleHealthMax = RoundFloat (Pow(6,937.2, 1.0341));
 HaleHealthMax = RoundFloat (Pow(6,937.2, 1.0341));
 
 1 0
@@ -96,3 +93,24 @@ HaleHealthMax = RoundFloat (Pow(6,937.2, 1.0341));
 6 3834		5079.896484		1,052.224365
 
 HaleHealthMax = RoundFloat(Pow(((760.8 + playing)*(playing - 1)), 1.0341));
+
+
+DTK Stuff
+---------
+
+p = 1.0 or 100%
+If there are two reds, we take the Activator's current max health and add (300 * p)
+Then for each extra red, we add (300 * (p * 1.15))
+
+Two activators, just add 300 HP.
+Three, add another 300 * 1.15.
+... and so on.
+
+1: 175
+2: 475
+3: 820
+4: 1217
+
+Max health (300 * 1.15)
+
+* 1.15

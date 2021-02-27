@@ -6,87 +6,124 @@
 
 void Event_RoundRestart(Event event, const char[] name, bool dontBroadcast)
 {
-	PrintToServer("%s The round has restarted", PREFIX_SERVER);
+	PrintToServer("%s --- The round has restarted ---", PREFIX_SERVER);
+
+	// Set Round State
+	game.RoundState = Round_Freeze;
+
+	// Find and Hook Entities
+	SetUpEnts();
 	
-	// Apply Initial Player Attributes
-	// Reset Player Flags
+	/*
+	// Move players to Red and add Runner flag
 	for (int i = 1; i <= MaxClients; i++)
 	{
-		if (Player(i).InGame)
+		Player player = Player(i);
+		
+		if (player.InGame)
 		{
-			Player(i).RemoveFlag(PF_Activator);
-			Player(i).RemoveFlag(PF_Runner);
-			Player(i).RemoveFlag(PF_PointsEligible);
+			if (player.Team == Team_Red)
+			{
+				player.AddFlag(PF_Runner);
+			}
+			if (player.Team == Team_Blue)
+			{
+				player.SetTeam(Team_Red);
+				player.AddFlag(PF_Runner);
+			}
+		}	
+	}
+	*/
+	
+	/*
+		Reset Player Flags
+		Move players to Red and add Runner flag
+		Choose a class for players with none
+		Apply Initial Player Attributes
+	*/
+	
+	Debug("Moving all players to Red");
+	
+	for (int i = 1; i <= MaxClients; i++)
+	{
+		Player player = Player(i);
+		
+		if (player.InGame)
+		{
+			player.RemoveFlag(PF_Activator);	// TODO Necessary?
+			player.RemoveFlag(PF_Runner);		// TODO Necessary?
+			
+			if (player.Team == Team_Red)
+			{
+				player.AddFlag(PF_Runner);
+			}
+			
+			if (player.Team == Team_Blue)
+			{
+				player.SetTeam(Team_Red);
+				player.AddFlag(PF_Runner);
+			}
+			
+			//if (!player.IsBot && player.Class == Class_Unknown)
+			//{
+			//	player.SetClass(GetRandomInt(1, 9), _, true);
+			//}
+			// Note: This doesn't work on puppet bots. They are on the leaderboard but don't spawn.
+			// !player.IsBot added to prevent this.
+	
 			ApplyPlayerAttributes(i);
 		}
 	}
 	
-	// Find and Hook Entities
-	SetUpEnts();
-	
 	// Hide Health Bar
 	SetHealthBar();
 	
-	// Set Round State
-	game.RoundState = Round_Freeze;
-	
 	// Begin Redistribution
-	CheckForPlayers();
+	SelectActivators();
 }
+
 
 
 
 void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 {
-	game.RemoveFlag(GF_WatchMode);	// No need to watch for team changes now
+	game.InWatchMode = false;	// No need to watch for team changes now
 	
 	// Round Start Message
 	if (g_ConVars[P_RoundStartMessage].BoolValue)
 	{
 		static int phrase_number = 1;
 		char phrase[20];
-		Format(phrase, sizeof(phrase), "round has begun %d", phrase_number);
+		Format(phrase, sizeof(phrase), "round_has_begun_%d", phrase_number);
 		
 		if (!TranslationPhraseExists(phrase))
 		{
 			phrase_number = 1;
-			Format(phrase, sizeof(phrase), "round has begun %d", phrase_number);
+			Format(phrase, sizeof(phrase), "round_has_begun_%d", phrase_number);
 		}
 		
-		ChatMessageAll(Msg_Normal, "%t", phrase);
+		ChatMessageAll("%t", phrase);
 		phrase_number++;
 	}
 	
 	// Set round state to Active
 	game.RoundState = Round_Active;
 	
-	PrintToServer("%s The round is now active", PREFIX_SERVER);
+	PrintToServer("%s --- The round is now active ---", PREFIX_SERVER);
 	if (g_bSCR && g_ConVars[P_SCR].BoolValue)
 		SCR_SendEvent(PREFIX_SERVER, "The round is now active");
 	
-	// OF starts the round regardless if there aren't enough players
-	if (game.IsGame(Mod_OF))
-	{
-		Debug("Open Fortress: Server has %d alive reds and %d alive blues", game.AliveReds, game.AliveBlues);
-		
-		// If one team doesn't have any live players, start the timer
-		//if (!game.AliveReds || !game.AliveBlues)
-		//{
-		//	Debug("Open Fortress: Starting the OF team check timer");
-		//	CreateTimer(5.0, TimerCB_OFTeamCheck, _, TIMER_REPEAT);
-		//}
-		
-		Debug("Open Fortress: Starting the OF team check timer");
-		CreateTimer(5.0, TimerCB_OFTeamCheck, _, TIMER_REPEAT);
-	}
-	
-		// Make red players eligible for queue points
+	// Move players with no class to Spectator
 	for (int i = 1; i <= MaxClients; i++)
 	{
-		if (Player(i).InGame && Player(i).Team == Team_Red)
+		Player player = Player(i);
+		
+		if (player.InGame && player.IsParticipating && player.Class == Class_Unknown)
 		{
-			Player(i).AddFlag(PF_PointsEligible);
-			Debug("Granted %N the PF_PointsEligible flag", i);
+			player.SetTeam(Team_Spec);
+			char sname[MAX_NAME_LENGTH];
+			GetClientName(i, sname, sizeof(sname));
+			ChatMessageAll("%t", "name_no_class_moved_spec", sname);
 		}
 	}
 }
@@ -97,22 +134,20 @@ void Event_RoundEnd(Event event, const char[] name, bool dontBroadcast)
 {
 	game.RoundState = Round_Win;
 	
-	// Grant Queue Points
-	for (int i = 1; i <= MaxClients; i++)
-	{
-		if (Player(i).InGame && Player(i).HasFlag(PF_PointsEligible) && Player(i).HasFlag(PF_PrefActivator))
-		{
-			int awarded = (Player(i).HasFlag(PF_PrefFullQP)) ? QP_Full : QP_Partial;
-			Player(i).AddPoints(awarded);
-			ChatMessage(i, Msg_Reply, "%t", "round end queue points received", awarded, Player(i).Points);
-		}
-	}
+	char buffer[MAX_CHAT_MESSAGE];
+	int activators = GetNumActivatorsRequired();
 	
-	DisplayNextActivators();	// TODO: Don't display this if the map is about to change
+	FormatNextActivators(buffer, activators);	// TODO: Don't display this if the map is about to change
 	
-	PrintToServer("%s The round has ended", PREFIX_SERVER);
+	if (buffer[0] != '\0')
+		ChatMessageAll(buffer);
+	
+	PrintToServer("%s --- The round has ended ---", PREFIX_SERVER);
+	
 	if (g_bSCR && g_ConVars[P_SCR].BoolValue)
+	{
 		SCR_SendEvent(PREFIX_SERVER, "The round has ended");
+	}
 }
 
 
@@ -125,15 +160,7 @@ void Event_RoundEnd(Event event, const char[] name, bool dontBroadcast)
 
 void Event_PlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 {
-	//return; // BUG 
-	
 	int client = GetClientOfUserId(event.GetInt("userid"));
-	
-	//if (g_iGhost[player.Index] && !IsFakeClient(player.Index))
-	//{
-	//	MakeGhost(player.Index, false);
-	//	return;
-	//}
 	
 	if (game.RoundState == Round_Freeze || game.RoundState == Round_Active)
 		RequestFrame(ApplyPlayerAttributes, client);
@@ -145,68 +172,113 @@ void Event_PlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 void Event_InventoryApplied(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"));
-	RequestFrame(NextFrame_InventoryApplied, client);
+	RequestFrame(RF_InventoryApplied, client);
 }
 
-void NextFrame_InventoryApplied(int client)
+void RF_InventoryApplied(int client)
 {
+	Player player = Player(client);
+	
+	for (int i = 0; i < Weapon_ArrayMax; i++)
+	{
+		int weapon = player.GetWeapon(i);
+			
+		if (weapon == -1)
+			continue;
+		
+		int item = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
+		
+		// Check Restrictions KV
+		char key[16];
+		IntToString(item, key, sizeof(key));
+		
+		if (g_Restrictions != null && g_Restrictions.JumpToKey(key))	// Item exists
+		{
+			if (g_bTF2Attributes && g_Restrictions.JumpToKey("attributes"))	// Give Attributes
+			{
+				if (g_Restrictions.GotoFirstSubKey())
+				{
+					do
+					{
+						char attrib[128];
+						g_Restrictions.GetString("name", attrib, sizeof(attrib));
+						float value = g_Restrictions.GetFloat("value");
+						
+						if (attrib[0] == '\0')
+						{
+							char section[16];
+							g_Restrictions.GetSectionName(section, sizeof(section));
+							LogError("Weapon restrictions > %d > attributes > %s > Attribute name key not found", item, section);
+						}
+						else
+						{
+							AddAttribute(weapon, attrib, value);
+							PrintToConsole(client, "%s Gave your weapon in slot %d the attribute \"%s\" with value %.2f", PREFIX_SERVER, i, attrib, value);
+						}
+					}
+					while (g_Restrictions.GotoNextKey());
+				}
+				else
+					LogError("Weapon restrictions > %d > attributes > No attribute sections found", item);
+			}
+			
+			else if (g_Replacements != null && g_Restrictions.JumpToKey("replace"))	// Replace Weapon
+			{
+				IntToString(player.Class, key, sizeof(key));
+				
+				if (g_Replacements.JumpToKey(key))	// Player Class
+				{
+					IntToString(i, key, sizeof(key));
+					
+					if (g_Replacements.JumpToKey(key)) // Weapon Slot
+					{
+						int id = g_Replacements.GetNum("id");
+						char classname[128];
+						g_Replacements.GetString("classname", classname, sizeof(classname));
+						
+						if (!id)
+						{
+							LogError("Weapon replacements > %d > %d > id key or value not found", player.Class, i);
+						}
+						else if (classname[0] == '\0')
+						{
+							LogError("Weapon replacements > %d > %d > classname key or value not found", player.Class, i);
+						}
+						else if (ReplaceWeapon(client, weapon, id, classname))
+						{
+							PrintToConsole(client, "%s Replaced your weapon in slot %d with a %s (type %d)", PREFIX_SERVER, i, classname, id);
+						}
+					}
+					else
+						LogError("Weapon replacements > %d > Weapon slot %d not found", player.Class, i);
+				}
+				else
+					LogError("Weapon replacements > Class %d not found", player.Class);
+				
+				g_Replacements.Rewind();
+			}
+			
+			else
+			{
+				LogError("Weapon restrictions > %d > No valid actions found", item);
+			}
+			
+			g_Restrictions.Rewind();
+		}
+	}
+
 	// Melee only
 	if (g_ConVars[P_RedMelee].BoolValue)
-		if (Player(client).Team == Team_Red)
-			Player(client).MeleeOnly();
+		if (player.Team == Team_Red)
+			player.MeleeOnly();
 	
 	// Boss Health Bar
-	if (game.IsHealthBarActive && client == g_iBoss)
-		Player(client).UpdateHealthBar();
-	
-
-	/**
-	 * Weapon Checks
-	 *
-	 * In future I'd like to do different things depending on the weapon and have the things in a KV file.
-	 */
-	
-	int weapon;
-	int itemDefIndex;
-	
-	// Secondary Weapons
-	if ((weapon = Player(client).GetWeapon(Weapon_Secondary)) != -1)
-		itemDefIndex = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
-	
-	switch (itemDefIndex)
-	{
-		case 1179:		// Thermal thruster
-		{
-			if (g_bTF2Attributes)
-				switch (3)
-				{
-					case 0: TF2Attrib_SetByName(weapon, "item_meter_charge_rate", -1.0);	// Charges are drained rendering the weapon unuseable
-					case 1: TF2Attrib_RemoveByName(weapon, "item_meter_charge_rate");		// Use normal charging behaviour
-					case 2: TF2Attrib_SetByName(weapon, "item_meter_charge_rate", 120.0);	// Charges take one minute to charge
-					case 3: TF2Attrib_SetByName(weapon, "item_meter_charge_rate", 0.0);		// The player only has two charges
-				}
-		}
-		case 812, 833:	// Cleaver
-		{
-			ReplaceWeapon(client, weapon, 23, "tf_weapon_pistol");
-		}
-	}
-	
-	
-	// Melee Weapons
-	if ((weapon = Player(client).GetWeapon(Weapon_Melee)) != -1)
-	{
-		itemDefIndex = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
-	}
-	
-	switch (itemDefIndex)
-	{
-		case 589:	// Eureka Effect
-		{
-			ReplaceWeapon(client, weapon, 7, "tf_weapon_wrench");
-		}
-	}
+	if (game.IsBossBarActive && player.IsActivator)
+		UpdateHealthBar(player.Index);
+				
 }
+
+
 
 
 
@@ -219,9 +291,10 @@ void Event_PlayerDamaged(Event event, const char[] name, bool dontBroadcast)
 		return;
 	
 	int victim 		= GetClientOfUserId(event.GetInt("userid"));
-	int attacker 	= GetClientOfUserId(event.GetInt("attacker"));
+	//int attacker 	= GetClientOfUserId(event.GetInt("attacker"));
 	
-	if (attacker != victim && victim == g_iBoss)
+	//if (attacker != victim && victim == g_iBoss)
+	if (Player(victim).IsActivator)
 		RequestFrame(UpdateHealthBar, victim);
 }
 
@@ -242,7 +315,8 @@ void Event_PlayerHealed(Event event, const char[] name, bool dontBroadcast)
 	if (StrEqual("player_healonhit", name))
 		patient = event.GetInt("entindex");
 	
-	if (patient == g_iBoss)
+	//if (patient == g_iBoss)
+	if (Player(patient).IsActivator)
 		RequestFrame(UpdateHealthBar, patient);
 }
 
@@ -252,11 +326,12 @@ void Event_ChangeClass(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"));
 	
+	// Welcome the player
 	if (!Player(client).HasFlag(PF_Welcomed))
 	{
 		char sName[MAX_NAME_LENGTH];
 		GetClientName(client, sName, sizeof(sName));
-		ChatMessage(client, Msg_Reply, "%t", "welcome player to deathrun toolkit", sName);
+		ChatMessage(client, "%t", "welcome_player_to_deathrun_toolkit", sName);
 		Player(client).AddFlag(PF_Welcomed);
 	}
 }
@@ -314,66 +389,54 @@ Action Event_PlayerDeath(Event event, const char[] name, bool dontBroadcast)
 					Format(targetname, sizeof(targetname), " (%s)", targetname);
 			}
 			
-			ChatMessage(victim, Msg_Reply, "%t", "killed by entity classname", classname, targetname);
+			ChatMessage(victim, "%t", "killed_by_entity_classname", classname, targetname);
 		}
 	}
 	
 	// Boss Health Bar
-	if (g_ConVars[P_BossBar].BoolValue && victim == g_iBoss)
+	//if (g_ConVars[P_BossBar].BoolValue && victim == g_iBoss)
+	if (Player(victim).IsActivator)
 		SetHealthBar();
-	
-	// Ghost Mode
-	//if (g_ConVars[P_Ghosts].BoolValue && !IsFakeClient(victim))
-	//	RequestFrame(RF_MakeGhost, victim);
 }
-
-//void RF_MakeGhost(int client)
-//{
-//	MakeGhost(client);
-//}
 
 
 
 Action Event_TeamsChanged(Event event, const char[] name, bool dontBroadcast)
 {
-	int client = GetClientOfUserId(event.GetInt("userid"));
+	Player player = Player(GetClientOfUserId(event.GetInt("userid")));
 	
-	// Assign a random class
-	if (!Player(client).IsBot && Player(client).Class == Class_Unknown)
+	// Player switches away from Blue
+	if (event.GetInt("oldteam") == Team_Blue)
 	{
-		Player(client).SetClass(GetRandomInt(1, 9));
-	}
-	// Note: This doesn't work on puppet bots. They are on the leaderboard but don't spawn. !player.IsBot added to prevent this.
-	
-	// Trying to prevent people going on blue team but switching them back to red appears to trigger the redistribution logic
-	// and go int an inf loop
-	
-	//if ((GetTeamClientCount(Team_Red) + GetTeamClientCount(Team_Blue)) < 3)
-	//	return;
-	
-	//if (event.GetInt("team") == Team_Blue && !player.IsActivator)
-	//{
-	//	Debug("A player who is not an activator tried to join Blue (%N)", player.Index);
-	//	RequestFrame(RequestFrame_TeamsChanged, player);
-	//	// I think the problem was forcing them back to Red without first disabling the 'watch for player changes' gBool? 
-	//}
-	
-	if (event.GetInt("oldteam") == Team_Blue && Player(client).IsActivator)
-	{
-		Debug("Activator %N switched away from Blue so we're removing PF_Activator from them", client);
-		Player(client).RemoveFlag(PF_Activator);
-		// TODO Tell them to opt out if they don't want to be activator
+		//player.RemoveFlag(PF_Activator);
+		player.UnmakeActivator();
 	}
 	
-	// If we're watching for player changes during freeze time:
-	if (game.HasFlag(GF_WatchMode))	// TODO Can this be replaced by a roundstate check?
-		RequestFrame(CheckForPlayers);
+	// Player switches away from Red
+	if (event.GetInt("oldteam") == Team_Red)
+	{
+		player.RemoveFlag(PF_Runner);
+	}
+	
+	// Player switches to Red
+	if (event.GetInt("team") == Team_Red)
+	{
+		player.AddFlag(PF_Runner);
+	}
+	
+	// Non-Activator switches to Blue
+	if (event.GetInt("team") == Team_Blue && !player.HasFlag(PF_Activator) && game.Participants > 2)
+	{
+		RequestFrame(RF_MoveToRed, player.Index);
+	}
+	
+	// Check teams on any change
+	RequestFrame(CheckTeams);
 }
 
-//void RequestFrame_TeamsChanged(Player player)
-//{
-//	player.SetTeam(Team_Red, false);
-//	Debug("%N joined team Blue so I put them on Red", player.Index);
-//}
 
-
+void RF_MoveToRed(int client)
+{
+	Player(client).SetTeam(Team_Red, false);
+	Debug("Moved non-Activator %N to Blue to Red", client);
+}

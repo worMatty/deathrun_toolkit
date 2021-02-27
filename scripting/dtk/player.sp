@@ -3,6 +3,37 @@
  * Player Methodmap
  * ----------------------------------------------------------------------------------------------------
  */
+ 
+// Life States
+enum {
+	LifeState_Alive,		// alive
+	LifeState_Dying,		// playing death animation or still falling off of a ledge waiting to hit ground
+	LifeState_Dead,			// dead. lying still.
+	LifeState_Respawnable,
+	LifeState_DiscardBody,
+}
+
+// Classes
+enum {
+	Class_Unknown,
+	Class_Scout,
+	Class_Sniper,
+	Class_Soldier,
+	Class_DemoMan,
+	Class_Medic,
+	Class_Heavy,
+	Class_Pyro,
+	Class_Spy,
+	Class_Engineer
+}
+
+// Teams
+enum {
+	Team_None,
+	Team_Spec,
+	Team_Red,
+	Team_Blue
+}
 
 // Default Class Run Speeds
 enum {
@@ -18,6 +49,20 @@ enum {
 	RunSpeed_Engineer = 300,
 }
 
+// Default Class Health
+enum {
+	Health_NoClass = 50,
+	Health_Scout = 125,
+	Health_Sniper = 125,
+	Health_Soldier = 200,
+	Health_DemoMan = 175,
+	Health_Medic = 150,
+	Health_Heavy = 300,
+	Health_Pyro = 175,
+	Health_Spy = 125,
+	Health_Engineer = 125
+}
+
 // Weapon Slots
 enum {
 	Weapon_Primary,
@@ -27,6 +72,16 @@ enum {
 	Weapon_Building,
 	Weapon_PDA,
 	Weapon_ArrayMax
+}
+
+// Ammo Types
+enum {
+	Ammo_Dummy,
+	Ammo_Primary,
+	Ammo_Secondary,
+	Ammo_Metal,
+	Ammo_Grenades1,		// Thermal Thruster fuel
+	Ammo_Grenades2
 }
 
 
@@ -128,6 +183,30 @@ methodmap BasePlayer
 			return iRunSpeeds[this.Class];
 		}
 	}
+
+	
+	// Class Health
+	property int ClassHealth
+	{
+		public get()
+		{
+			int health[] =
+			{
+				Health_NoClass,
+				Health_Scout,
+				Health_Sniper,
+				Health_Soldier,
+				Health_DemoMan,
+				Health_Medic,
+				Health_Heavy,
+				Health_Pyro,
+				Health_Spy,
+				Health_Engineer
+			};
+			
+			return health[this.Class];
+		}
+	}
 	
 	
 	// Is Connected
@@ -175,7 +254,8 @@ methodmap BasePlayer
 	{
 		public get()
 		{
-			IsPlayerAlive(this.Index);
+			//IsPlayerAlive(this.Index);
+			return (GetEntProp(this.Index, Prop_Send, "m_lifeState") == LifeState_Alive);
 		}
 	}
 	
@@ -289,7 +369,7 @@ methodmap BasePlayer
 		TF2_SetPlayerClass(this.Index, view_as<TFClassType>(class), _, persistent);
 		
 		// Don't regenerate a dead player because they'll go to Limbo
-		if (regenerate && IsPlayerAlive(this.Index) && (GetFeatureStatus(FeatureType_Native, "TF2_RegeneratePlayer") == FeatureStatus_Available))
+		if (regenerate && this.IsAlive && (GetFeatureStatus(FeatureType_Native, "TF2_RegeneratePlayer") == FeatureStatus_Available))
 			TF2_RegeneratePlayer(this.Index);
 	}
 	
@@ -402,23 +482,20 @@ methodmap BasePlayer
 	
 	
 	// Set Player Max Health TODO Do TF2C and OF support setting max health directly?
-	public float SetMaxHealth(float fMax)
+	public int SetMaxHealth(int max)
 	{
-		int iPRes = GetPlayerResourceEntity();
+		int resent = GetPlayerResourceEntity();
 		
-		if (iPRes != -1)
+		if (resent != -1)
 		{
-			//if (health < this.MaxHealth)
-			//	return;
-
-			AddAttribute(this.Index, "max health additive bonus", fMax - this.MaxHealth);
+			AddAttribute(this.Index, "max health additive bonus", float(max - this.ClassHealth));
 			//SetEntProp(g_iPlayerRes, Prop_Send, "m_iMaxHealth", health, _, this.Index);
-			Debug("Set %N's max health to %0.f", this.Index, fMax);
-			return fMax;
+			
+			return max;
 		}
 		else
 		{
-			return 0.0;
+			return 0;
 		}
 	}
 	
@@ -428,17 +505,13 @@ methodmap BasePlayer
 	{
 		if (speed)
 		{
-			//AddAttribute(this.Index, "CARD: move speed bonus", speed / (iRunSpeeds[this.Class] + 0.0));
+			AddAttribute(this.Index, "CARD: move speed bonus", speed / (this.ClassRunSpeed + 0.0));
 			//SetEntPropFloat(this.Index, Prop_Send, "m_flMaxspeed", speed + 0.0);
-			
-			g_flSpeeds[this.Index][Speed_Desired] = speed + 0.0;
 		}
 		else
 		{
-			//RemoveAttribute(this.Index, "CARD: move speed bonus");
-			//SetEntPropFloat(this.Index, Prop_Send, "m_flMaxspeed", (iRunSpeeds[this.Class] + 0.0));
-			
-			g_flSpeeds[this.Index][Speed_Desired] = this.ClassRunSpeed + 0.0;
+			RemoveAttribute(this.Index, "CARD: move speed bonus");
+			//SetEntPropFloat(this.Index, Prop_Send, "m_flMaxspeed", (this.ClassRunSpeed + 0.0));
 		}
 	}
 }

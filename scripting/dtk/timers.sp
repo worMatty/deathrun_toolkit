@@ -4,39 +4,41 @@
  * ----------------------------------------------------------------------------------------------------
  */
 
-stock Action TimerCB_HealthBar(Handle timer)
+Action Timer_HealthBar(Handle timer)
 {
-	Debug("Hiding the health bar");
 	if (g_iEnts[Ent_MonsterRes] != -1)
 		SetEntProp(g_iEnts[Ent_MonsterRes], Prop_Send, "m_iBossHealthPercentageByte", 0);
 	HealthText();
-	game.RemoveFlag(GF_HPBarActive);
-	g_hTimers[Timer_HealthBar] = null;	// Matty you must remember to null handles when the timer is done
+	game.IsBossBarActive = false;
+	g_TimerHPBar = null;
 }
 
 
 
-stock Action TimerCB_OFTeamCheck(Handle timer)
-{
-	if (game.RoundState == Round_Active)
+
+Action Timer_OFTeamCheck(Handle timer)
+{	
+	// OF starts the round regardless if there aren't enough players
+	// A round in progress will only end when one team is dead and the other has live players
+	if (game.RoundState == Round_Active && (!game.AliveReds && !game.AliveBlues) && game.Participants >= 1)
 	{
-		// Enough participants but fewer than one alive player per team.
-		if (game.Participants >= 2 && (!game.AliveReds || !game.AliveBlues))
-		{
-			Debug("Open Fortress: We have enough participants to start a round");
-			ServerCommand("mp_restartgame 5");
-			//CheckForPlayers();
-			return Plugin_Stop;
-		}
-		else
-		{
-			Debug("Open Fortress: Not enough participants or things are fine!");
-			return Plugin_Continue;
-		}
+		Debug("Stalled round detected. Restarting in five seconds");
+		ChatMessageAll("%t", "restarting_round_seconds", 5);
+		ServerCommand("mp_restartgame 5");
 	}
-	else
+}
+
+
+
+
+Action Timer_GrantPoints(Handle timer)
+{
+	// Give each red player QP
+	for (int i = 1; i <= MaxClients; i++)
 	{
-		Debug("Open Fortress: Ronund is not active. Stopping the team check timer");
-		return Plugin_Stop;	
+		if (Player(i).InGame && Player(i).Team == Team_Red)
+		{
+			Player(i).AddPoints(QP_Award);
+		}
 	}
 }

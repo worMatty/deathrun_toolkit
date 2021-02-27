@@ -5,6 +5,22 @@
 
 #include	"dtk/player.sp"
 
+// Round State
+enum {
+	Round_Waiting,
+	Round_Freeze,
+	Round_Active,
+	Round_Win
+}
+
+// Game Flags
+enum {
+	GF_LateLoad = 0x1,				// Plugin was loaded late/reloaded
+	GF_HPBarActive = 0x2,			// The boss bar is on-screen
+	GF_WatchMode = 0x4,				// We're in team watch mode during pre-round freeze time
+	GF_Restarting = 0x8				// Counting down to round restart (OF)
+}
+
 
 /**
  * Game
@@ -26,12 +42,14 @@ methodmap Game
 	public void AddFlag(int flag)
 	{
 		g_iGameState |= flag;
+		//PrintToServer("%s Game flag added: %d", PREFIX_DEBUG, flag);
 	}
 	
 	// Game Remove Flag
 	public void RemoveFlag(int flag)
 	{
 		g_iGameState &= ~flag;
+		//PrintToServer("%s Game flag removed: %d", PREFIX_DEBUG, flag);
 	}
 	
 	// Game Set Flags
@@ -53,21 +71,23 @@ methodmap Game
 	}
 	
 	// Health Bar Active
-	property bool IsHealthBarActive
+	property bool IsBossBarActive
 	{
 		public get()
 		{
 			return this.HasFlag(GF_HPBarActive);
 		}
-	}
-	
-	// Set Health Bar Active
-	public void SetHealthBarActive(bool active)
-	{
-		if (active)
-			this.AddFlag(GF_HPBarActive);
-		else
-			this.RemoveFlag(GF_HPBarActive);
+		public set(bool set)
+		{
+			if (set)
+			{
+				this.AddFlag(GF_HPBarActive);
+			}
+			else
+			{
+				this.RemoveFlag(GF_HPBarActive);
+			}
+		}
 	}
 	
 	// Round State
@@ -80,7 +100,29 @@ methodmap Game
 		public set(int state)
 		{
 			g_iRoundState = state;
-			Debug("Round state has been set to %d", state);
+			Debug("Round state set to %d", state);
+		}
+	}
+	
+	// In Watch Mode
+	property bool InWatchMode
+	{
+		public get()
+		{
+			return this.HasFlag(GF_WatchMode);
+		}
+		public set(bool set)
+		{
+			if (set)
+			{
+				this.AddFlag(GF_WatchMode);
+				Debug("Watch Mode ENABLED");
+			}
+			else
+			{
+				this.RemoveFlag(GF_WatchMode);
+				Debug("Watch Mode DISABLED");
+			}
 		}
 	}
 	
@@ -102,7 +144,7 @@ methodmap Game
 			
 			for (int i = 1; i <= MaxClients; i++)
 			{
-				if (IsClientInGame(i) && GetClientTeam(i) == Team_Red && IsPlayerAlive(i))
+				if (IsClientInGame(i) && GetClientTeam(i) == Team_Red && GetEntProp(i, Prop_Send, "m_lifeState") == LifeState_Alive)
 					count++;
 			}
 			
@@ -128,7 +170,7 @@ methodmap Game
 			
 			for (int i = 1; i <= MaxClients; i++)
 			{
-				if (IsClientInGame(i) && GetClientTeam(i) == Team_Blue && IsPlayerAlive(i))
+				if (IsClientInGame(i) && GetClientTeam(i) == Team_Blue && GetEntProp(i, Prop_Send, "m_lifeState") == LifeState_Alive)
 					count++;
 			}
 			
@@ -142,6 +184,63 @@ methodmap Game
 		public get()
 		{
 			return (GetTeamClientCount(Team_Blue) + GetTeamClientCount(Team_Red));
+		}
+	}
+	
+	// Willing Activators
+	property int WillingActivators
+	{
+		public get()
+		{
+			int willing;
+			
+			for (int i = 1; i <= MaxClients; i++)
+			{
+				if (IsClientInGame(i) && (GetClientTeam(i) == Team_Red || GetClientTeam(i) == Team_Blue) && g_iPlayers[i][Player_Flags] & (PF_PrefActivator))
+				{
+					willing += 1;
+				}
+			}
+			
+			return willing;
+		}
+	}
+	
+	// Activator Pool
+	property int ActivatorPool
+	{
+		public get()
+		{
+			return (this.WillingActivators < MINIMUM_WILLING) ? this.Participants : this.WillingActivators;
+		}
+	}
+	
+	// Activators
+	property int Activators
+	{
+		public get()
+		{
+			return g_Activators.Length;
+		}
+	}
+	
+	// Live Activators
+	property int AliveActivators
+	{
+		public get()
+		{
+			int len = g_Activators.Length;
+			int count;
+			
+			for (int i = 0; i < len; i++)
+			{
+				BasePlayer player = BasePlayer(g_Activators.Get(i));
+				
+				if (player.IsAlive)
+					count++;
+			}
+			
+			return count;
 		}
 	}
 }
@@ -208,10 +307,7 @@ methodmap Player < BasePlayer
 	{
 		public get()
 		{
-			if (g_iPlayers[this.Index][Player_Flags] & PF_Activator)
-				return true;
-			else
-				return false;
+			return !!(g_iPlayers[this.Index][Player_Flags] & PF_Activator);
 		}
 	}
 	
@@ -228,12 +324,26 @@ methodmap Player < BasePlayer
 		}
 	}
 	
+	// Last time player was activator
+	property int ActivatorLast
+	{
+		public get()
+		{
+			return g_iPlayers[this.Index][Player_ActivatorLast];
+		}
+		public set(int time)
+		{
+			g_iPlayers[this.Index][Player_ActivatorLast] = time;
+		}
+	}
+	
 	// Initialise a New Player's Data in the Array
 	public void NewPlayer()
 	{
 		g_iPlayers[this.Index][Player_UserID] = this.UserID;
 		g_iPlayers[this.Index][Player_Points] = QP_Start;
 		g_iPlayers[this.Index][Player_Flags] = MASK_NEW_PLAYER;
+		this.ActivatorLast = GetTime();
 	}
 	
 	
@@ -255,6 +365,7 @@ methodmap Player < BasePlayer
 		g_iPlayers[this.Index][Player_Points] = points;
 	}
 	
+	/*
 	// Check Player On Connection
 	public void CheckArray()
 	{
@@ -270,6 +381,7 @@ methodmap Player < BasePlayer
 			SetClientLanguage(this.Index, 0);
 		}
 	}
+	*/
 	
 	// Player Has Flag
 	public bool HasFlag(int flag)
@@ -294,6 +406,23 @@ methodmap Player < BasePlayer
 	public void SetFlags(int flags)
 	{
 		g_iPlayers[this.Index][Player_Flags] = flags;
+	}
+	
+	// Make Activator
+	public void MakeActivator()
+	{
+		this.AddFlag(PF_Activator);
+		int index = g_Activators.Push(this);
+		g_Activators.Set(index, this.Health, AL_Health);
+		g_Activators.Set(index, this.MaxHealth, AL_MaxHealth);
+	}
+	
+	// Unmake Activator
+	public void UnmakeActivator()
+	{
+		this.RemoveFlag(PF_Activator);
+		int index = g_Activators.FindValue(this);
+		if (index != -1) g_Activators.Erase(index);
 	}
 	
 	// Retrieve Player Data from the Database
@@ -324,13 +453,13 @@ methodmap Player < BasePlayer
 					result.FieldNameToNum("flags", field);
 					this.Flags = (this.Flags & MASK_SESSION_FLAGS) | (result.FetchInt(field) & MASK_STORED_FLAGS);
 						// Keep only the session flags and OR in the stored flags
-					Debug("Retrieved stored data for %N: Points %d, flags: %06b", this.Index, this.Points, (this.Flags & MASK_STORED_FLAGS));
+					//Debug("Retrieved stored data for %N: Points %d, flags: %06b", this.Index, this.Points, (this.Flags & MASK_STORED_FLAGS));
 					CloseHandle(result);
 					return true;
 				}
 				else
 				{
-					Debug("%N doesn't have a database record", this.Index);
+					//Debug("%N doesn't have a database record", this.Index);
 					return false;
 				}
 			}
@@ -349,10 +478,7 @@ methodmap Player < BasePlayer
 		char query[255];
 		int iLastSeen = GetTime();
 		Format(query, sizeof(query), "UPDATE %s SET points=%d, flags=%d, last_seen=%d WHERE steamid=%d", SQLITE_TABLE, this.Points, (this.Flags & MASK_STORED_FLAGS), iLastSeen, this.SteamID);
-		//Format(query, sizeof(query), "UPDATE %s SET points=%d, flags=%d, last_seen=%d WHERE steamid=%d", SQLITE_TABLE, g_iPoints[client], g_iFlags[client] & FLAGS_DATABASE, GetTime(), GetSteamAccountID(client));
-		if (SQL_FastQuery(g_db, query, strlen(query)))
-			Debug("Updated %N's data in the database. Points %d, flags %06b, last_seen %d, steamid %d", this.Index, this.Points, (this.Flags & MASK_STORED_FLAGS), iLastSeen, this.SteamID);
-		else
+		if (!SQL_FastQuery(g_db, query, strlen(query)))
 		{
 			char error[255];
 			SQL_GetError(g_db, error, sizeof(error));
@@ -366,11 +492,7 @@ methodmap Player < BasePlayer
 		char query[255];
 		Format(query, sizeof(query), "INSERT INTO %s (steamid, points, flags, last_seen) \
 		VALUES (%d, %d, %d, %d)", SQLITE_TABLE, this.SteamID, this.Points, (this.Flags & MASK_STORED_FLAGS), GetTime());
-		if (SQL_FastQuery(g_db, query))
-		{
-			Debug("Created a new record for %N", this.Index);
-		}
-		else
+		if (!SQL_FastQuery(g_db, query))
 		{
 			char error[255];
 			SQL_GetError(g_db, error, sizeof(error));
@@ -385,14 +507,14 @@ methodmap Player < BasePlayer
 		Format(query, sizeof(query), "DELETE from %s WHERE steamid=%d", SQLITE_TABLE, this.SteamID);
 		if (SQL_FastQuery(g_db, query))
 		{
-			ShowActivity2(client, "", "%t Deleted %N from the database", "prefix_notice", this.Index);
+			ShowActivity(client, "Deleted %N from the database", this.Index);
 			LogMessage("%L deleted %L from the database", client, this.Index);
 		}
 		else
 		{
 			char error[255];
 			SQL_GetError(g_db, error, sizeof(error));
-			ShowActivity2(client, "", "%t Failed to delete %N from the database", "prefix_notice", this.Index);
+			ShowActivity(client, "Failed to delete %N from the database", this.Index);
 			LogError("%L failed to delete %L from the database. Error: %s", client, this.Index, error);
 		}
 	}
@@ -415,66 +537,5 @@ methodmap Player < BasePlayer
 		
 		if (this.HasFlag(PF_PrefEnglish))
 			SetClientLanguage(this.Index, 0);
-	}
-	
-	// Scale Health Based on Red Players Remaining
-	public void ScaleHealth(int mode = 6, int value = -1)
-	{
-		float base = (value == -1) ? HEALTH_SCALE_BASE : float(value);
-		float percentage = 1.0;
-		float health = float(this.MaxHealth);
-		float largehealthkit = float(this.MaxHealth);
-		int count = game.AliveReds;
-	
-		for (int i = 2; i <= count; i++)
-		{
-			health += (base * percentage);
-			percentage *= 1.15;
-		}
-
-		// TODO Don't do any of this if the health has not been scaled
-		if (mode > 2)
-		{
-			this.SetMaxHealth(health);
-			//if (g_bTF2Attributes) TF2Attrib_SetByName(this.Index, "health from packs decreased", largehealthkit / health);
-			AddAttribute(this.Index, "health from packs decreased", largehealthkit / health);
-		}
-		this.Health = RoundToNearest(health);
-		//TF2Attrib_SetByName(this.Index, "cannot be backstabbed", 1.0); // This is a weapon attr
-		
-		/*
-			Modes
-			-----
-			BUG These don't seem to be right. 1 is overheal and 3 is max
-			
-			1. Overheal and multiply internal value
-			2. Overheal and multiply set value
-			3. Overheal and multiply based on max health
-			4. Expand pool to a multiple of internal value
-			5. Expand pool to a multiple of set value
-			6. Expand pool to a multiple of max health
-			
-			Revised: 
-			
-			Pool
-				Plugin default scaling
-				Multiply by given health value
-			
-			Overheal
-				Plugin default scaling
-				Multiply by given health value
-			
-			
-			Back stab
-			Fall damage
-		*/
-		
-		ChatMessageAll(Msg_Normal, "%N's health has been scaled up to %0.f", this.Index, health);
-	}
-	
-	// Update Health Bar
-	public void UpdateHealthBar()
-	{
-		SetHealthBar(this.Health, this.MaxHealth, this.Index);
 	}
 }

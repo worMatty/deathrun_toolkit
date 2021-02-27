@@ -23,6 +23,8 @@
  * ----------------------------------------------------------------------------------------------------
  */
 
+#define DEBUG
+
 #pragma semicolon 1
 #pragma newdecls required
 
@@ -34,28 +36,31 @@
  * ----------------------------------------------------------------------------------------------------
  */
 
-#define DEBUG
-#define PLUGIN_AUTHOR		"worMatty"
-#define PLUGIN_VERSION 		"0.3"
+#define PLUGIN_VERSION 		"0.4"
 #define PLUGIN_NAME			"[DTK] Deathrun Toolkit"
 #define PLUGIN_SHORTNAME 	"Deathrun Toolkit"
-#define PLUGIN_DESCRIPTION	"Deathrun"
 #define PREFIX_SERVER		"[DTK]"
 #define PREFIX_DEBUG		"[DTK] [Debug]"
 
 #define SQLITE_DATABASE		"sourcemod-local"
 #define SQLITE_TABLE		"dtk_players"
-#define MINIMUM_ACTIVATORS 	3						// This or below number of willing activators and we use the turn-based system
+#define MINIMUM_WILLING 	3						// This or below number of willing activators and everyone takes it in turns
 #define HEALTH_SCALE_BASE	300.0					// The base value used in the activator health scaling system
 #define DEFAULT_GAME_DESC	"Source Game Server"	// Default game description when using with unsupported games/mods
+#define TIMER_GRANTPOINTS	10.0
 
 #define DRENT_BRANCH				"deathrun_enabled"			// logic_branch
-#define DRENT_HEALTH_MATH			"deathrun_health"			// math_counter
+#define DRENT_MATH_BOSS				"deathrun_boss"				// math_counter for boss bar
+#define DRENT_MATH_MINIBOSS			"deathrun_miniboss"			// math_counter for mini bosses
 #define DRENT_PROPERTIES			"deathrun_properties"		// logic_case
 #define DRENT_SETTINGS				"deathrun_settings"			// logic_case
 #define DTKENT_BRANCH				"dtk_enabled"				// logic_branch for DTK-specific functions
 #define DTKENT_HEALTHSCALE_MAX		"dtk_health_scalemax"		// logic_relay - DEPRECATED
 #define DTKENT_HEALTHSCALE_OVERHEAL	"dtk_health_scaleoverheal"	// logic_relay - DEPRECATED
+
+#define HELP_URL					"https://steamcommunity.com/groups/death_experiments/discussions/3/3111395113752151418/"
+#define WEAPON_REPLACEMENTS_CFG		"addons/sourcemod/configs/dtk/replacements.cfg"
+#define WEAPON_RESTRICTIONS_CFG		"addons/sourcemod/configs/dtk/restrictions.cfg"
 
 
 
@@ -67,41 +72,9 @@
 
 // Queue Points
 enum {
-	QP_Start = 10,			// New players receive this amount on beginning a server session
-	QP_Full = 10,			// End of round award
-	QP_Partial = 5,			// Reduced end of round award
+	QP_Start = 0,			// New players receive this amount on beginning a server session
+	QP_Award = 1,			// Queue points received every minute
 	QP_Consumed = 0,		// Selected activators have their QP reset to this
-}
-
-// Life States
-enum {
-	LifeState_Alive,		// alive
-	LifeState_Dying,		// playing death animation or still falling off of a ledge waiting to hit ground
-	LifeState_Dead,			// dead. lying still.
-	LifeState_Respawnable,
-	LifeState_DiscardBody,
-}
-
-// Classes
-enum {
-	Class_Unknown,
-	Class_Scout,
-	Class_Sniper,
-	Class_Soldier,
-	Class_DemoMan,
-	Class_Medic,
-	Class_Heavy,
-	Class_Pyro,
-	Class_Spy,
-	Class_Engineer
-}
-
-// Teams
-enum {
-	Team_None,
-	Team_Spec,
-	Team_Red,
-	Team_Blue
 }
 
 // Player Data Array
@@ -110,14 +83,16 @@ enum {
 	Player_UserID,
 	Player_Points,
 	Player_Flags,
+	Player_ActivatorLast,
 	Player_Max
 }
 
-// Player Speed Array
+// Activators ArrayList Cells
 enum {
-	Speed_Last,
-	Speed_Desired,
-	Speed_Max
+	AL_Client,
+	AL_Health,
+	AL_MaxHealth,
+	AL_Max,
 }
 
 // ConVars
@@ -127,7 +102,6 @@ enum {
 	P_Enabled,
 	P_AutoEnable,
 	P_Debug,
-	P_Database,
 	P_SCR,
 	P_MapInstructions,
 	P_Description,
@@ -136,9 +110,9 @@ enum {
 	P_ChatKillFeed,
 	P_RoundStartMessage,
 	P_BossBar,
-	P_Activators,
+	P_ActivatorsMax,
+	P_ActivatorRatio,
 	P_LockActivator,
-	//P_Ghosts,
 	
 	// Player Attributes
 	P_RedSpeed,
@@ -147,6 +121,7 @@ enum {
 	P_RedMelee,
 	P_BlueSpeed,
 	P_Buildings,
+	P_Pushaway,			// Server's preference
 	
 	// Server ConVars
 	S_Unbalance,
@@ -154,45 +129,13 @@ enum {
 	S_Scramble,
 	S_Queue,
 	S_FirstBlood,		// Not supported by OF
-	S_Pushaway,
+	S_Pushaway,			// Server ConVar. Respects server's preference
 	S_WFPTime,
 	
 	// Work-in-Progress Features
 	P_BlueBoost,
-	P_ActivatorRatio,
 	
 	ConVars_Max
-}
-
-// Timers
-enum {
-	Timer_HealthBar,
-	Timers_Max
-}
-
-// Round State
-enum {
-	Round_Waiting,
-	Round_Freeze,
-	Round_Active,
-	Round_Win
-}
-
-// Ammo Types
-enum {
-	Ammo_Dummy,
-	Ammo_Primary,
-	Ammo_Secondary,
-	Ammo_Metal,
-	Ammo_Grenades1,		// Thermal Thruster fuel
-	Ammo_Grenades2
-}
-
-// Message Types
-enum {
-	Msg_Normal,
-	Msg_Reply,
-	Msg_Plugin
 }
 
 // Entities
@@ -212,34 +155,27 @@ enum {
 
 // Player Flags
 enum {
-	PF_PrefActivator = 0x1,
-	PF_PrefFullQP = 0x2,
-	PF_PrefEnglish = 0x4,
+	PF_PrefActivator = 0x1,			// Wants to be activator
+	//PF_PrefFullQP = 0x2,			// Wants full queue points (no longer used)
+	PF_PrefEnglish = 0x4,			// Wants English SourceMod
 	
-	PF_Welcomed = 0x10000,
-	PF_Activator = 0x20000,
-	PF_Runner = 0x40000,
-	PF_PointsEligible = 0x80000,
-	PF_CanBoost = 0x140000,
+	PF_Welcomed = 0x10000,			// Has been welcomed to the server
+	PF_Activator = 0x20000,			// Is an activator
+	PF_Runner = 0x40000,			// Is a runner
+	PF_TurnToken = 0x80000,			// Turn token
+	PF_CanBoost = 0x140000,			// Is allowed to use the +speed boost
 }
 
 // Player Flag Masks
-#define MASK_NEW_PLAYER			( PF_PrefActivator | PF_PrefFullQP )
-#define MASK_STORED_FLAGS		( PF_PrefActivator | PF_PrefFullQP | PF_PrefEnglish )
-#define MASK_SESSION_FLAGS		( 0xFFFF0000 )
-
-// Game Flags
-enum {
-	GF_LateLoad = 0x1,
-	GF_HPBarActive = 0x2,
-	GF_WatchMode = 0x4,
-}
+#define MASK_NEW_PLAYER			( PF_PrefActivator )						// Used to assign default flags to a new player
+#define MASK_STORED_FLAGS		( PF_PrefActivator | PF_PrefEnglish )		// Used to store only specific flags in the database
+#define MASK_SESSION_FLAGS		( 0xFFFF0000 )								// The session flag block of the player's bit field
 
 // TF Mod
 enum {
-	Mod_TF = 0x1,
-	Mod_OF = 0x2,
-	Mod_TF2C = 0x4,
+	Mod_TF = 0x1,					// Mod is TF2
+	Mod_OF = 0x2,					// Mod is Open Fortress
+	Mod_TF2C = 0x4,					// Mod is TF2 Classic
 }
 
 // Engineer Buildings
@@ -258,36 +194,33 @@ enum {
  * ----------------------------------------------------------------------------------------------------
  */
 
-bool g_bSteamTools;
-bool g_bSCR;
-bool g_bTF2Attributes;
+ArrayList g_Activators;
+ArrayList g_NPCs;
 
-float g_flSpeeds[MAXPLAYERS + 1][Speed_Max];
+bool g_bSteamTools;					// SteamTools found
+bool g_bSCR;						// Steam Chat Relay found
+bool g_bTF2Attributes;				// TF2 Attributes found
 
 int g_iGame;
 int g_iGameState;
 int g_iRoundState;
 int g_iPlayers[MAXPLAYERS + 1][Player_Max];
-int g_iBoss;
-int g_iEnts[Ent_Max];
+int g_iEnts[Ent_Max] = { -1, ... };
 
 ConVar g_ConVars[ConVars_Max];
 
 Database g_db;
 
-Handle g_hTimers[Timers_Max];
-Handle hBoostHUD;
+Handle g_TimerHPBar;
+Handle g_TimerQP;
+Handle g_Timer_OFTeamCheck;
+Handle g_Text_Boost;
+
+KeyValues g_Replacements;
+KeyValues g_Restrictions;
 
 StringMap g_hSounds;
-StringMap SoundList()
-{
-	StringMap hSounds = new StringMap();
-	hSounds.SetString("chat_plugin",	"common/warning.wav");
-	hSounds.SetString("chat_reply", (FileExists("sound/ui/chat_display_text.wav", true)) ? "ui/chat_display_text.wav" : "misc/talk.wav");
-		// TF2: sound/ui/chat_display_text.wav  HL2: ui/buttonclickrelease.wav
-	
-	return hSounds;
-}
+
 
 
 
@@ -300,8 +233,8 @@ StringMap SoundList()
 public Plugin myinfo = 
 {
 	name 		= PLUGIN_NAME,
-	author 		= PLUGIN_AUTHOR,
-	description = PLUGIN_DESCRIPTION,
+	author 		= "worMatty",
+	description = "Deathrun",
 	version 	= PLUGIN_VERSION,
 	url 		= ""
 };

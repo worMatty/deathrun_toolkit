@@ -9,7 +9,8 @@ Action Hook_OnTakeDamage(int victim, int& attacker, int& inflictor, float& damag
 	bool changed;
 	
 	// Cap Boss Backstab Damage Received
-	if (damagecustom == TF_CUSTOM_BACKSTAB && victim == g_iBoss)
+	//if (damagecustom == TF_CUSTOM_BACKSTAB && victim == g_iBoss)
+	if (damagecustom == TF_CUSTOM_BACKSTAB && Player(victim).IsActivator)
 	{
 		damage = 100.0;		// Multipled to 300
 		changed = true;
@@ -39,7 +40,7 @@ Action Hook_OnTakeDamage(int victim, int& attacker, int& inflictor, float& damag
  */
 void Hook_HealthEnts(const char[] output, int caller, int activator, float delay)
 {
-	// Fired From math_counters
+	// Fired from math_counters
 	if (StrEqual(output, "OutValue", false))
 	{
 		float min 	= GetEntPropFloat(caller, Prop_Data, "m_flMin");
@@ -50,9 +51,18 @@ void Hook_HealthEnts(const char[] output, int caller, int activator, float delay
 		max -= min;		// Shift range to accept any minimum value
 		val -= min;
 		
+		int index = g_NPCs.FindValue(caller);
+		
+		if (index != -1)
+		{
+			g_NPCs.Set(index, val, AL_Health);
+			g_NPCs.Set(index, max, AL_MaxHealth);
+			Debug("Set health of math_counter %d to %f and max health to %f", caller, val, max);
+		}
+		
 		//int percent = RoundToNearest((val / max) * 255);
 		//SetEntProp(healthbar.Index, Prop_Send, "m_iBossHealthPercentageByte", percent);
-		SetHealthBar(RoundToNearest(val), RoundToNearest(max));
+		SetHealthBar();
 	}
 	
 /*	// Fired From logic_relay TODO Replace with logic_case
@@ -73,15 +83,5 @@ void Hook_HealthEnts(const char[] output, int caller, int activator, float delay
 			player.ScaleHealth(1);
 		}
 	}
-*/}
-
-
-
-
-//stock Action Hook_GhostsTransmit(int entity, int client)
-//{
-//	if (GetClientTeam(entity) == GetClientTeam(client) && !IsPlayerAlive(client))
-//		return Plugin_Continue;
-//	else
-//		return Plugin_Handled;
-//}
+*/
+}

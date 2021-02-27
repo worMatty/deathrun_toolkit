@@ -43,6 +43,37 @@ Look at *every* weapon and ability item.
 
 
 
+Version 0.4 Plans
+-----------------
+
+Change queue points to receiving one every ten seconds	DONE
+Vary number of activators displayed in NA function		DONE
+Redo act selection										DONE
+Merge QP and turns										DONE
+Combine activator health into one bar					DONE
+Split activator health scaling values					DONE
+Weapon and ability restriction system					DONE
+
+
+Version 0.4.1 Plans
+-------------------
+
+Weapon restriction inheritance
+Weapon restriction map configs
+Weapon restriction categories
+Special rounds
+Activator auto health scale on combat
+Built TP plugin into it with map instruction support
+Speed modulation on OF and TF2C
+Ability limits. Cloaking, DJ, blast pushing using attribs
+Vote for fake client.
+Move instructions out.
+Investigate OF and TF2C special classes.
+Build a SayText2 function that supports local translation phrases.
+
+
+
+
 
 TO DO
 =====
@@ -384,6 +415,20 @@ the speed change is not lost for some reason.
 Activator Selection and Redistribution Notes
 ============================================
 
+Three functions:
+
+CheckForPlayers
+	Called on a new round to check if the teams need sorting.
+	Watches teams for changes in case an activator needs replacing.
+
+RedistributePlayers
+	Moves everyone to Red.
+	Calls SelectActivator functions.
+	Sets watch mode on.
+
+SelectActivator
+	Finds eligible activators and populates the Blue team with the required amount.
+
 1. Check the number of players. If not enough goto 2. if enough goto 5.
 2. Print a message if there are not enough and go into a waiting state.
 3. Watch for changes to teams
@@ -409,6 +454,42 @@ When using more than one activator and the number of players in game is equal to
 will not rebalance because there isn't an branch to deal with the situation. I think I need to come up with a better checking
 system set of branches which has fallback for fewer activators than the required. But for now it's best to keep the
 number of activators on 1.
+
+Proposed New System
+-------------------
+
+On round restart, move everyone to Red.
+
+Get the required number of activators using a separate function that takes into account the cvars and number of participants.
+
+Check if we have enough willing participants.
+
+Use points to populate Blue with activators. Reset queue points on move and take away turn token.
+Give blue chosen the Activator flag.
+
+Watch teams for changes. If a player moves from blue and is an Activator, remove their flag.
+If the number of activators required does not match the number of Activator-flagged players, address.
+
+
+Order of Watch Mode
+-------------------
+
+Plugin is enabled: Watch Mode on
+
+Team change detected: If Watch Mode is on, check teams
+
+Check Teams
+	If Watch Mode is on
+		Not enough activators: Get more
+		Enough activators: Do nothing
+		More than enough activators: Nothing happens
+	If Watch Mode is off
+		If we have more than one participant: Redistribute
+		If we have one or fewer participants, turn on Watch Mode
+
+Redistribute players: After, turn on Watch Mode
+
+Round Start: Watch Mode off
 
 
 
