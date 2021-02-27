@@ -11,12 +11,14 @@ It's a set of plugins for deathrun servers. The base plugin detects deathrun map
 
 ## Installation
 
-For the base deathrun experience you only need dtk.smx and the translation file. You can ignore the other plugins. 
+For the base deathrun experience you only need dtk.smx and the translation file. You can add the weapon restriction and replacement configs as well if you like but they are very limited at the moment. You can ignore the other plugins. 
 
 ### Optional Libraries
 - [Asherkin's TF2 Attributes plugin](https://forums.alliedmods.net/showthread.php?t=210221) is used to set attributes on players and weapons to restrict them. This is recommended because most deathrun maps have some weaknesses that can be exploited by rocket jumpers, scout double jumps and so on.
 - [Source Chat Relay](https://forums.alliedmods.net/showthread.php?p=2617899) is used to send the round start, end, and activator selection messages to a Discord channel.
 - The [SteamTools extension](https://forums.alliedmods.net/showthread.php?t=236206) changes your game server's description.
+
+You don't need to add any cvars to your server configs, the plugin will take care of all that. You only need to change a plugin convar when you want to tweak a default setting, such as number of activators. If you only want to use DTK for some maps, put dtk_auto_enable 0 in server.cfg and dtk_auto_enable 1 in your map's config. You can get a list of plugin cvars by doing `sm cvars dtk` or `find dtk` in server console.
 
 ### Optional Plugins
 
@@ -31,24 +33,24 @@ The plugin has all the bells and whistles you would expect of a deathrun plugin.
 
 ### Cool Things
 
-* Activator health is shown via the use of the boss health bar during combat, and overhealing in a text element
+* Activator health is shown via the use of the boss health bar during combat
 * Mappers can use logic to change a player's properties or give them weapons
 * Mappers can use logic to trigger activator health scaling when appropriate, e.g. in an arena or fight mini game
-* The plugin doesn't do anything to players that interferes with the workings of a map such as negate fall damage, grant resistances or force speed on every game frame
+* The plugin doesn't do anything to players that interferes with the workings of a map such as negate fall damage, grant resistances or force speeds
 
-### Not So Cool Things
+### Not As Cool Things
 
 * When you die the plugin says what killed you
-* Blue guy can be prevented from suiciding or switching teams
-* It currently has full Turkish translations and some German
+* Blue guy can be prevented from suiciding or switching teams during a round (and pre-round)
+* It currently has ~~full~~ some Turkish translations and some German
 * It doesn't use on-screen text often so it's unlikely to interfere with map text
 
 ### Server Operator Stuff
 
 * The plugin only works on deathrun maps so it's suitable for multi-game mode servers
 * TF2 Workshop maps are properly detected
-* Experimental support for multiple activators but I recommend against using this as it sucks to play
-* Experimental support for Open Fortress and TF2 Classic
+* Support for multiple activators
+* Support for Open Fortress and TF2 Classic
 * If the plugin is enabled it will execute config_deathrun.cfg on each new deathrun map
 
 ## Note About The Current State
@@ -99,5 +101,3 @@ A decent enough weapon restriction system that uses several ready-to-use configs
 
 Expansions to the map instructions feature to let mappers use the boss bar for a boss 'entity' using a math_counter. Options to display or track health of more
 than one target.
-
-I plan a rewrite for version 0.4 because I know how to code better now. I'll be converting some old systems to better ones and simplifying some existing ones to remove unneeded functionality I added because I was excited about it. I have both a turn and queue point-based system which will be combined, and I'll add 'tokens' so players who join the server while a map is in progress won't be made the activator until all existing players have had a turn. 
