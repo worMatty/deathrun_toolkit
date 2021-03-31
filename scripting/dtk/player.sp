@@ -24,7 +24,9 @@ enum {
 	Class_Heavy,
 	Class_Pyro,
 	Class_Spy,
-	Class_Engineer
+	Class_Engineer,
+	Class_Merc = 10,
+	Class_Civ = 10
 }
 
 // Teams
@@ -47,6 +49,8 @@ enum {
 	RunSpeed_Pyro = 300,
 	RunSpeed_Spy = 320,
 	RunSpeed_Engineer = 300,
+	RunSpeed_Merc = 320,
+	RunSpeed_Civ = 280
 }
 
 // Default Class Health
@@ -60,7 +64,9 @@ enum {
 	Health_Heavy = 300,
 	Health_Pyro = 175,
 	Health_Spy = 125,
-	Health_Engineer = 125
+	Health_Engineer = 125,
+	Health_Merc = 150,
+	Health_Civ = 200
 }
 
 // Weapon Slots
@@ -116,7 +122,7 @@ methodmap BasePlayer
 	{
 		public get()
 		{
-			return GetClientUserId(this.Index);
+			return GetClientUserId(view_as<int>(this));
 		}
 	}
 	
@@ -126,7 +132,7 @@ methodmap BasePlayer
 	{
 		public get()
 		{
-			return GetClientSerial(this.Index);
+			return GetClientSerial(view_as<int>(this));
 		}
 	}
 	
@@ -136,7 +142,7 @@ methodmap BasePlayer
 	{
 		public get()
 		{
-			return GetSteamAccountID(this.Index);
+			return GetSteamAccountID(view_as<int>(this));
 		}
 	}
 	
@@ -146,7 +152,7 @@ methodmap BasePlayer
 	{
 		public get()
 		{
-			return GetClientTeam(this.Index);
+			return GetClientTeam(view_as<int>(this));
 		}
 	}
 	
@@ -156,7 +162,7 @@ methodmap BasePlayer
 	{
 		public get()
 		{
-			return GetEntProp(this.Index, Prop_Send, "m_iClass");
+			return GetEntProp(view_as<int>(this), Prop_Send, "m_iClass");
 		}
 	}
 	
@@ -177,8 +183,13 @@ methodmap BasePlayer
 				RunSpeed_Heavy,
 				RunSpeed_Pyro,
 				RunSpeed_Spy,
-				RunSpeed_Engineer
+				RunSpeed_Engineer,
+				RunSpeed_Merc
 			};
+			
+			char folder[32];
+			GetGameFolderName(folder, sizeof(folder));
+			if (StrEqual(folder, "tf2classic")) iRunSpeeds[10] = RunSpeed_Civ;
 			
 			return iRunSpeeds[this.Class];
 		}
@@ -201,8 +212,13 @@ methodmap BasePlayer
 				Health_Heavy,
 				Health_Pyro,
 				Health_Spy,
-				Health_Engineer
+				Health_Engineer,
+				Health_Merc
 			};
+			
+			char folder[32];
+			GetGameFolderName(folder, sizeof(folder));
+			if (StrEqual(folder, "tf2classic")) health[10] = Health_Civ;
 			
 			return health[this.Class];
 		}
@@ -214,7 +230,7 @@ methodmap BasePlayer
 	{
 		public get()
 		{
-			return IsClientConnected(this.Index);
+			return IsClientConnected(view_as<int>(this));
 		}
 	}
 	
@@ -224,7 +240,7 @@ methodmap BasePlayer
 	{
 		public get()
 		{
-			return IsClientInGame(this.Index);
+			return IsClientInGame(view_as<int>(this));
 		}
 	}
 	
@@ -234,7 +250,7 @@ methodmap BasePlayer
 	{
 		public get()
 		{
-			return (this.Index > 0 && this.Index <= MaxClients);
+			return (view_as<int>(this) > 0 && view_as<int>(this) <= MaxClients);
 		}
 	}
 	
@@ -244,7 +260,7 @@ methodmap BasePlayer
 	{
 		public get()
 		{
-			return IsClientObserver(this.Index);
+			return IsClientObserver(view_as<int>(this));
 		}
 	}
 	
@@ -254,8 +270,11 @@ methodmap BasePlayer
 	{
 		public get()
 		{
-			//IsPlayerAlive(this.Index);
-			return (GetEntProp(this.Index, Prop_Send, "m_lifeState") == LifeState_Alive);
+			return (GetEntProp(view_as<int>(this), Prop_Send, "m_lifeState") == LifeState_Alive);
+		}
+		public set(bool alive)
+		{
+			SetEntProp(view_as<int>(this), Prop_Send, "m_lifeState", (alive) ? LifeState_Alive : LifeState_Dead);
 		}
 	}
 	
@@ -265,7 +284,7 @@ methodmap BasePlayer
 	{
 		public get()
 		{
-			return (GetClientTeam(this.Index) == Team_Red || GetClientTeam(this.Index) == Team_Blue);
+			return (GetClientTeam(view_as<int>(this)) == Team_Red || GetClientTeam(view_as<int>(this)) == Team_Blue);
 		}
 	}
 	
@@ -275,7 +294,7 @@ methodmap BasePlayer
 	{
 		public get()
 		{
-			return (GetUserAdmin(this.Index) != INVALID_ADMIN_ID);
+			return (GetUserAdmin(view_as<int>(this)) != INVALID_ADMIN_ID);
 		}
 	}
 	
@@ -285,7 +304,7 @@ methodmap BasePlayer
 	{
 		public get()
 		{
-			return IsFakeClient(this.Index);
+			return IsFakeClient(view_as<int>(this));
 		}
 	}
 	
@@ -295,11 +314,11 @@ methodmap BasePlayer
 	{
 		public get()
 		{
-			return GetClientHealth(this.Index);
+			return GetClientHealth(view_as<int>(this));
 		}
 		public set(int health)
 		{
-			SetEntProp(this.Index, Prop_Send, "m_iHealth", health, 4);
+			SetEntProp(view_as<int>(this), Prop_Send, "m_iHealth", health, 4);
 		}
 	}
 	
@@ -312,7 +331,7 @@ methodmap BasePlayer
 			int iPlayerResource = GetPlayerResourceEntity();
 			
 			if (iPlayerResource != -1)
-				return GetEntProp(iPlayerResource, Prop_Send, "m_iMaxHealth", _, this.Index);
+				return GetEntProp(iPlayerResource, Prop_Send, "m_iMaxHealth", _, view_as<int>(this));
 			else
 				return 0;
 		}
@@ -325,11 +344,11 @@ methodmap BasePlayer
 	{
 		public get()
 		{
-			return !!(GetEntProp(this.Index, Prop_Send, "m_bGlowEnabled"));
+			return !!(GetEntProp(view_as<int>(this), Prop_Send, "m_bGlowEnabled"));
 		}
 		public set(bool glow)
 		{
-			SetEntProp(this.Index, Prop_Send, "m_bGlowEnabled", glow, 1);
+			SetEntProp(view_as<int>(this), Prop_Send, "m_bGlowEnabled", glow, 1);
 		}
 	}
 	
@@ -350,14 +369,14 @@ methodmap BasePlayer
 		
 		if (respawn)
 		{
-			SetEntProp(this.Index, Prop_Send, "m_lifeState", LifeState_Dead);
-			ChangeClientTeam(this.Index, team);
-			SetEntProp(this.Index, Prop_Send, "m_lifeState", LifeState_Alive);
-			TF2_RespawnPlayer(this.Index);
+			SetEntProp(view_as<int>(this), Prop_Send, "m_lifeState", LifeState_Dead);
+			ChangeClientTeam(view_as<int>(this), team);
+			SetEntProp(view_as<int>(this), Prop_Send, "m_lifeState", LifeState_Alive);
+			TF2_RespawnPlayer(view_as<int>(this));
 		}
 		else
 		{
-			ChangeClientTeam(this.Index, team);
+			ChangeClientTeam(view_as<int>(this), team);
 		}
 	}
 	
@@ -366,11 +385,11 @@ methodmap BasePlayer
 	public bool SetClass(int class, bool regenerate = true, bool persistent = false)
 	{
 		// This native is a wrapper for a player property change
-		TF2_SetPlayerClass(this.Index, view_as<TFClassType>(class), _, persistent);
+		TF2_SetPlayerClass(view_as<int>(this), view_as<TFClassType>(class), _, persistent);
 		
 		// Don't regenerate a dead player because they'll go to Limbo
 		if (regenerate && this.IsAlive && (GetFeatureStatus(FeatureType_Native, "TF2_RegeneratePlayer") == FeatureStatus_Available))
-			TF2_RegeneratePlayer(this.Index);
+			TF2_RegeneratePlayer(view_as<int>(this));
 	}
 	
 	
@@ -378,7 +397,7 @@ methodmap BasePlayer
 	// BUG Use with RequestFrame after spawning or it might return -1
 	public int GetWeapon(int slot = Weapon_Primary)
 	{
-		return GetPlayerWeaponSlot(this.Index, slot);
+		return GetPlayerWeaponSlot(view_as<int>(this), slot);
 	}
 	
 	
@@ -387,23 +406,24 @@ methodmap BasePlayer
 	{
 		int iWeapon;
 		
-		if ((iWeapon = GetPlayerWeaponSlot(this.Index, slot)) == -1)
+		if ((iWeapon = GetPlayerWeaponSlot(view_as<int>(this), slot)) == -1)
 		{
-			LogError("Tried to get %N's weapon in slot %d but got -1. Can't switch to that slot", this.Index, slot);
+			LogError("Tried to get %N's weapon in slot %d but got -1. Can't switch to that slot", this, slot);
 			return;
 		}
 		
 		if (GetFeatureStatus(FeatureType_Native, "TF2_RemoveCondition") == FeatureStatus_Available)
-			TF2_RemoveCondition(this.Index, TFCond_Taunting);
+			TF2_RemoveCondition(view_as<int>(this), TFCond_Taunting);
 		
 		char sClassname[64];
 		GetEntityClassname(iWeapon, sClassname, sizeof(sClassname));
-		FakeClientCommandEx(this.Index, "use %s", sClassname);
-		SetEntProp(this.Index, Prop_Send, "m_hActiveWeapon", iWeapon);
+		FakeClientCommandEx(view_as<int>(this), "use %s", sClassname);
+		//FakeClientCommand(view_as<int>(this), "use %s", sClassname); // TODO Try this?
+		SetEntProp(view_as<int>(this), Prop_Send, "m_hActiveWeapon", iWeapon);
 	}
 	
 	
-	// Switch to Melee & Optionally Restrict
+	// Restrict to Melee
 	// TODO Find out OF melee slot
 	public void MeleeOnly(bool apply = true, bool remove_others = false)
 	{
@@ -413,7 +433,7 @@ methodmap BasePlayer
 		{
 			if (bConds)
 			{
-				TF2_AddCondition(this.Index, TFCond_RestrictToMelee, TFCondDuration_Infinite);
+				TF2_AddCondition(view_as<int>(this), TFCond_RestrictToMelee, TFCondDuration_Infinite);
 				remove_others = true;
 			}
 			
@@ -421,23 +441,23 @@ methodmap BasePlayer
 			
 			if (remove_others)
 			{
-				TF2_RemoveWeaponSlot(this.Index, TFWeaponSlot_Primary);
-				TF2_RemoveWeaponSlot(this.Index, TFWeaponSlot_Secondary);
+				TF2_RemoveWeaponSlot(view_as<int>(this), TFWeaponSlot_Primary);
+				TF2_RemoveWeaponSlot(view_as<int>(this), TFWeaponSlot_Secondary);
 			}
 		}
 		else
 		{
 			if (GetFeatureStatus(FeatureType_Native, "TF2_RegeneratePlayer") == FeatureStatus_Available &&
-				(GetPlayerWeaponSlot(this.Index, TFWeaponSlot_Primary) == -1 ||
-				GetPlayerWeaponSlot(this.Index, TFWeaponSlot_Secondary) == -1))
+				(GetPlayerWeaponSlot(view_as<int>(this), TFWeaponSlot_Primary) == -1 ||
+				GetPlayerWeaponSlot(view_as<int>(this), TFWeaponSlot_Secondary) == -1))
 			{
 				int iHealth = this.Health;
-				TF2_RegeneratePlayer(this.Index);
+				TF2_RegeneratePlayer(view_as<int>(this));
 				this.Health = iHealth;
 			}
 			
 			if (GetFeatureStatus(FeatureType_Native, "TF2_RemoveCondition") == FeatureStatus_Available)
-				TF2_RemoveCondition(this.Index, TFCond_RestrictToMelee);
+				TF2_RemoveCondition(view_as<int>(this), TFCond_RestrictToMelee);
 			
 			this.SetSlot();
 		}
@@ -452,13 +472,13 @@ methodmap BasePlayer
 		{
 			if (GetEntProp(iWeapon, Prop_Data, "m_iClip1") != -1)
 			{
-				DebugEx(this.Index, "Slot %d weapon had %d ammo", slot, GetEntProp(iWeapon, Prop_Data, "m_iClip1"));
+				DebugEx(view_as<int>(this), "Slot %d weapon had %d ammo", slot, GetEntProp(iWeapon, Prop_Data, "m_iClip1"));
 				SetEntProp(iWeapon, Prop_Send, "m_iClip1", 0);
 			}
 			
 			if (GetEntProp(iWeapon, Prop_Data, "m_iClip2") != -1)
 			{
-				DebugEx(this.Index, "Slot %d weapon had %d ammo", slot, GetEntProp(iWeapon, Prop_Data, "m_iClip2"));
+				DebugEx(view_as<int>(this), "Slot %d weapon had %d ammo", slot, GetEntProp(iWeapon, Prop_Data, "m_iClip2"));
 				SetEntProp(iWeapon, Prop_Send, "m_iClip2", 0);
 			}
 			
@@ -469,7 +489,7 @@ methodmap BasePlayer
 			int iAmmoTable = FindSendPropInfo("CTFPlayer", "m_iAmmo");
 			
 			// Set quantity of that ammo type in table to 0
-			SetEntData(this.Index, iAmmoTable + (iAmmoType * 4), 0, 4, true);
+			SetEntData(view_as<int>(this), iAmmoTable + (iAmmoType * 4), 0, 4, true);
 		}
 
 		/*
@@ -488,8 +508,8 @@ methodmap BasePlayer
 		
 		if (resent != -1)
 		{
-			AddAttribute(this.Index, "max health additive bonus", float(max - this.ClassHealth));
-			//SetEntProp(g_iPlayerRes, Prop_Send, "m_iMaxHealth", health, _, this.Index);
+			AddAttribute(view_as<int>(this), "max health additive bonus", float(max - this.ClassHealth));
+			//SetEntProp(g_iPlayerRes, Prop_Send, "m_iMaxHealth", health, _, this);
 			
 			return max;
 		}
@@ -505,13 +525,13 @@ methodmap BasePlayer
 	{
 		if (speed)
 		{
-			AddAttribute(this.Index, "CARD: move speed bonus", speed / (this.ClassRunSpeed + 0.0));
-			//SetEntPropFloat(this.Index, Prop_Send, "m_flMaxspeed", speed + 0.0);
+			AddAttribute(view_as<int>(this), "CARD: move speed bonus", speed / (this.ClassRunSpeed + 0.0));
+			//SetEntPropFloat(this, Prop_Send, "m_flMaxspeed", speed + 0.0);
 		}
 		else
 		{
-			RemoveAttribute(this.Index, "CARD: move speed bonus");
-			//SetEntPropFloat(this.Index, Prop_Send, "m_flMaxspeed", (this.ClassRunSpeed + 0.0));
+			RemoveAttribute(view_as<int>(this), "CARD: move speed bonus");
+			//SetEntPropFloat(this, Prop_Send, "m_flMaxspeed", (this.ClassRunSpeed + 0.0));
 		}
 	}
 }

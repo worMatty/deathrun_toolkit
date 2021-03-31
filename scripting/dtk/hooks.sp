@@ -17,9 +17,9 @@ Action Hook_OnTakeDamage(int victim, int& attacker, int& inflictor, float& damag
 	}
 	
 	// Blast Pushing / Self Damage
-	if (GetClientTeam(victim) == Team_Red && attacker == victim)
+	if (attacker == victim)
 	{
-		damage = 0.0;		// Negate all self damage on Red
+		damage = 0.0;		// Negate all self damage
 		changed = true;
 	}
 	

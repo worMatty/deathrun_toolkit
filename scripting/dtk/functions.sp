@@ -252,7 +252,7 @@ void SelectActivators()
 	int i = 0;
 	int activators = GetNumActivatorsRequired();
 	
-	while (game.Blues < activators && game.Reds > 1 && i < len)
+	while (TFTeam_Blue.Count() < activators && TFTeam_Red.Count() > 1 && i < len)
 	{
 		Player player = Player(list[i]);
 		
@@ -651,15 +651,13 @@ void ActivatorBoost(int client, int buttons, int tickcount)
 	}
 	
 	// Tick timer for boost HUD
-	static int ticktimer;
-	
-	if (!ticktimer)
-		ticktimer = tickcount;
+	if (!g_iTickTimer)
+		g_iTickTimer = tickcount;
 	
 	// Show Boost HUD every half second
-	if ((tickcount) > (ticktimer + 33))
+	if ((tickcount) > (g_iTickTimer + 33))
 	{
-		ticktimer = tickcount;
+		g_iTickTimer = tickcount;
 		BoostHUD(client, boost[client]);
 	}
 }
@@ -761,7 +759,7 @@ int ScaleActivatorHealth(bool overheal = false, int value = 0, int client = 0)
 	
 	
 	int activators = game.AliveActivators;
-	int reds = game.AliveReds;
+	int reds = TFTeam_Red.Alive();
 	int ihealth;
 	
 	if (activators >= reds || !activators)	// Don't scale if teams are even or there are no activators
@@ -1807,7 +1805,7 @@ void SetHealthBar()
 	{
 		char buffer[256];
 		
-		if (game.AliveBlues <= 2)	// Two Activators
+		if (TFTeam_Blue.Alive() <= 2)	// Two Activators
 		{
 			for (int i = 0; i < len; i++)
 			{
@@ -1937,6 +1935,6 @@ stock void BoostHUD(int client, float value)
 		Format(buffer, sizeof(buffer), "%s▋", buffer);
 	}
 	
-	SetHudTextParamsEx(0.20, 0.85, 0.5, { 255, 255, 255, 255 }, { 255, 255, 255, 255 }, 0, 0.0, 0.0);
+	SetHudTextParamsEx(0.20, 0.85, 0.54, { 255, 255, 255, 255 }, { 255, 255, 255, 255 }, 0, 0.0, 0.0);
 	ShowSyncHudText(client, g_Text_Boost, buffer);
 }

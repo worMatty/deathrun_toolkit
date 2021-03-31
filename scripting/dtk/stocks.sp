@@ -6,6 +6,34 @@
  * ----------------------------------------------------------------------------------------------------
  */
 
+methodmap TFTeam
+{
+	public int Count()
+	{
+		return GetTeamClientCount(view_as<int>(this));
+	}
+	
+	public int Alive()
+	{
+		int count;
+		
+		for (int i = 1; i <= MaxClients; i++)
+		{
+			if (IsClientInGame(i) && TF2_GetClientTeam(i) == this && GetEntProp(i, Prop_Send, "m_lifeState") == LifeState_Alive)
+				count++;
+		}
+		
+		return count;
+	}
+}
+// TFTeam(TFTeam_Red).Alive()
+// TFTeam_Red.Alive()
+// TF2_GetClientTeam(client).Alive()
+// player.Team.Alive()?
+
+
+
+
 /**
  * Take a TF class name and return its number.
  * 
@@ -23,6 +51,8 @@ stock int ProcessClassString(const char[] string)
 	else if (strncmp(string, "pyro", 		3, false) == 0)		return 7;
 	else if (strncmp(string, "spy", 		3, false) == 0)		return 8;
 	else if (strncmp(string, "engineer", 	3, false) == 0)		return 9;
+	else if (strncmp(string, "mercenary",	4, false) == 0)		return 10;
+	else if (strncmp(string, "civilian",	3, false) == 0)		return 10;
 	return 0; // Class not recognised
 }
 

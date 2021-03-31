@@ -61,6 +61,7 @@ Version 0.4.1 Plans
 Weapon restriction inheritance
 Weapon restriction map configs
 Weapon restriction categories
+Weapon restriction remove/replace attribute
 Special rounds
 Activator auto health scale on combat
 Built TP plugin into it with map instruction support
@@ -70,6 +71,12 @@ Vote for fake client.
 Move instructions out.
 Investigate OF and TF2C special classes.
 Build a SayText2 function that supports local translation phrases.
+dtk_boss_bar?
+/qp instead of /points and /pts
+TF2C and OF conditions or attributes (check Hammer and items_game.txt)
+SDKHook GetClientMaxHealth change by-reference variable for setting max health
+Use player's own weapons for replacements (TF2 Econ/SZF)
+SetEntProp MI (separate cvar)
 
 
 
@@ -384,6 +391,18 @@ Possibly TF2C but not likely: also sometimes i don't see the boost text as an ac
 From Berke: Boost still sometimes gets stuck on round start(edited) you have to type -speed
 
 Speed boost HUD can go missing for some reason.
+
+On next round, previous activator with max health scale buff has an overheal.
+	They must have the attribute at the start of the round.
+
+0.4: Ratio 0.5. Max -1. Four players chosen as activator when there are 9. One activator moved to red but was
+not replaced! No debug messages or errors.
+
+ChatAdmins should be yellow or red or something
+
+0.4 I joined red team during freeze time and picked a class. I was moved to spec because I had no class but was still on the leader board as being alive.
+
+0.4 Boost not reset on spawn.
 
 
 

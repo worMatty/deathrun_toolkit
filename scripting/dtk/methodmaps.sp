@@ -127,6 +127,7 @@ methodmap Game
 	}
 	
 	// Count Reds
+	/*
 	property int Reds
 	{
 		public get()
@@ -134,8 +135,10 @@ methodmap Game
 			return GetTeamClientCount(Team_Red);
 		}
 	}
+	*/
 	
 	// Count Alive Reds
+	/*
 	property int AliveReds
 	{
 		public get()
@@ -151,8 +154,10 @@ methodmap Game
 			return count;
 		}
 	}
+	*/
 	
 	// Count Blues
+	/*
 	property int Blues
 	{
 		public get()
@@ -160,8 +165,10 @@ methodmap Game
 			return GetTeamClientCount(Team_Blue);
 		}
 	}
+	*/
 	
 	// Count Alive Blues
+	/*
 	property int AliveBlues
 	{
 		public get()
@@ -177,6 +184,7 @@ methodmap Game
 			return count;
 		}
 	}
+	*/
 	
 	// Count Participants
 	property int Participants

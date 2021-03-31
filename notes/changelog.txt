@@ -4,6 +4,11 @@ Deathrun Toolkit
 Changelog
 ---------
 
+**Changelog - Version 0.4.1**
+
+Fixed a bug preventing the Activator boost HUD displaying after a map change.
+
+
 **Changelog - Version 0.4**
 
 Major Changes
@@ -25,10 +30,10 @@ Other Stuff:
 - Retired some translation phrases and added new ones
 
 __Improved Team Balancing__
-Much better protection against players joining the blue team when they are not designated activators. Improved ‘ready state’ detection in TF2 Classic and Open Fortress to prevent stalled rounds. Fixed a bug where the first round of a map would have two restarts, causing two activator selections, with the first one selected being instantly replaced and their points lost. Potentially fixed a bug where the plugin would not ‘work’ in the first round, players could join any team and the queue system would not function.
+Much better protection against players joining the blue team when they are not designated activators. Improved ‘ready state’ detection in TF2 Classic and Open Fortress to prevent stalled rounds. Worked around a behaviour in TF2 where the first round of a map would have two restarts, causing two activator selections, with the first one selected being instantly replaced and their points lost. Potentially fixed a bug where the plugin would not ‘work’ in the first round, players could join any team and the queue system would not function.
 
 __Improved Activator Queue__
-Half and full point awards are not gone. Instead of each red player receiving ten queue points at the end of a round and only if they were present at the beginning of it, all red players receive one queue point every ten seconds. People who opt out of being an activator continue to accrue queue points. Queue points are no longer communicated to players as they are only used to manage the activator queue or for admins to influence by awarding points. It’s still possible to view and reset your points using /points and /reset. When sorting the queue, the plugin now factors in the last time a player was made activator, so if no one has any points or two players have the same points, the order will be fair regardless and no one should ever be activator twice in a very short time.
+Half and full point awards are gone. Instead of each red player receiving ten queue points at the end of a round and only if they were present at the beginning of it, all red players receive one queue point every ten seconds. People who opt out of being an activator continue to accrue queue points. Queue points are no longer communicated to players as they are only used to manage the activator queue or for admins to influence by awarding points. It’s still possible to view and reset your points using /points and /reset. When sorting the queue, the plugin now factors in the last time a player was made activator, so if no one has any points or two players have the same points, the order will be fair regardless and no one should ever be activator twice in a very short time.
 
 __Improved Multiple Activator Support__
 There are two cvars for managing activator numbers: dtk_activators_max which acts as a maximum number, and dtk_activators_ratio which defines the fraction of players who will be selected. e.g. If the ratio is 0.2, then one fifth of players will be selected as activator, but only up to the max. There will always be at least one activator and at least one runner.
@@ -44,7 +49,7 @@ __Basic Weapon Restriction System__
 This has been a long time coming. There are now the barebones of a system that lets you either replace or modify the attributes of a player’s weapon. Replacements are stored in a separate file. I have only added in a small number of weapons as this system is not finished.
 
 __Team Mate Push-Away ConVar__
-The plugin sets this to 0 when the game mode is enabled but if a server wanted to enable it on a per-map basis using a mapname.cfg file, the plugin would override it. Now a server can add dtk_push_away 1 to the config to enable it.
+The plugin disables push-away when the game mode is enabled but if a server wanted to enable it on a per-map basis using a mapname.cfg file, the plugin would override it. Now a server can add dtk_push_away 1 to the config to enable it.
 
 __Activator Lock During Freeze-Time__
 You can now set dtk_lock_activator to 2 to prevent activators switching away from blue during pre-round freeze time after they have been selected. This is not normally something I recommend you do but it may be useful in some cases.

@@ -169,6 +169,9 @@ public void OnMapStart()
 	DBCreateTable();	// Create table and connection
 	DBPrune();			// Prune old records
 	
+	// Boost HUD Tick Timer Reset
+	g_iTickTimer = 0;
+	
 	// Round State Reset
 	game.RoundState = Round_Waiting;
 	

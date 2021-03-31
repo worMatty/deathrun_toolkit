@@ -17,10 +17,10 @@ Action Timer_HealthBar(Handle timer)
 
 
 Action Timer_OFTeamCheck(Handle timer)
-{	
+{
 	// OF starts the round regardless if there aren't enough players
 	// A round in progress will only end when one team is dead and the other has live players
-	if (game.RoundState == Round_Active && (!game.AliveReds && !game.AliveBlues) && game.Participants >= 1)
+	if (game.RoundState == Round_Active && (!TFTeam_Red.Alive() && !TFTeam_Blue.Alive()) && game.Participants >= 1)
 	{
 		Debug("Stalled round detected. Restarting in five seconds");
 		ChatMessageAll("%t", "restarting_round_seconds", 5);

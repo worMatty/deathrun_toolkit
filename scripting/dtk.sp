@@ -36,7 +36,7 @@
  * ----------------------------------------------------------------------------------------------------
  */
 
-#define PLUGIN_VERSION 		"0.4"
+#define PLUGIN_VERSION 		"0.4.1"
 #define PLUGIN_NAME			"[DTK] Deathrun Toolkit"
 #define PLUGIN_SHORTNAME 	"Deathrun Toolkit"
 #define PREFIX_SERVER		"[DTK]"
@@ -204,6 +204,7 @@ bool g_bTF2Attributes;				// TF2 Attributes found
 int g_iGame;
 int g_iGameState;
 int g_iRoundState;
+int g_iTickTimer;
 int g_iPlayers[MAXPLAYERS + 1][Player_Max];
 int g_iEnts[Ent_Max] = { -1, ... };
 
