@@ -24,6 +24,7 @@ You don't need to add any cvars to your server configs, the plugin will take car
 
 * dtk_use - Lets you +use buttons on old maps that only support damaging buttons to trigger them
 * dtk_sacrifice - Allows a runner to sacrifice themselves for a dead team mate
+* dtk_trains - Disable user control of trains so players can't +use control them
 * dtk_damage_filter - Filters damage types from one team to the other for maps where teams can attack each other
 * ragdoll_effects - Mappers can do special effects on ragdolls by giving trigger_hurts special damage type integers
 
@@ -47,11 +48,11 @@ The plugin has all the bells and whistles you would expect of a deathrun plugin.
 
 ### Server Operator Stuff
 
-* The plugin only works on deathrun maps so it's suitable for multi-game mode servers
+* Automatically enables on deathrun maps and disables when they end
 * TF2 Workshop maps are properly detected
 * Support for multiple activators
 * Support for Open Fortress and TF2 Classic
-* If the plugin is enabled it will execute config_deathrun.cfg on each new deathrun map
+* If enabled, executes config_deathrun.cfg after all other config files
 
 ## Note About The Current State
 
@@ -81,19 +82,19 @@ Player aspects such as run speed and cloak level are modified by adding TF2 attr
 
 DTK doesn't require that the map has a tf_logic_arena. Mappers are free to make maps that don't have Sudden Death as a core mechanic. They could for example have dead players respawn in a waiting area, or make a new variant of deathrun that revolves around having lives.
 
-Activator selection and replacement is more robust that on Deathrun Redux. If an activator switches teams or leaves the server during freeze time the next player in the queue takes their place immediately.
+Activator selection and replacement is more robust than on Deathrun Redux. If an activator switches teams or leaves the server during freeze time the next player in the queue takes their place immediately.
 
 Health scaling for the activator is handled a bit differently. By default the activator has the same amount of health as a normal player, but in combat mini games the map author can trigger health scaling using map logic. The health of the activator is then scaled up to a suitable figure based on the number of remaining red players. Their health pool is increased and contribution from health packs scaled down accordingly to keep it fair. 
 
-The potential for map authors to change player properties they normally can't using map logic. See 'Mapper Control'.
+The potential for map authors to change player properties they normally can't, using map logic. See 'Mapper Control'.
 
 ## Mapper Control (Special Functions for Mappers)
 
-You can use normal logic entities to change a player's properties, which is useful for making special mini games. 
+DTK lets a mapper change player properties that are normally not accessible, such as player class, weapon attributes, replacement weapons and so on. It works using a logic_case with special values.
 
-Right now you can change a player's class; set their speed; move type; give them weapons; remove weapons; give a weapon attributes; set the player's health, max health and scale it up (if they're an activator); send a message to their chat; switch them to a specific slot; force them to be melee-only; set a custom model for them and make it use class animations (the last thing is not possible using map logic).
+At the moment you can change a player's class; set their speed; move type; give them weapons; remove weapons; give a weapon attributes; set the player's health, max health and scale it up (if they're an activator); send a message to their chat; switch them to a specific weapon slot; force them to be melee-only; set a custom model for them and make it use class animations (the latter is not possible using map logic).
 
-If you'd like to add such functionality to your map, hop along to the Death Experiments Discord server and ask us about it.
+If you're interested in adding such functionality to your map, pay us a visit at the Death Experiments Discord server and ask us about it.
 
 ## Plans for the Future
 
