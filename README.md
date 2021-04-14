@@ -2,25 +2,27 @@
 
 ## What is Deathrun?
 
-What is deathrun?! Have you been living under a rock?
-Basically, there's one guy on blue and a bunch of guys on red. The blue guy has to trigger traps and try to kill reds, while the reds have to survive and at least one of them has to make it to the end for the team to win. It's like an obstacle course but fatal!
+What is deathrun?! Have you been living under a rock? It's a game mode where the majority of players are put on the red team and their task is to navigate through a hazard course and reach the end. One or more players are put on the blue team, and their task is to trigger the traps in the course to try and kill the red players. When a red player dies they don't respawn. If a red player reaches the end, their team wins, but if all the reds die, the blue team wins.
 
 ## What is Deathrun Toolkit?
 
-It's a set of plugins for deathrun servers. The base plugin detects deathrun maps and handles the swapping of players to the right teams and the selection of the blu guy (_activator_) each round. It also does a bunch of other stuff, but I'll go into detail later. There are also a bunch of smaller plugins that deal with exploits and enhance the game.
+It's a set of plugins for deathrun servers which handle the running of the game mode and optionally fix exploits and make quality of life improvements in older or flawed maps.
 
 ## Installation
 
-For the base deathrun experience you only need dtk.smx and the translation file. You can add the weapon restriction and replacement configs as well if you like but they are very limited at the moment. You can ignore the other plugins. 
+### Minimal
 
-### Optional Libraries
-- [Asherkin's TF2 Attributes plugin](https://forums.alliedmods.net/showthread.php?t=210221) is used to set attributes on players and weapons to restrict them. This is recommended because most deathrun maps have some weaknesses that can be exploited by rocket jumpers, scout double jumps and so on.
-- [Source Chat Relay](https://forums.alliedmods.net/showthread.php?p=2617899) is used to send the round start, end, and activator selection messages to a Discord channel.
-- The [SteamTools extension](https://forums.alliedmods.net/showthread.php?t=236206) changes your game server's description.
+Place dtk.smx in addons/sourcemod/plugins, and dtk.phrases.txt in addons/sourcemod/translations. You do not need to configure the plugin, as it will automatically enable itself when it detects a deathrun map and disable itself when it ends.
 
-You don't need to add any cvars to your server configs, the plugin will take care of all that. You only need to change a plugin convar when you want to tweak a default setting, such as number of activators. If you only want to use DTK for some maps, put dtk_auto_enable 0 in server.cfg and dtk_auto_enable 1 in your map's config. You can get a list of plugin cvars by doing `sm cvars dtk` or `find dtk` in server console.
+### Advanced
 
-### Optional Plugins
+Install the weapon restriction files in addons/sourcemod/configs/dtk. Add weapons you wish to restrict to restrictions.cfg.
+Install [Asherkin's TF2 Attributes plugin](https://forums.alliedmods.net/showthread.php?t=210221) to enable the plugin to apply attributes to players and weapons to restrict or modify their abilities. This is necessary for a *lot* of maps to prevent players skipping traps.
+
+You can get a list of plugin cvars by typing `sm cvars dtk` or `find dtk` in server console.
+If you only want to use DTK for certain deathrun maps, create a .cfg file in your game server's cfgs dir with the same name as the map. Put `dtk_auto_enable 0` in server.cfg and `dtk_auto_enable 1` in your map config. If you use another deathrun plugin you will need to disable it in your map config and enable it in server.cfg so both plugins aren't running the game mode at the same time.
+
+### Optional Items
 
 * dtk_use - Lets you +use buttons on old maps that only support damaging buttons to trigger them
 * dtk_sacrifice - Allows a runner to sacrifice themselves for a dead team mate
@@ -28,9 +30,12 @@ You don't need to add any cvars to your server configs, the plugin will take car
 * dtk_damage_filter - Filters damage types from one team to the other for maps where teams can attack each other
 * ragdoll_effects - Mappers can do special effects on ragdolls by giving trigger_hurts special damage type integers
 
+* The third-party plugin [Source Chat Relay](https://forums.alliedmods.net/showthread.php?p=2617899) can be used to send informative messages to a Discord channel
+* The third-party extension [SteamTools](https://forums.alliedmods.net/showthread.php?t=236206) can be used to change your game server's description
+
 ## Features
 
-The plugin has all the bells and whistles you would expect of a deathrun plugin. Player preferences, a menu, etc. But here are some things that set it aside from others.
+The plugin has all the bells and whistles you would expect from a typical deathrun plugin such as player preferences, a menu, an activator queue and so on, but here are some things which set it aside from others.
 
 ### Cool Things
 
@@ -41,14 +46,15 @@ The plugin has all the bells and whistles you would expect of a deathrun plugin.
 
 ### Not As Cool Things
 
-* When you die the plugin says what killed you
-* Blue guy can be prevented from suiciding or switching teams during a round (and pre-round)
+* The plugin prints what killed you in chat
+* The activator can be prevented from suiciding or switching teams
 * It currently has ~~full~~ some Turkish translations and some German
 * It doesn't use on-screen text often so it's unlikely to interfere with map text
 
 ### Server Operator Stuff
 
-* Automatically enables on deathrun maps and disables when they end
+* Auto enables and disables on deathrun map start and end
+* Doesn't interfere with other game modes on multi-mode servers
 * TF2 Workshop maps are properly detected
 * Support for multiple activators
 * Support for Open Fortress and TF2 Classic
@@ -56,25 +62,26 @@ The plugin has all the bells and whistles you would expect of a deathrun plugin.
 
 ## Note About The Current State
 
-The plugin has a lack of weapon and ability restrictions so you probably won't be able to use it on your existing rotation without some problems. Blast jumping is disabled by hooking and negating self-damage. Spies can only cloak for a fraction of a second. Scouts can't double jump but they can use the Force-a-Nature by design as it requires skill. 
+Weapon and ability restrictions are work in progress and as a result there are very few restrictions applied by the plugin. All self-damage is negated, which means players can't blast jump. Spies can only cloak for a fraction of a second. Scouts can't double jump but they can use the Force-a-Nature by design as it requires skill.
+
+Blanket run speed and melee-only are not enabled by default but there are cvars you can add to your config files if projectile weapons or slower classes are a problem in some maps.
 
 ## Design Philosophy and Important Differences
 
 #### Stuff I won't support
 
-* Glowing outlines, because it ruins hide and seek on maps
-* Setting all classes to the same run speed as supplied
-* Melee-only as supplied
-
-My philosophy is that wherever possible, map-makers should fix problems in their maps and design them better. If we depend on plugin makers to patch these issues all the time, new mappers get the impression that by default, deathrun maps are melee-only, or that every class has the same speed, and so on. We didn't get to this point because it was better for the game mode. We got to it because of successive and perhaps thoughtless 'fixes' to bad maps, and now people think that's all that deathrun is. If things continue this way we will end up with a very flat experience similar to CSS and GMod deathrun, where the only difference is the choice of character model. In order for the game mode to grow, we need to bring back class variety so we can come up with cool new ways to play. Restricting everything reduces potential for exploits but it limits creative freedom and innovation.
-
-I have built options into the plugin for speed changing and melee-only just for backwards compatability with old maps with exploits or poor design. I appreciate though, that some mappers will want to provide a pure experience and melee-only is required for that, but there are ways for the map-maker to achieve this themselves using game logic! If you need help, come to our Discord server: https://steamcommunity.com/groups/death_experiments
-
-* Customised replacement weapons
-
-Weapons given to the player are plain because I do not want to fuck around with the economy and devalue people's earned weapons.
-
+* Glowing outlines
 * Disabling spy disguises (why? What is the harm?)
+* Setting all classes to the same run speed *as supplied*
+* Melee-only *as supplied*
+
+While occasionally beneficial, forced glowing outlines on red players have consequences. They discourage the proper planning and building of the activator route because the mapper doesn't realise that visibility of the runners is important for an enjoyable activator experience. They also ruin hide and seek games, and purposely-dark environments. They are the equivalent to wall hack cheats in first-person shooters.
+
+As a deathrun mapper I am *against* restrictions because I believe they are stifling the game mode. In order to improve and grow we should embrace class variety and make it a part of our design considerations to provide interesting new experiences.
+
+I believe that in most cases, it is the responsibility of the mapper to account for class abilities though I accept it is much simpler to disable everything. My concern is that new mappers believe this is normal for deathrun so they design and build assuming the restrictions are always present.
+
+If we make the plugin maker or the server operator the person responsible for dealing with map design flaws, the manner of dealing with them and the side effects vary from server to server, so map makers have no choice but to design for a very limited environment and avoid buildings things which may work on some servers but will cause problems on others.
 
 ## Detailed Technical Things for Studs
 
@@ -82,9 +89,9 @@ Player aspects such as run speed and cloak level are modified by adding TF2 attr
 
 DTK doesn't require that the map has a tf_logic_arena. Mappers are free to make maps that don't have Sudden Death as a core mechanic. They could for example have dead players respawn in a waiting area, or make a new variant of deathrun that revolves around having lives.
 
-Activator selection and replacement is more robust than on Deathrun Redux. If an activator switches teams or leaves the server during freeze time the next player in the queue takes their place immediately.
+Activator selection and replacement is more robust than on Deathrun Redux. If an activator switches away from the blue team or leaves the server during freeze time, the next player in the queue takes their place immediately. The queue system is very solid and uses queue points and the server time to eliminate the chance of a player being chosen as activator twice in a row. The server operator can optionally disable team switching during pre-round freeze time using a cvar.
 
-Health scaling for the activator is handled a bit differently. By default the activator has the same amount of health as a normal player, but in combat mini games the map author can trigger health scaling using map logic. The health of the activator is then scaled up to a suitable figure based on the number of remaining red players. Their health pool is increased and contribution from health packs scaled down accordingly to keep it fair. 
+Health scaling for the activator is handled a bit differently. By default the activator has the same amount of health as a normal player, but in combat mini games the map author can trigger health scaling using map logic. The health of the activator is then scaled up to a suitable figure based on the number of live red players. Their health pool is increased and contribution from health packs scaled down accordingly to keep it fair. 
 
 The potential for map authors to change player properties they normally can't, using map logic. See 'Mapper Control'.
 
@@ -92,13 +99,14 @@ The potential for map authors to change player properties they normally can't, u
 
 DTK lets a mapper change player properties that are normally not accessible, such as player class, weapon attributes, replacement weapons and so on. It works using a logic_case with special values.
 
-At the moment you can change a player's class; set their speed; move type; give them weapons; remove weapons; give a weapon attributes; set the player's health, max health and scale it up (if they're an activator); send a message to their chat; switch them to a specific weapon slot; force them to be melee-only; set a custom model for them and make it use class animations (the latter is not possible using map logic).
+At the moment you can change a player's class; set their speed; move type; give them weapons; remove weapons; give a weapon attributes; set the player's health, max health and scale it up (if they're an activator); send a message to their chat; switch them to a specific weapon slot; force them to be melee-only; set a custom model for them and make it use class animations.
 
-If you're interested in adding such functionality to your map, pay us a visit at the Death Experiments Discord server and ask us about it.
+If you're interested in adding such functionality to your map, pay us a visit at our deathrun design community [Death Experiments](https://steamcommunity.com/groups/death_experiments) and ask us about it. 
 
 ## Plans for the Future
 
 A decent enough weapon restriction system that uses several ready-to-use configs for maps that require varying tiers of mobility and weapon restrictions. e.g. Some maps need melee-only, some demand no special mobility, some can get away with small jump boosts or trimping.
 
-Expansions to the map instructions feature to let mappers use the boss bar for a boss 'entity' using a math_counter. Options to display or track health of more
-than one target.
+Expansions to the map instructions feature to let mappers use the boss bar for a boss 'entity' using a math_counter. Options to display or track health of more than one target.
+
+Separating the map instructions system into a separate plugin.
