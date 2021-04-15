@@ -85,18 +85,21 @@
 	{
 		"#format"		"{1:s}"
 		"en"			"{highlight}{1}{default} has been made an activator"
+		"da"			"{highlight}{1}{default} er blevet valgt som aktivator."
 	}
 	
 	"name_no_class_moved_spec"	// modified
 	{
 		"#format"		"{1:s}"
-		"en"			"Moved {highlight}{1}{default} to Spec because they did not choose a class"
+		"en"			"Moved{highlight}{1}{default} to spectator, as no class was chosen."
+		"da"			"Flyttede{highlight}{1}{default} til spectator, da der ikke blev valgt klasse."
 	}
 	
 	"restarting_round_seconds"	// modified
 	{
 		"#format"		"{1:d}"
-		"en"			"Restarting the round in {1} seconds"
+		"en"			"Restarting round in {1} seconds"
+		"da"			"Genstarter runden om {1} sekunder"
 	}
 
 	/*
@@ -105,6 +108,7 @@
 			"en"			"Looks like we need more players before we can continue"
 			"de"			"Sieht so aus als würden wir mehr Spieler benötigen um fortzufahren"
 			"tr"			"Görünüşe göre daha fazla oyuncuya ihtiyacımız var devam etmeden önce"
+			"da"			"Det ser ud som der mangler spillere før vi kan fortsætte"
 		}
 	*/
 
@@ -122,6 +126,7 @@
 		"en"			"{1} has awarded you {2} queue points ({3})"
 		"de"			"{1} hat Dir {2} Punkte verleiht, somit ist deine Gesamtpunktzahl {3}"
 		"tr"			"{1} sana {2} puan ödül verdi, senin toplamını {3} yaptı"
+		"da"			"{1} har doneret {2} point til dig, og dine samlede point er {3}"
 	}
 	
 	"you_have_i_queue_points"	// modified
@@ -130,6 +135,7 @@
 		"en"			"You have {1} queue points"
 		"de"			"Du hast {1} Punkte"
 		"tr"			"Senin {1} puanın var"
+		"da"			"Du har {1} point"
 	}
 	
 	"points_have_been_reset_to_i"	// modified
@@ -138,6 +144,7 @@
 		"en"			"Your queue points have been reset to {1}"
 		"de"			"Deine Punkte wurden zu {1} zurückgesetzt"
 		"tr"			"Senin puanların {1} sıfırlandı"
+		"da"			"Dine point er blevet nulstillet til {1}"
 	}
 	
 	"points_cannot_be_reset"	// modified
@@ -145,6 +152,7 @@
 		"en"			"Sorry, your queue points can't be reset because they are a negative value"
 		"de"			"Entschuldigung, deine Punkte können nicht zurückgesetzt werden, da Sie ein negativer Wert sind"
 		"tr"			"Üzgünüm, senin puanların sıfırlanamaz çünkü o negatif bir değer"
+		"da"			"Beklager, dine point kan ikke blive nulstillet, da du er i negative point"
 	}
 	
 	"current preference is to never be the activator"
@@ -152,31 +160,36 @@
 		"en"			"Your current preference is to never be the activator"
 		"de"			"Deine momentane Präferenz ist niemals zum Aktivierer werden"
 		"tr"			"Senin şuanlık tercihin asla aktivatör olmamak"
+		"da"			"Dine nuværende præferencer er aldrig at blive aktivator"
 		// Shown in response to using the /pref command with no arguments
 	}
 	
 	"opted_out_activator"	// modified
 	{
 		"en"			"You've opted out of becoming an activator"
+		"da"			"Du har bedt om aldrig at blive aktivator"
 	}
 	
 	"opted_in_activator"	// modified
 	{
 		"en"			"You've opted in to becoming an activator"
+		"da"			"Du har bedt om at blive aktivator"
 	}
 	
 	"you_are_an_activator"	// modified
 	{
 		"en"			"You've been made an activator"
+		"da"			"Du er blevet valgt som aktivator"
 	}
 	
 	"welcome_player_to_deathrun_toolkit"
-    {
-        "#format"        "{1:s}"        // Player name
-        "en"            "Hello, {1}. This server is running Deathrun Toolkit.\n  Type {highlight}/dr{default} for the menu to change your preferences."
-        "de"            "Willkommen zu Deathrun Toolkit, {1}. Öffne das Menü mit {highlight}/dr{default}"
-		"tr"			"Merhaba, {1}. Bu sunucu Deathrun Toolkit çalıştırıyor.\n  Menü için {highlight}/dr{default} yazarak senin tercihlerini değiştir."
-    }
+    	{
+        	"#format"        "{1:s}"        // Player name
+        	"en"            "Hello, {1}. This server is running Deathrun Toolkit.\n  Type {highlight}/dr{default} for the menu to change your preferences."
+        	"de"            "Willkommen zu Deathrun Toolkit, {1}. Öffne das Menü mit {highlight}/dr{default}"
+		"tr"		"Merhaba, {1}. Bu sunucu Deathrun Toolkit çalıştırıyor.\n  Menü için {highlight}/dr{default} yazarak senin tercihlerini değiştir."
+		"da"		"Velkommen, {1}. Denne server kører med Deathrun Toolkit.\n Skriv {highlight}/dr{default} i chatten for at ændre din præferencer."
+    	}
 	
 	/*
 		"queue points consumed"
@@ -184,6 +197,7 @@
 			"en"			"Your queue points have been consumed"
 			"de"			"Deine Punkte wurden verbraucht"
 			"tr"			"Senin sıra puanların tüketildi"
+			"da"			"Dine point er blevet brugt"
 		}
 		
 		"not using the points system"
@@ -191,6 +205,7 @@
 			"en"			"We're not using the points system at the moment"
 			"de"			"Momentan wird das Punktesystem nicht benutzt"
 			"tr"			"Biz şuanlık puanlar sistemini kullanmıyoruz"
+			"da"			"Vi benytter os ikke af point systemet lige pt"
 			// Sent in response to the use of the /points command
 		}
 		
@@ -200,6 +215,7 @@
 			"en"			"Your current preference is to receive {1} points per round"
 			"de"			"Deine momentane Präferenz ist {1} Punkte per Runde zu bekommen"
 			"tr"			"Senin şuanki tercihin her roundda {1} puan almak"
+			"da"			"Dine nuværende præferencer er at modtage {1} point per runde"
 			// Shown in response to using the /pref command with no arguments
 		}
 		
@@ -208,6 +224,7 @@
 			"en"			"You will no longer be the activator or receive queue points"
 			"de"			"Du wirst nicht mehr Aktivierer werden oder Punkte erhalten"
 			"tr"			"Sen bundan sonra aktivatör olmayacak veya sıra puanları almayacaksın"
+			"da"			"Du vil ikke længere kunne være aktivator eller modtage point"
 			// Sent in response to setting activator preference to off
 		}
 		
@@ -216,6 +233,7 @@
 			"en"			"You will now receive fewer queue points"
 			"de"			"Du wirst jetzt weniger Punkte erhalten"
 			"tr"			"Sen şimdi daha az sıra puanları alacaksın"
+			"da"			"Du vil nu modtage færre point"
 			// Sent in response to setting points gan preference to fewer
 		}
 		
@@ -224,6 +242,7 @@
 			"en"			"You will receive the full amount of queue points"
 			"de"			"Du wirst die volle Punktzahl erhalten"
 			"tr"			"Sen şimdi tam miktarda sıra puanları alacaksın"
+			"da"			"Du vil modtage den fulde mængde point"
 			// Sent in response to setting points gan preference to full
 		}
 	*/
@@ -241,6 +260,7 @@
 		"en"			"You were killed by a {killing_entity}{1}{default}{2}"
 		"de"			"Du wurdest von {killing_entity}{1}{default}{2} getötet"
 		"tr"			"Sen bir {killing_entity}{1}{default}{2} tarafından öldürüldün"
+		"da"			"Du blev dræbt af en {killing_entity}{1}{default}{2}"
 	}
 	
 	"wrong_usage_of_award_command"
@@ -248,6 +268,7 @@
 		"en"			"You're doing it wrong. /award <name> <points>"
 		"de"			"Du machst es falsch. /award <name> <punkte>"
 		"tr"			"Sen yanlış yapıyorsun. /award <isim> <puanlar>"
+		"da"			"Du gør det forkert. /award <navn> <point>"
 	}
 	
 	"next_activators"
@@ -255,11 +276,13 @@
 		"en"			"Next activators: {highlight}"
 		"de"			"Nächste Aktivierer: {highlight}"
 		"tr"			"Sonraki aktivatörler: {highlight}"
+		"da"			"Næste aktivatorer: {highlight}"
 	}
 	
 	"next_activator"	// modified
 	{
 		"en"			"Next activator: {highlight}"
+		"da"			"Næste aktivator: {highlight}"
 	}
 	
 	/*
@@ -268,6 +291,7 @@
 			"en"			"Team mate pushing has been enabled"
 			"de"			"'Team mate pushing' wurde aktiviert"
 			"tr"			"Takım dostu itişi etkinleştirildi"
+			"da"			"Medspiller push er blevet aktiveret"
 		}
 		
 		"round end queue points received"
@@ -276,6 +300,7 @@
 			"en"			"You have received {1} queue points for a total of {2}"
 			"de"			"Du hast {1} Punkte erhalten für einen Punktestand von {2}"
 			"tr"			"Sen {1} sıra puanı alarak toplamını {2} yaptın"
+			"da"			"Du har modtage {1} point, og din nuværende total er {2}"
 		}
 		
 		"usage of pref command"
@@ -283,6 +308,7 @@
 			"en"			"Usage: sm_prefs 0/1/2. 0 = Don't be activator. 1 = Receive fewer points. 2 = Receive full points"
 			"de"			"Benutzung: sm_prefs 0/1/2. 0 = Nicht Aktivierer sein. 1 = Weniger Punkte erhalten. 2 = Volle Punktzahl erhalten"
 			"tr"			"Kullanım: sm_prefs 0/1/2. 0 = Aktivatör olma. 1 = Daha az puanlar al. 2 = Tam puanlar al"
+			"da"			"Benyttelse: sm_prefs 0/1/2. 0 = Vær ikke aktivator. 2 = Modtag færre point. 3 = Modtag fulde mængde point"
 		}
 		
 		"not enough activators"
@@ -290,6 +316,7 @@
 			"en"			"Too few willing activators. Everyone will take turns"
 			"de"			"Zu wenig freiwillige Aktivierer. Jeder kommt mal an die Reihe"
 			"tr"			"Çok az istekli aktivatörler var. Herkes sıra alacak"
+			"da"			"Der er for få der vil være aktivator. Alle vil skiftes til at være aktivator"
 		}
 	*/
 	
@@ -305,6 +332,7 @@
 		"en"			"The round has begun. Tread carefully!"
 		"de"			"Die Runde hat begonnen. Sei vorsichtig!"
 		"tr"			"Tur başladı. Hareketlerine dikkat et!"
+		"da"			"Runden er begyndt. Træd forsigtigt!"
 	}
 	
 	"round_has_begun_2"
@@ -312,6 +340,7 @@
 		"en"			"It's dangerous to go alone... take <insert object>"
 		"de"			"Es ist gefährlich alleine zu gehen... nimm <objekt einfügen>"
 		"tr"			"Yalnız gitmek tehlikeli... yanına <obje ekle> al"
+		"da"			"Det er farligt at gå alene... tag <indsæt objekt>"
 	}
 	
 	"round_has_begun_3"
@@ -319,6 +348,7 @@
 		"en"			"I declare this round officially open! Woooo!"
 		"de"			"Hiermit erkläre ich diese Runde offiziell für eröffnet! Woooo!"
 		"tr"			"Bu turun resmi olarak açık olduğunu ilan ediyorum! Woooo!"
+		"da"			"Jeg erklærer denne runde for officielt åben! Woooo!"
 	}
 	
 	"round_has_begun_4"
@@ -326,6 +356,7 @@
 		"en"			"I wasn't always a round start announcer, you know"
 		"de"			"Weißt Du, ich war nicht immer ein Rundenstart Ansager"
 		"tr"			"Bilirsin, ben her zaman bir tur başlayış spikeri değildim"
+		"da"			"Vidste du, at jeg ikke altid har annonceret runde start"
 	}
 	
 	"round_has_begun_5"
@@ -333,6 +364,7 @@
 		"en"			"I don't know about you, but I'd say it's a safe bet some people are gonna die"
 		"de"			"Ich weiß nicht wie es Dir geht, aber ich würde behaupten dass hier einige Leute sterben werden"
 		"tr"			"Seni bilmiyorum, ama ben derdim ki bazı insanların öleceği güvenli bir bahisdir"
+		"da"			"Jeg ved ikke med dig, men jeg vil sige det er sikkert at nogle folk dør"
 	}
 	
 	"round_has_begun_6"
@@ -340,6 +372,7 @@
 		"en"			"Beep boop beep! Round has begun, maggots!"
 		"de"			"Beep boop beep! Runde hat begonnen, Maden!"
 		"tr"			"Beep boop beep! Tur başladı, kurtçuklar!"
+		"da"			"Beep boop beep! Runden er begyndt, madiker!"
 	}
 		
 	"round_has_begun_7"
@@ -347,6 +380,7 @@
 		"en"			"FYI the round has started. You should probably move"
 		"de"			"Nur damit du es auch weißt: Die Runde hat begonnen. Vielleicht solltest du dich bewegen"
 		"tr"			"Bilginize, tur başladı. Muhtemelen hareket etmelisin"
+		"da"			"Til information er runden altså startet. Du burde bevæge dig"
 	}
 	
 	"round_has_begun_8"
@@ -354,6 +388,7 @@
 		"en"			"Take your 'I want to be alive' attitude outside, no one wants to hear that in here"
 		"de"			"Nimm deine 'Ich will nicht sterben' einstellung nach draußen, dass will hier keiner hören"
 		"tr"			"Senin o 'Ben yaşamak istiyorum' tavrını dışarı al, kimse onu burda duymak istemiyor"
+		"da"			"Tag din 'Jeg vil ikke leve' attitude med ud, ingen vil høre sådan noget herinde"
 	}
 	
 	"round_has_begun_9"
@@ -361,6 +396,7 @@
 		"en"			"Hello. How may I assist you with your death?"
 		"de"			"Guten Tag. Wie kann ich Ihnen mit ihrem Tod helfen?"
 		"tr"			"Merhaba. Ölümünde sana nasıl yardımcı olabilirim?"
+		"da"			"Hej. Hvordan kan jeg hjælpe dig med døden?"
 	}
 	
 	/* Quarantined lines that are too long
@@ -369,6 +405,7 @@
 			"en"			"I haven't seen the Round End announcer in some time. Are they still in the business?"
 			"de"			"Ich habe den Rundenend Ansager schon eine weile lang nicht gesehen. Macht der noch was in der Richtung?"
 			"tr"			"Ben epey zamandır Tur Sonu spikerini görmedim. O hala işte mi?"
+			"da"			"Jeg har ikke set ham der annoncerer at runden slutter i noget tid. Er han stadig i brancen?"
 		}
 		
 		"round_has_begun_10"
@@ -376,6 +413,7 @@
 			"en"			"The Quest stands upon the edge of a knife. Stray but a little, and it will fail"
 			"de"			"Das Abenteuer steht auf der Kante eines Messers. Komm nur ein wenig ab, und es wird scheitern"
 			"tr"			"Macera bıçağın kenarında duruyor. Başıboş ama biraz, ve başarısız olacak"
+			"da"			"Missionen står på en knivsæk. Træd forkert og den fejler"
 		}
 	*/
 
@@ -394,29 +432,35 @@
 	{
 		"en"			"Preferences"
 		"tr"			"Tercihler"
+		"da"			"Præferencer"
 	}
 	
 	"menu_item_reset"
 	{
 		"en"			"Reset my queue points"
 		"tr"			"Sıra puanlarımı sıfırla"
+		"da"			"Nulstil mine kø point"
 	}
 	
 	"menu_item_queue"	// modified
 	{
 		"en"			"Activator queue"
 		"tr"			"Sıra puanlarını listele"
+		"da"			"Aktivatør kø"
 	}
 	
 	"menu_item_help"	// modified
 	{
 		"en"			"Help"
+		"de"			"Hilfe"
+		"tr"			"Yardım"
 	}
 	
 	"menu_item_admin"
 	{
 		"en"			"Admin"		// modified
 		"tr"			"Yönetim Eğlenceli Şeyler"
+		"da"			"Admin"
 	}
 	
 	/*
@@ -425,18 +469,21 @@
 			"#format"		"{1:d}"
 			"en"			"You have {1} queue points"
 			"tr"			"Senin {1} sıra puanın var"
+			"da"			"Du har {1} point"
 		}
 		
 		"menu item commands"
 		{
 			"en"			"Commands"
 			"tr"			"Puanlar"
+			"da"			"Kommandoer"
 		}
 		
 		"menu item admin commands"
 		{
 			"en"			"Admin Commands"
 			"tr"			"Yönetim Komutları"
+			"da"			"Admin Kommandoer"
 		}
 	*/
 	
@@ -448,18 +495,21 @@
 	"menu_item_be_activator"	// modified
 	{
 		"en"			"Become an activator"
+		"da"			"Bliv en aktivator"
 	}
 	
 	"menu_item_dont_be_activator"
 	{
 		"en"			"Don't become an activator"
 		"tr"			"Aktivatör olma"
+		"da"			"Bliv ikke en aktivator"
 	}
 	
 	"menu item toggle english language"		// modified
 	{
 		"en"			"English SourceMod messages\n \n"
 		"tr"			"İngilizce SourceMod çevirilerini değiştir"
+		"da"			"Engelske SourceMod beskeder\n \n"
 	}
 	
 	/*
@@ -467,30 +517,35 @@
 		{
 			"en"			"You currently receive full queue points"
 			"tr"			"Şuanlık tam sıra puanları alacaksın"
+			"da"			"Du modtager nu den fulde mængde point"
 		}
 		
 		"menu fewer queue points"
 		{
 			"en"			"You currently receive fewer queue points"
 			"tr"			"Şuanlık daha az sıra puanları alacaksın"
+			"da"			"Du modtager nu færre point"
 		}
 		
 		"menu item full queue points"
 		{
 			"en"			"Receive full queue points"
 			"tr"			"Tam sıra puanları al"
+			"da"			"Modtag fuld mængde point"
 		}
 		
 		"menu item fewer queue points"
 		{
 			"en"			"Receive fewer queue points"
 			"tr"			"Daha az sıra puanları al"
+			"da"			"Modtag færre point"
 		}
 		
 		"menu not the activator"
 		{
 			"en"			"You currently prefer not to be the activator"
 			"tr"			"Şuanlık aktivatör olmamayı tercih ediyorsun"
+			"da"			"Du foretræker nu ikke at være aktivator"
 		}
 	*/
 	
@@ -503,6 +558,7 @@
 	{
 		"en"			"Are you sure you want to\nreset your queue points?"
 		"tr"			"Sıra puanlarını sıfırlamak\nistediğinden emin misin?"
+		"da"			"Er du sikker på at du vil\nnulstille dine point?"
 	}
 	
 	
@@ -515,12 +571,14 @@
 		{
 			"en"			"sm_points / sm_pts\nShow your queue points in chat\n \n"
 			"tr"			"sm_points / sm_pts\nSenin sıra puanlarını sohbette göster\n \n"
+			"da"			"sm_points / sm_pts\nSe dine point i chatten\n \n"
 		}
 		
 		"menu item command reset"
 		{
 			"en"			"sm_reset\nReset your queue points immediately\n \n"
 			"tr"			"sm_reset\nHemen senin sıra puanlarını sıfırla\n \n"
+			"da"			"sm_reset\nNulstil dine points med det samme\n \n"
 		}
 		
 		"menu item command prefs"
@@ -528,6 +586,7 @@
 			"en"			"sm_prefs\nQuickly change your queue points preference.\n0 = Don't receive queue points,\n1 = Receive fewer queue points,\n2 = Receive full queue points.\n \n"
 			"tr"			"sm_prefs\nHızlıca senin sıra puanları tercihlerini değiştir.\n0 = Sıra puanları alma,\n1 = Daha az sıra puanları al,\n2 = Tam sıra puanları al.\n \n"
 		}
+			"da"			"sm_prefs\nOpdater dine point præferencer hurtigt.\n0 = Modtag ingen point,\n1 = Modtag færre point,\n2 = Modtag den fulde mængde point.\n \n"
 	*/
 	
 	
@@ -539,24 +598,28 @@
 		{
 			"en"			"sm_draward\nAward queue points to a player\n \n"
 			"tr"			"sm_draward\nBir oyuncuya puanlar ödül ver\n \n"
+			"da"			"sm_draward\nTildel point til andre spillere\n \n"
 		}
 		
 		"menu item admin command setclass"
 		{
 			"en"			"sm_setclass\nChange the TF2 class of targets\n \n"
 			"tr"			"sm_setclass\nHedeflerin TF2 sınıfını değiştir\n \n"
+			"da"			"sm_setclass\nÆndre TF2 klassen for personer\n \n"
 		}
 		
 		"menu item admin command drdata"
 		{
 			"en"			"sm_drdata\nShow player data in the console for debugging\n \n"
 			"tr"			"sm_drdata\nOnarmak için oyuncu verisini konsolda göster\n \n"
+			"da"			"sm_drdata\nVis spiller data i konsol for debugging\n \n"
 		}
 	
 		"menu item admin command drscalehealth"
 		{
 			"en"			"sm_drscalehealth\nScale the activator's health up based\non the number of red players alive\n \n"
 			"tr"			"sm_drscalehealth\nAktivatörün canını yaşayan kırmızı oyuncuların sayısına göre ölçekle\n \n"
+			"da"			"sm_drscalehealth\nSkaler aktivatorens liv op baseret\npå mængden af røde spillere i live\n \n"
 		}
 	*/
 	
@@ -569,17 +632,20 @@
 	{
 		"en"			"Scale the activator's health"
 		"tr"			"Aktivatör'ün canını ölçekle"
+		"da"			"Skaler aktivatorens liv"
 	}
 	
 	"menu_item_admin_jetpack_game"
 	{
 		"en"			"Jetpack Game"
 		"tr"			"Jet çantası Oyunu"
+		"da"			"Jetpack Spil"
 	}
 	
 	"menu_item_admin_periodic_slap"	// modified
 	{
 		"en"			"Periodic Slap"
+		"da"			"Periodisk Slap"
 	}
 
 	
@@ -591,12 +657,16 @@
 	{
 		"en"			"Yes"
 		"tr"			"Evet"
+		"de"			"Ja"
+		"da"			"Ja"
 	}
 	
 	"menu_item_no"
 	{
 		"en"			"No"
+		"da"			"Nein"
 		"tr"			"Hayır"
+		"da"			"Nej"
 	}
 	
 	/*
@@ -604,6 +674,7 @@
 		{
 			"en"			"< Back"
 			"tr"			"< Geri"
+			"da"			"< Tilbage"
 		}
 	*/
 
@@ -618,6 +689,7 @@
 		"en"			"Sorry, you can't suicide as an activator or switch teams"
 		"de"			"Entschuldigung, Du kannst als Aktivierer kein suizid begehen oder das Team ändern"
 		"tr"			"Üzgünüm, aktivatör olarak intihar edemez yada takım değiştiremezsin"
+		"da"			"Beklager, du kan ikke begå selvmord eller skrifte hold når du er aktivator"
 	}
 	
 	
@@ -633,6 +705,7 @@
 			"en"			"Your run speed is class default"
 			"de"			"Deine Laufgeschwindigkeit ist dein Klassenstandard"
 			"tr"			"Senin koşma hızın sınıf varsayılanı"
+			"da"			"Din løbshastighed er klasse standard"
 		}
 
 		"red scout double jump disabled"	// Console
@@ -640,6 +713,7 @@
 			"en"			"Red scout double jump has been disabled"
 			"de"			"Doppelsprünge wurden deaktiviert"
 			"tr"			"Kırmızı scout takım çift zıplayışı devre dışı bırakıldı"
+			"da"			"Rød scout dobbelt hop er blevet deaktiveret"
 		}
 		
 		"red spy cloak limited"
@@ -647,6 +721,7 @@
 			"en"			"Red spy cloaks are limited"
 			"de"			"Spion-Unsichtbarkeitsmäntel sind begrenzt"
 			"tr"			"Kırmızı spy saatleri limitlendirildi"
+			"da"			"Rød spion kappe er begrænset"
 		}
 
 		"red demo charge limited"
@@ -654,6 +729,7 @@
 			"en"			"Red demo charges are limited"
 			"de"			"Demo-Sturmangriffe sind begrenzt"
 			"tr"			"Kırmızı demo sarjları limitlendirildi"
+			"da"			"Rød demo mængder er begrænset"
 		}
 		
 		"red demo charge disabled"
@@ -661,6 +737,7 @@
 			"en"			"Red demo charges are turned off"
 			"de"			"Demo-Sturmangriffe sind ausgeschaltet"
 			"tr"			"Kırmızı demo sarjları kapatıldı"
+			"da"			"Rød demo mænder er deaktiveret"
 		}
 	*/
 	
@@ -673,17 +750,20 @@
 	"hud_activators"	// modified
 	{
 		"en"			"Activators"
+		"da"			"Aktivatorer"
 	}
 	
 	/*
 		"hud_overheal"
 		{
 			"en"			"Overheal"
+			"da"			"Overheal"
 		}
 		
 		"hud_health"
 		{
 			"en"			"Health"
+			"da"			"Liv"
 		}
 	*/
 	
@@ -695,5 +775,6 @@
  * 
  * German (de): Izotope
  * Turkish (tr): Berke
+ * Danish (da): ks_goescoding
  */
 }
