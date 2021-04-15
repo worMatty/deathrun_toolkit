@@ -81,24 +81,24 @@
  * ----------------------------------------------------------------------------------------------------
  */
  
-	"name_has_been_made_activator"	// modified
+	"name_has_been_made_activator"
 	{
 		"#format"		"{1:s}"
 		"en"			"{highlight}{1}{default} has been made an activator"
-		"da"			"{highlight}{1}{default} er blevet valgt som aktivator."
+		"da"			"{highlight}{1}{default} er blevet valgt som aktivator"
 	}
 	
-	"name_no_class_moved_spec"	// modified
+	"name_no_class_moved_spec"
 	{
 		"#format"		"{1:s}"
-		"en"			"Moved{highlight}{1}{default} to spectator, as no class was chosen."
-		"da"			"Flyttede{highlight}{1}{default} til spectator, da der ikke blev valgt klasse."
+		"en"			"Moved {highlight}{1}{default} to spectator, as no class was chosen"
+		"da"			"Flyttede {highlight}{1}{default} til spectator, da der ikke blev valgt klasse"
 	}
 	
-	"restarting_round_seconds"	// modified
+	"restarting_round_seconds"
 	{
 		"#format"		"{1:d}"
-		"en"			"Restarting round in {1} seconds"
+		"en"			"Restarting the round in {1} seconds"
 		"da"			"Genstarter runden om {1} sekunder"
 	}
 
@@ -183,13 +183,13 @@
 	}
 	
 	"welcome_player_to_deathrun_toolkit"
-    	{
-        	"#format"        "{1:s}"        // Player name
-        	"en"            "Hello, {1}. This server is running Deathrun Toolkit.\n  Type {highlight}/dr{default} for the menu to change your preferences."
-        	"de"            "Willkommen zu Deathrun Toolkit, {1}. Öffne das Menü mit {highlight}/dr{default}"
-		"tr"		"Merhaba, {1}. Bu sunucu Deathrun Toolkit çalıştırıyor.\n  Menü için {highlight}/dr{default} yazarak senin tercihlerini değiştir."
-		"da"		"Velkommen, {1}. Denne server kører med Deathrun Toolkit.\n Skriv {highlight}/dr{default} i chatten for at ændre din præferencer."
-    	}
+	{
+		"#format"		"{1:s}"		// Player name
+		"en"			"Hello, {1}. This server is running Deathrun Toolkit.\n  Type {highlight}/dr{default} for the menu to change your preferences"
+		"de"			"Willkommen zu Deathrun Toolkit, {1}. Öffne das Menü mit {highlight}/dr{default}"
+		"tr"			"Merhaba, {1}. Bu sunucu Deathrun Toolkit çalıştırıyor.\n  Menü için {highlight}/dr{default} yazarak senin tercihlerini değiştir"
+		"da"			"Velkommen, {1}. Denne server kører med Deathrun Toolkit.\n  Skriv {highlight}/dr{default} i chatten for at ændre din præferencer"
+	}
 	
 	/*
 		"queue points consumed"
@@ -399,7 +399,7 @@
 		"da"			"Hej. Hvordan kan jeg hjælpe dig med døden?"
 	}
 	
-	/* Quarantined lines that are too long
+	/* No longer using these as they are too long
 		"round_has_begun_5"
 		{
 			"en"			"I haven't seen the Round End announcer in some time. Are they still in the business?"
@@ -508,7 +508,7 @@
 	"menu item toggle english language"		// modified
 	{
 		"en"			"English SourceMod messages\n \n"
-		"tr"			"İngilizce SourceMod çevirilerini değiştir"
+		"tr"			"İngilizce SourceMod çevirilerini değiştir\n \n"
 		"da"			"Engelske SourceMod beskeder\n \n"
 	}
 	
@@ -566,7 +566,7 @@
  * Commands Menu // not used anymore
  */
 	 
-	 /*
+	 /* not used anymore so translations aren't necessary
 		"menu item command points"
 		{
 			"en"			"sm_points / sm_pts\nShow your queue points in chat\n \n"
@@ -585,15 +585,15 @@
 		{
 			"en"			"sm_prefs\nQuickly change your queue points preference.\n0 = Don't receive queue points,\n1 = Receive fewer queue points,\n2 = Receive full queue points.\n \n"
 			"tr"			"sm_prefs\nHızlıca senin sıra puanları tercihlerini değiştir.\n0 = Sıra puanları alma,\n1 = Daha az sıra puanları al,\n2 = Tam sıra puanları al.\n \n"
-		}
 			"da"			"sm_prefs\nOpdater dine point præferencer hurtigt.\n0 = Modtag ingen point,\n1 = Modtag færre point,\n2 = Modtag den fulde mængde point.\n \n"
+		}
 	*/
 	
 	
 /**
  * Admin Commands Menu // not used anymore
  */
-	/* 
+	/*
 		"menu item admin command award"
 		{
 			"en"			"sm_draward\nAward queue points to a player\n \n"
