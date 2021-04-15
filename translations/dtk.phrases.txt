@@ -91,13 +91,15 @@
 	"name_no_class_moved_spec"	// modified
 	{
 		"#format"		"{1:s}"
-		"en"			"Flyttede{highlight}{1}{default} til spectator, da der ikke blev valgt klasse."
+		"en"			"Moved{highlight}{1}{default} to spectator, as no class was chosen."
+		"da"			"Flyttede{highlight}{1}{default} til spectator, da der ikke blev valgt klasse."
 	}
 	
 	"restarting_round_seconds"	// modified
 	{
 		"#format"		"{1:d}"
-		"en"			"Genstarter runden om {1} sekunder"
+		"en"			"Restarting round in {1} seconds"
+		"da"			"Genstarter runden om {1} sekunder"
 	}
 
 	/*
