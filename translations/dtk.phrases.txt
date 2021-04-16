@@ -187,6 +187,7 @@
 		"en"			"You've opted out of becoming an activator"
 		"da"			"Du har bedt om aldrig at blive aktivator"
 		"fr"			"Tu as décidé de ne plus être l'activateur"
+		"it"			"Hai scelto di non diventare un attivatore"
 	}
 	
 	"opted_in_activator"	// modified
@@ -194,6 +195,7 @@
 		"en"			"You've opted in to becoming an activator"
 		"da"			"Du har bedt om at blive aktivator"
 		"fr"			"Tu as décidé de devenir l'activateur"
+		"it"			"Hai scelto di diventare un attivatore"
 	}
 	
 	"you_are_an_activator"	// modified
@@ -201,6 +203,7 @@
 		"en"			"You've been made an activator"
 		"da"			"Du er blevet valgt som aktivator"
 		"fr"			"Tu es devenu l'activateur"
+		"it"			"Sei diventato un attivatore"
 	}
 	
 	"welcome_player_to_deathrun_toolkit"
@@ -208,10 +211,10 @@
 		"#format"		"{1:s}"		// Player name
 		"en"			"Hello, {1}. This server is running Deathrun Toolkit.\n  Type {highlight}/dr{default} for the menu to change your preferences"
 		"de"			"Willkommen zu Deathrun Toolkit, {1}. Öffne das Menü mit {highlight}/dr{default}"
-		"it"			"Buongiorno, {1}. Questo server sta eseguendo Deathrun Toolkit.\n  Scrito {highlight}/dr{default}"
+		"it"			"Buongiorno, {1}. Questo server sta eseguendo Deathrun Toolkit.\n  Scrito {highlight}/dr{default} per il menu per cambiare le tue preferenze"
 		"tr"			"Merhaba, {1}. Bu sunucu Deathrun Toolkit çalıştırıyor.\n  Menü için {highlight}/dr{default} yazarak senin tercihlerini değiştir"
 		"da"			"Velkommen, {1}. Denne server kører med Deathrun Toolkit.\n  Skriv {highlight}/dr{default} i chatten for at ændre din præferencer"
-		"fr"			"Bienvenue, {1]. Ce serveur utilise Deathrun Toolkit.\n Ecrit {highlight}/dr{default} pour ouvrir le menu et changer tes paramètres"
+		"fr"			"Bienvenue, {1}. Ce serveur utilise Deathrun Toolkit.\n  Ecrit {highlight}/dr{default} pour ouvrir le menu et changer tes paramètres"
 	}
 	
 	/*
@@ -325,6 +328,7 @@
 		"en"			"Next activator: {highlight}"
 		"da"			"Næste aktivator: {highlight}"
 		"fr"			"Prochain activateur: {highlight}"
+		"it"			"Prossimo attivatore: {highlight}"
 	}
 	
 	/*
@@ -758,6 +762,7 @@
 		"en"			"Periodic Slap"
 		"da"			"Periodisk Slap"
 		"fr"			"Frappe Périodique"
+		"it"			"Slap periodico"
 	}
 
 	
