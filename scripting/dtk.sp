@@ -98,7 +98,6 @@ enum {
 // ConVars
 enum {
 	// Plugin Server Settings
-	P_Version,
 	P_Enabled,
 	P_AutoEnable,
 	P_Debug,

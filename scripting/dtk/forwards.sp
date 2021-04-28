@@ -72,8 +72,8 @@ public void OnPluginStart()
 	LoadTranslations("common.phrases");
 	
 	// Plugin ConVars
-	g_ConVars[P_Version]			= CreateConVar("dtk_version", PLUGIN_VERSION);
-	g_ConVars[P_Enabled]			= CreateConVar("dtk_enabled", "0", "Enable Deathrun Toolkit");
+	CreateConVar("dtk_version", PLUGIN_VERSION, _, FCVAR_NOTIFY);
+	g_ConVars[P_Enabled]			= CreateConVar("dtk_enabled", "0", "Enable Deathrun Toolkit", FCVAR_NOTIFY);
 	g_ConVars[P_AutoEnable]			= CreateConVar("dtk_auto_enable", "1", "Allow the plugin to enable and disable itself based on a map's prefix");
 	g_ConVars[P_Debug]				= CreateConVar("dtk_debug", "0", "Enable verbose plugin action log events in server console to aid debugging");
 	g_ConVars[P_SCR]				= CreateConVar("dtk_source_chat_relay", "1", "Use 'Source Chat Relay' to communicate game mode events to a Discord channel");

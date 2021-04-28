@@ -79,6 +79,18 @@ Use player's own weapons for replacements (TF2 Econ/SZF)
 SetEntProp MI (separate cvar)
 
 
+Version 0.4.2 Plans
+-------------------
+
+Forwards for when an activator is created or removed
+Native for checking player flags
+Native for getting activator queue
+Deal with first round.
+	- Suspend queue points?
+	- Restart round after sixty seconds?
+	- Spawn new connectors for thirty or sixty seconds?
+	- Find a way to restore WFP time?
+
 
 
 
