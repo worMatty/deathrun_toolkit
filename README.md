@@ -6,7 +6,7 @@ What is deathrun?! Have you been living under a rock? It's a game mode where the
 
 ## What is Deathrun Toolkit?
 
-It's a set of plugins for deathrun servers which handle the running of the game mode and optionally fix exploits and make quality of life improvements in older or flawed maps.
+It's a set of plugins for TF2, TF2 Classic and Open Fortress game servers which handle the running of the deathrun game mode and optionally fix exploits and make quality of life improvements in older or flawed maps.
 
 ## Installation
 
@@ -17,7 +17,7 @@ Place dtk.smx in addons/sourcemod/plugins, and dtk.phrases.txt in addons/sourcem
 ### Advanced
 
 Install the weapon restriction files in addons/sourcemod/configs/dtk. Add weapons you wish to restrict to restrictions.cfg.
-Install [Asherkin's TF2 Attributes plugin](https://forums.alliedmods.net/showthread.php?t=210221) to enable the plugin to apply attributes to players and weapons to restrict or modify their abilities. This is necessary for a *lot* of maps to prevent players skipping traps.
+For TF2, install [Asherkin's TF2 Attributes plugin](https://forums.alliedmods.net/showthread.php?t=210221) to enable the plugin to apply attributes to players and weapons to restrict or modify their abilities. This is necessary for a *lot* of maps to prevent players skipping traps. Unfortunately there's no way I know of currently to modify player attributes or aspects in TF2 Classic and Open Fortress, so you will need to seek alternative methods of limiting their abilities.
 
 You can get a list of plugin cvars by typing `sm cvars dtk` or `find dtk` in server console.
 If you only want to use DTK for certain deathrun maps, create a .cfg file in your game server's cfgs dir with the same name as the map. Put `dtk_auto_enable 0` in server.cfg and `dtk_auto_enable 1` in your map config. If you use another deathrun plugin you will need to disable it in your map config and enable it in server.cfg so both plugins aren't running the game mode at the same time.
@@ -48,7 +48,7 @@ The plugin has all the bells and whistles you would expect from a typical deathr
 
 * The plugin prints what killed you in chat
 * The activator can be prevented from suiciding or switching teams
-* It currently has ~~full~~ some Turkish translations and some German
+* There are translations of plugin phrases to a handful of languages
 * It doesn't use on-screen text often so it's unlikely to interfere with map text
 
 ### Server Operator Stuff
@@ -62,7 +62,7 @@ The plugin has all the bells and whistles you would expect from a typical deathr
 
 ## Note About The Current State
 
-Weapon and ability restrictions are work in progress and as a result there are very few restrictions applied by the plugin. All self-damage is negated, which means players can't blast jump. Spies can only cloak for a fraction of a second. Scouts can't double jump but they can use the Force-a-Nature by design as it requires skill.
+Weapon and ability restrictions are work in progress and as a result there are very few restrictions applied by the plugin. All self-damage is negated, which means players can't blast jump. Spies can only cloak for a fraction of a second. Scouts can't double jump but they can use the Force-a-Nature by design as it requires skill. Some player ability adjustments only work in TF2.
 
 Blanket run speed and melee-only are not enabled by default but there are cvars you can add to your config files if projectile weapons or slower classes are a problem in some maps.
 
