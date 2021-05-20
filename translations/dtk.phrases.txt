@@ -987,6 +987,6 @@
  * Danish (da):		ks_goescoding
  * Italian (it):	shockwave
  * French (fr):		LadyBug
- * Estonian (es):	henrio
+ * Estonian (ee):	henrio
  */
 }
