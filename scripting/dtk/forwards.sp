@@ -88,11 +88,14 @@ public void OnPluginStart()
 	g_ConVars[P_LockActivator]		= CreateConVar("dtk_lock_activator", "1", "Prevent activators from suiciding or switching teams. 1 = during round, 2 = also during pre-round");
 		
 	// Player Attributes
-	g_ConVars[P_RedSpeed]			= CreateConVar("dtk_red_speed", "0", "Apply a flat run speed in u/s to all red players");
-	g_ConVars[P_RedScoutSpeed]		= CreateConVar("dtk_red_speed_scout", "0", "Adjust the run speed in u/s of red scouts");
-	g_ConVars[P_RedAirDash]			= CreateConVar("dtk_red_air_dash", "0", "Allow red scout air dash");
+	if (game.IsGame(Mod_TF))
+	{
+		g_ConVars[P_RedSpeed]			= CreateConVar("dtk_red_speed", "0", "Apply a flat run speed in u/s to all red players");
+		g_ConVars[P_RedScoutSpeed]		= CreateConVar("dtk_red_speed_scout", "0", "Adjust the run speed in u/s of red scouts");
+		g_ConVars[P_BlueSpeed]			= CreateConVar("dtk_blue_speed", "0", "Apply a flat run speed in u/s to all blue players");
+		g_ConVars[P_RedAirDash]			= CreateConVar("dtk_red_air_dash", "0", "Allow red scout air dash");
+	}
 	g_ConVars[P_RedMelee]			= CreateConVar("dtk_red_melee", "0", "Restrict red players to melee weapons");
-	g_ConVars[P_BlueSpeed]			= CreateConVar("dtk_blue_speed", "0", "Apply a flat run speed in u/s to all blue players");
 	g_ConVars[P_Buildings]			= CreateConVar("dtk_buildings", "12", "Restrict engineer buildings. Add up these values to make the ConVar value: Sentry = 1, Dispenser = 2, Tele Entrance = 4, Tele Exit = 8");
 	g_ConVars[P_Pushaway]			= CreateConVar("dtk_push_away", "0", "Players push away their team mates");
 	
