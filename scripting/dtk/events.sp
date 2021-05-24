@@ -76,7 +76,7 @@ void Event_RoundRestart(Event event, const char[] name, bool dontBroadcast)
 	}
 	
 	// Hide Health Bar
-	SetHealthBar();
+	RefreshBossHealthHUD();
 	
 	// Begin Redistribution
 	SelectActivators();
@@ -396,7 +396,7 @@ Action Event_PlayerDeath(Event event, const char[] name, bool dontBroadcast)
 	// Boss Health Bar
 	//if (g_ConVars[P_BossBar].BoolValue && victim == g_iBoss)
 	if (Player(victim).IsActivator)
-		SetHealthBar();
+		RefreshBossHealthHUD();
 }
 
 

@@ -1737,14 +1737,15 @@ stock void DBReset(int client)
 #define USE_BOSS_BAR
 
 /**
- * Set the percentage of the boss health bar.
+ * Refresh boss health HUD display elements
  *
- * @param	int	Health
- * @param	int	Max health
  * @noreturn
  */
-void SetHealthBar()
+void RefreshBossHealthHUD()
 {
+	if (!g_ConVars[P_BossBar].BoolValue)
+		return;
+		
 	/*
 		Priority
 		--------
@@ -1879,7 +1880,8 @@ stock void HealthText(const char[] string = "", any ...)
 // TODO Use this to update activator health values in the array without updating the bars
 
 /**
- * Update the boss health bar in response to damage to a client
+ * Update stored health and max health values of client Activator in dynamic array,
+ * then cause boss health HUD to update to reflect changes.
  *
  * @param		int		Client index
  * @noreturn
@@ -1911,7 +1913,7 @@ void UpdateHealthBar(int client)
 		}
 	}
 	
-	SetHealthBar();
+	RefreshBossHealthHUD();
 }
 
 
