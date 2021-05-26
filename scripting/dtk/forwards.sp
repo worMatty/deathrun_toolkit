@@ -312,7 +312,7 @@ public void OnClientDisconnect(int client)
 	if (game.IsBossBarActive && client == g_iBoss)
 	{
 		g_iBoss = -1;
-		SetHealthBar();
+		RefreshBossHealthHUD();
 	}
 	*/
 }

@@ -62,7 +62,7 @@ void Hook_HealthEnts(const char[] output, int caller, int activator, float delay
 		
 		//int percent = RoundToNearest((val / max) * 255);
 		//SetEntProp(healthbar.Index, Prop_Send, "m_iBossHealthPercentageByte", percent);
-		SetHealthBar();
+		RefreshBossHealthHUD();
 	}
 	
 /*	// Fired From logic_relay TODO Replace with logic_case
