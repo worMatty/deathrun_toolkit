@@ -1,13 +1,13 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define DEBUG
-#define PLUGIN_VERSION "0.1"
-#define PREFIX "[DTK +use]"
+//#define DEBUG
+#define PLUGIN_VERSION "0.2"
+#define PLUGIN_NAME "[DTK] QoL +use"
 
 #include <sourcemod>
-#include <sdktools>
-#include <sdkhooks>
+#include <sdktools>		// FindEntityByClassname
+#include <sdkhooks>		// SDK Hooks :facepalm:
 
 
 
@@ -33,7 +33,7 @@ ConVar g_cEnabled;
 
 public Plugin myinfo = 
 {
-	name = "[DTK] QoL +use",
+	name = PLUGIN_NAME,
 	author = "worMatty",
 	description = "A QoL plugin that simulates +use functionality on maps with buttons that only have OnDamaged outputs",
 	version = PLUGIN_VERSION,
@@ -48,7 +48,7 @@ public void OnPluginStart()
 	if (GetFeatureStatus(FeatureType_Native, "SDKHook") != FeatureStatus_Available)
 		SetFailState("DTK QOL +use requires SDKHooks");
 
-	CreateConVar("sm_useinator_version", PLUGIN_VERSION, "+useinatr version.", FCVAR_SPONLY | FCVAR_DONTRECORD | FCVAR_NOTIFY);
+	CreateConVar("dtk_qol_use_version", PLUGIN_VERSION, "Version of DTK QoL +use", FCVAR_SPONLY | FCVAR_DONTRECORD | FCVAR_NOTIFY);
 	
 	g_cEnabled = CreateConVar("dtk_qol_button_use", "0", "Let players +use buttons that normally require damage to press. A problem in some old maps. Resets to 0 on map end");
 	g_cEnabled.AddChangeHook(Hook_ConVar);
@@ -84,7 +84,9 @@ Action Hook_ButtonSpawn(int entity)
 {
 	int spawnflags = GetEntProp(entity, Prop_Data, "m_spawnflags");
 	SetEntProp(entity, Prop_Data, "m_spawnflags", spawnflags | (1024));
-	PrintToServer("%s Button %d has had +use spawnflag enabled", PREFIX, entity);
+#if defined DEBUG
+	PrintToServer("Button %d has had +use spawnflag enabled", entity);
+#endif
 }
 
 
@@ -92,7 +94,28 @@ Action Hook_ButtonSpawn(int entity)
 // Print to server console when the plugin is en/dis-abled
 void Hook_ConVar(ConVar convar, const char[] oldValue, const char[] newValue)
 {
-	PrintToServer("%s Plugin %s. Changes will take effect next round", PREFIX, g_cEnabled.BoolValue ? "enabled" : "disabled");
+	if (g_cEnabled.BoolValue)
+		PrintToServer("%s enabled. Hooking and modifying existing buttons", PLUGIN_NAME);
+	else
+		PrintToServer("%s disabled. Existing buttons still affected", PLUGIN_NAME);
+	
+	if (convar.BoolValue)
+	{
+		PrintToServer("Hooking all existing func_buttons");
+		
+		// Cycle through and hook all buttons
+		int i = -1;
+		while ((i = FindEntityByClassname(i, "func_button")) != -1)
+		{
+			#if defined DEBUG
+			PrintToServer("func_button found with entity index %d. Hooking use output", i);
+			#endif
+			
+			SDKHook(i, SDKHook_UsePost, Hook_ButtonPressed);
+			Hook_ButtonSpawn(i);
+				// Go ahead and change the spawnflags immediately as it's already spawned
+		}
+	}
 }
 
 
@@ -100,6 +123,10 @@ void Hook_ConVar(ConVar convar, const char[] oldValue, const char[] newValue)
 // Button press hook
 Action Hook_ButtonPressed(int entity, int activator, int caller, UseType type, float value)
 {
+#if defined DEBUG
+	PrintToServer("Applying damage to func_button %d", entity);
+#endif
+	
 	// Make the button take damage of 0 value
 	SDKHooks_TakeDamage(entity, activator, activator, 0.0, 0, -1, NULL_VECTOR, NULL_VECTOR);
 }
