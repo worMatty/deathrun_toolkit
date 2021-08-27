@@ -2,8 +2,10 @@
 #pragma newdecls required
 
 //#define DEBUG
+//#define METHOD1
+#define METHOD2
 #define PLUGIN_NAME		"[DTK] QoL TF2C Air Dash"
-#define PLUGIN_VERSION	"0.1"
+#define PLUGIN_VERSION	"0.2"
 
 #include <sourcemod>
 //#include <sdktools>
@@ -50,6 +52,7 @@ public void OnPluginStart()
 
 
 
+#if defined METHOD1
 /**
  * OnPlayerRunCmdPost
  */
@@ -69,8 +72,32 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 		}
 	}
 }
+#endif
 
 
+
+
+#if defined METHOD2
+/**
+ * OnPlayerRunCmdPost
+ */
+public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float vel[3], const float angles[3], int weapon, int subtype, int cmdnum, int tickcount, int seed, const int mouse[2])
+{
+	if (!g_ConVar[C_Enabled].BoolValue)
+		return;
+	
+	if (GetEntProp(client, Prop_Send, "m_iClass") == 1)	// Is scout
+	{
+		if (!(GetEntityFlags(client) & FL_ONGROUND) && !GetEntProp(client, Prop_Send, "m_bAirDash"))	// Is off the ground and air dash variable is false
+		{
+			SetEntProp(client, Prop_Send, "m_bAirDash", 1);
+#if defined DEBUG
+			PrintToChat(client, "Set airdash member variable to TRUE");
+#endif
+		}
+	}
+}
+#endif
 
 
 void Hook_ConVar(ConVar convar, const char[] oldValue, const char[] newValue)
