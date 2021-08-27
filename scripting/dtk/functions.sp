@@ -428,7 +428,7 @@ void ApplyPlayerAttributes(int client)
 
 	Player player = Player(client);
 
-	// Reset player attributes
+	// Reset player attributes TODO Probably best practice to do this separately
 	RemoveAllAttributes(client);
 	
 	// Blue Speed
@@ -459,7 +459,7 @@ void ApplyPlayerAttributes(int client)
 		}
 
 		// Demo Charging
-		if (player.Class == Class_DemoMan)
+		if (player.Class == Class_DemoMan && !g_ConVars[P_EnhancedMobility].BoolValue)
 		{
 			switch (2)
 			{

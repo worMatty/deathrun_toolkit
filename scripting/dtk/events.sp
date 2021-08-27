@@ -179,6 +179,23 @@ void RF_InventoryApplied(int client)
 {
 	Player player = Player(client);
 	
+	// Restrict Items
+	if (g_ConVars[P_RestrictItems].BoolValue)
+		CheckItemRestrictions(player);
+
+	// Melee only
+	if (g_ConVars[P_RedMelee].BoolValue)
+		if (player.Team == Team_Red)
+			player.MeleeOnly();
+	
+	// Boss Health Bar
+	if (game.IsBossBarActive && player.IsActivator)
+		UpdateHealthBar(player.Index);
+				
+}
+
+void CheckItemRestrictions(Player player)
+{
 	for (int i = 0; i < Weapon_ArrayMax; i++)
 	{
 		int weapon = player.GetWeapon(i);
@@ -213,7 +230,7 @@ void RF_InventoryApplied(int client)
 						else
 						{
 							AddAttribute(weapon, attrib, value);
-							PrintToConsole(client, "%s Gave your weapon in slot %d the attribute \"%s\" with value %.2f", PREFIX_SERVER, i, attrib, value);
+							PrintToConsole(player.Index, "%s Gave your weapon in slot %d the attribute \"%s\" with value %.2f", PREFIX_SERVER, i, attrib, value);
 						}
 					}
 					while (g_Restrictions.GotoNextKey());
@@ -244,9 +261,9 @@ void RF_InventoryApplied(int client)
 						{
 							LogError("Weapon replacements > %d > %d > classname key or value not found", player.Class, i);
 						}
-						else if (ReplaceWeapon(client, weapon, id, classname))
+						else if (ReplaceWeapon(player.Index, weapon, id, classname))
 						{
-							PrintToConsole(client, "%s Replaced your weapon in slot %d with a %s (type %d)", PREFIX_SERVER, i, classname, id);
+							PrintToConsole(player.Index, "%s Replaced your weapon in slot %d with a %s (type %d)", PREFIX_SERVER, i, classname, id);
 						}
 					}
 					else
@@ -266,16 +283,6 @@ void RF_InventoryApplied(int client)
 			g_Restrictions.Rewind();
 		}
 	}
-
-	// Melee only
-	if (g_ConVars[P_RedMelee].BoolValue)
-		if (player.Team == Team_Red)
-			player.MeleeOnly();
-	
-	// Boss Health Bar
-	if (game.IsBossBarActive && player.IsActivator)
-		UpdateHealthBar(player.Index);
-				
 }
 
 

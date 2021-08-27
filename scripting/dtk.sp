@@ -36,7 +36,7 @@
  * ----------------------------------------------------------------------------------------------------
  */
 
-#define PLUGIN_VERSION 		"0.4.1"
+#define PLUGIN_VERSION 		"0.4.2"
 #define PLUGIN_NAME			"[DTK] Deathrun Toolkit"
 #define PLUGIN_SHORTNAME 	"Deathrun Toolkit"
 #define PREFIX_SERVER		"[DTK]"
@@ -133,6 +133,9 @@ enum {
 	
 	// Work-in-Progress Features
 	P_BlueBoost,
+	P_RestrictItems,
+	P_EnhancedMobility,
+	P_ExtraMobility,
 	
 	ConVars_Max
 }

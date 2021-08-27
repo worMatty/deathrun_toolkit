@@ -118,6 +118,9 @@ public void OnPluginStart()
 	// Work-in-Progress Features
 	if (game.IsGame(Mod_TF))
 		g_ConVars[P_BlueBoost]		= CreateConVar("dtk_wip_blue_boost", "0", "Allow activators to sprint using the +speed key bind");
+	g_ConVars[P_RestrictItems]		= CreateConVar("dtk_wip_restrict_items", "1", "Toggle item restrictions");
+	g_ConVars[P_EnhancedMobility]	= CreateConVar("dtk_wip_enhanced_mobility", "0", "Toggle enhanced mobility such as charging");
+	g_ConVars[P_ExtraMobility]		= CreateConVar("dtk_wip_extra_mobility", "0", "Toggle extra mobility such as blast jumping and rocket pack");
 	
 	// Cycle through and hook each ConVar
 	for (int i = 0; i < ConVars_Max; i++)

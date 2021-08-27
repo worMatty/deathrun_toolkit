@@ -17,7 +17,7 @@ Action Hook_OnTakeDamage(int victim, int& attacker, int& inflictor, float& damag
 	}
 	
 	// Blast Pushing / Self Damage
-	if (attacker == victim)
+	if (attacker == victim && !g_ConVars[P_ExtraMobility].BoolValue)
 	{
 		damage = 0.0;		// Negate all self damage
 		changed = true;
