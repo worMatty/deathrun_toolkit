@@ -459,16 +459,16 @@ void ApplyPlayerAttributes(int client)
 		}
 
 		// Demo Charging
-		if (player.Class == Class_DemoMan && !g_ConVars[P_EnhancedMobility].BoolValue)
+		if (player.Class == Class_DemoMan)
 		{
-			switch (2)
+			switch (g_ConVars[P_EnhancedMobility].IntValue)
 			{
 				case 0:
 				{
 					AddAttribute(client, "charge time decreased", -1000.0);
 					AddAttribute(client, "charge recharge rate increased", 0.0);
 				}
-				case 2:
+				case 1:
 				{
 					AddAttribute(client, "charge time decreased", -0.95);
 					AddAttribute(client, "charge recharge rate increased", 0.2);

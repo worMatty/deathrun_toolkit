@@ -36,7 +36,7 @@
  * ----------------------------------------------------------------------------------------------------
  */
 
-#define PLUGIN_VERSION 		"0.4.2"
+#define PLUGIN_VERSION 		"0.4.3"
 #define PLUGIN_NAME			"[DTK] Deathrun Toolkit"
 #define PLUGIN_SHORTNAME 	"Deathrun Toolkit"
 #define PREFIX_SERVER		"[DTK]"
