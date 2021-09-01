@@ -209,9 +209,12 @@ void CheckItemRestrictions(Player player)
 		char key[16];
 		IntToString(item, key, sizeof(key));
 		
-		if (g_Restrictions != null && g_Restrictions.JumpToKey(key))	// Item exists
+		// Check if the item is in the restrictions config
+		if (g_Restrictions != null && g_Restrictions.JumpToKey(key))
 		{
-			if (g_bTF2Attributes && g_Restrictions.JumpToKey("attributes"))	// Give Attributes
+			
+			// Check if the item is to be given attributes
+			if (g_bTF2Attributes && g_Restrictions.JumpToKey("attributes"))
 			{
 				if (g_Restrictions.GotoFirstSubKey())
 				{
@@ -239,11 +242,12 @@ void CheckItemRestrictions(Player player)
 					LogError("Weapon restrictions > %d > attributes > No attribute sections found", item);
 			}
 			
-			else if (g_Replacements != null && g_Restrictions.JumpToKey("replace"))	// Replace Weapon
+			// Check if the item should be replaced
+			else if (g_Replacements != null && g_Restrictions.JumpToKey("replace"))
 			{
 				IntToString(player.Class, key, sizeof(key));
 				
-				if (g_Replacements.JumpToKey(key))	// Player Class
+				if (g_Replacements.JumpToKey(key)) // Player Class
 				{
 					IntToString(i, key, sizeof(key));
 					
@@ -275,6 +279,16 @@ void CheckItemRestrictions(Player player)
 				g_Replacements.Rewind();
 			}
 			
+			// Check if the item should be removed
+			else if (g_Restrictions.JumpToKey("remove"))	// Remove Weapon
+			{
+				if (AcceptEntityInput(weapon, "Kill"))
+				{
+					PrintToConsole(player.Index, "%s Removed your weapon in slot %d", PREFIX_SERVER, i);
+				}
+			}
+			
+			// The item exists in the config but there are no valid actions
 			else
 			{
 				LogError("Weapon restrictions > %d > No valid actions found", item);
