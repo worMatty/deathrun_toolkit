@@ -1,0 +1,24 @@
+Wearables
+=========
+
+Mikusch uses an SDKCall to get a wearable index. It uses a virtual function.
+
+I don't want to have to rely on game data so I will find an alternative method.
+
+
+Research
+--------
+
+Searching netprops for 'wearable':
+
+There is a player table named m_hMyWearables. Can it be used like the ammo table system?
+
+The base class seems to be CEconWearable.
+
+Weapons seem to have two properties named m_hExtraWearable and m_hExtraWearableViewModel.
+
+
+m_hMyWearables
+--------------
+
+The table has eight rows (members) which are ints of 21 bits each. Could these be IDIs?

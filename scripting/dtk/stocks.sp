@@ -1,4 +1,46 @@
+
 #define MAX_CHAT_MESSAGE		255
+
+// Life States
+//enum {
+	//LifeState_Alive,		// alive
+	//LifeState_Dying,		// playing death animation or still falling off of a ledge waiting to hit ground
+	//LifeState_Dead,			// dead. lying still.
+	//LifeState_Respawnable,
+	//LifeState_DiscardBody,
+//}
+
+// Default Class Run Speeds
+enum {
+	RunSpeed_NoClass = 0,
+	RunSpeed_Scout = 400,
+	RunSpeed_Sniper = 300,
+	RunSpeed_Soldier = 240,
+	RunSpeed_DemoMan = 280,
+	RunSpeed_Medic = 320,
+	RunSpeed_Heavy = 230,
+	RunSpeed_Pyro = 300,
+	RunSpeed_Spy = 320,
+	RunSpeed_Engineer = 300,
+	RunSpeed_Merc = 320,
+	RunSpeed_Civ = 280
+}
+
+// Default Class Health
+enum {
+	Health_NoClass = 50,
+	Health_Scout = 125,
+	Health_Sniper = 125,
+	Health_Soldier = 200,
+	Health_DemoMan = 175,
+	Health_Medic = 150,
+	Health_Heavy = 300,
+	Health_Pyro = 175,
+	Health_Spy = 125,
+	Health_Engineer = 125,
+	Health_Merc = 150,
+	Health_Civ = 200
+}
 
 
 /**
@@ -58,6 +100,60 @@ stock int ProcessClassString(const char[] string)
 
 
 
+stock int GetTFClassRunSpeed(TFClassType class)
+{
+	int runspeeds[] =
+	{
+		RunSpeed_NoClass,
+		RunSpeed_Scout,
+		RunSpeed_Sniper,
+		RunSpeed_Soldier,
+		RunSpeed_DemoMan,
+		RunSpeed_Medic,
+		RunSpeed_Heavy,
+		RunSpeed_Pyro,
+		RunSpeed_Spy,
+		RunSpeed_Engineer,
+		RunSpeed_Merc
+	};
+	
+	char folder[32];
+	GetGameFolderName(folder, sizeof(folder));
+	if (StrEqual(folder, "tf2classic")) runspeeds[10] = RunSpeed_Civ;
+	
+	return runspeeds[view_as<int>(class)];
+	
+}
+
+
+
+stock int GetTFClassHealth(TFClassType class)
+{
+	int health[] =
+	{
+		Health_NoClass,
+		Health_Scout,
+		Health_Sniper,
+		Health_Soldier,
+		Health_DemoMan,
+		Health_Medic,
+		Health_Heavy,
+		Health_Pyro,
+		Health_Spy,
+		Health_Engineer,
+		Health_Merc
+	};
+	
+	char folder[32];
+	GetGameFolderName(folder, sizeof(folder));
+	if (StrEqual(folder, "tf2classic")) health[10] = Health_Civ;
+	
+	return health[view_as<int>(class)];
+	
+}
+
+
+
 
 /**
  * Players & Teams
@@ -72,7 +168,7 @@ stock int ProcessClassString(const char[] string)
  */
 stock int PickRandomTeamMember(int team)
 {
-	int table[MaxClients];
+	int[] table = new int[MaxClients];
 	int index;
 	
 	for (int i = 1; i <= MaxClients; i++)
@@ -96,24 +192,27 @@ stock int PickRandomTeamMember(int team)
  * 
  * @noreturn
  */
-stock void RespawnTeamsUsingEntity(int team = 0)
+stock bool RespawnTeamsUsingEntity(int team = 0)
 {
 	int ent = CreateEntityByName("game_forcerespawn");
-	
+	bool result;
+
 	if (ent != -1 && DispatchSpawn(ent))
 	{
 		if (!team)
 		{
-			AcceptEntityInput(ent, "ForceRespawn");
+			result = AcceptEntityInput(ent, "ForceRespawn");
 		}
 		else
 		{
 			SetVariantInt(team);
-			AcceptEntityInput(ent, "ForceTeamRespawn");
+			result = AcceptEntityInput(ent, "ForceTeamRespawn");
 		}
 
 		AcceptEntityInput(ent, "Kill");
 	}
+	
+	return result;
 }
 
 
@@ -160,15 +259,12 @@ stock void CleanString(char[] buffer)
 /**
  * Check if an entity is a client
  *
- * @param		int		Entity
- * @return		bool	True if ent is a client
+ * @param	entity	Entity index
+ * @return	True if entity is a client, false otherwise
  */
 stock bool IsClient(int entity)
 {
-	if (entity > 0 && entity <= MaxClients)
-		return true;
-	else
-		return false;
+	return (0 < entity <= MaxClients);
 }
 
 
@@ -263,7 +359,9 @@ stock bool Trace_AreEntsInLOS(int entity, int contentsMask, int ent1)
 stock bool AddAttribute(int entity, char[] attribute, float value = 1.0)
 {
 	// Return false if game is not TF2 as only TF2 supports attributes
-	if (!game.IsGame(Mod_TF))
+	char folder[8];
+	GetGameFolderName(folder, sizeof(folder));
+	if (!StrEqual(folder, "tf"))
 		return false;
 	
 	// TF2 Attributes plugin is now required
@@ -324,7 +422,7 @@ stock bool RemoveAllAttributes(int entity)
  */
 stock bool AddAttributeTrigger(int entity, char[] attribute, float value = 1.0, float duration = -1.0, bool remove = false)
 {
-	if (!game.IsGame(Mod_TF))
+	if (!DRGame.IsGame(Mod_TF))
 		return false;
 	
 	else if (entity > 0 && entity <= MaxClients)	// Attribute trigger only works on players
@@ -390,43 +488,207 @@ stock bool RemoveAttributeTrigger(int client, char[] attribute)
 
 
 /**
+ * Messages
+ * ----------------------------------------------------------------------------------------------------
+ */
+
+/**
  * Show a training annotation to a player
  *
- * @param		int		Client index
- * @param		int		Entity the message appears above
- * @param		char	Sound file to give the event
- * @param		char	Formatting rules
- * @param		...		Variable number of formatting arguments
- * @error				Client not in game
- * @noreturn
+ * @param	client	Client who will see the annotation
+ * @param	entity	Entity the message appears above
+ * @param	sound	Sound file that will be played to the client when the event is fired
+ * @param	format	Formatting rules
+ * @param	...		Variable number of formatting parameters
+ * @error	Client not in game
+ * @return	Event created
  */
-stock bool ShowAnnotation(int client, int entity, const char[] sound = "", const char[] string, any...)
+stock bool ShowAnnotation(int client, int entity, const char[] sound = "", const char[] format, any...)
 {
-	Event hAnnot = CreateEvent("show_annotation");
+	Event annotation = CreateEvent("show_annotation");
 	
-	if (!hAnnot)
+	if (!annotation)
 		return false;
 	
-	hAnnot.SetBool("show_effect", false);
-	hAnnot.SetInt("follow_entindex", entity);
-	hAnnot.SetFloat("lifetime", 5.0);
-	
-	// Set sound
-/*	if (sound[0])
-		hAnnot.SetString("play_sound", sound);
-	else
-		hAnnot.SetString("play_sound", "common/null.wav");
-*/	hAnnot.SetString("play_sound", sound[0] ? sound : "common/null.wav");
-
-	int len = strlen(string) + 255;
-	char[] buffer = new char[len];
+	char buffer[256];
 	SetGlobalTransTarget(client);
-	VFormat(buffer, len, string, 4);
+	VFormat(buffer, sizeof(buffer), format, 4);
 	
-	hAnnot.SetString("text", buffer);
-	hAnnot.FireToClient(client);
-	hAnnot.Cancel();
+	annotation.SetBool("show_effect", false);
+	annotation.SetInt("follow_entindex", entity);
+	annotation.SetFloat("lifetime", 5.0);
+	annotation.SetString("play_sound", sound[0] ? sound : "common/null.wav");
+	annotation.SetString("text", buffer);
+	annotation.FireToClient(client);
+	annotation.Cancel();
+	
 	return true;
+}
+
+
+
+
+/**
+ * Sends a SayText2 User Message to a client which team-colours text when \x02 or \x03 are used in the string.
+ *
+ * @param	client			Recipient client index
+ * @param	colorClient		Team-coloured text will use this client's team, or light green if left blank
+ * @param	format			Formatting rules
+ * @param	any				Variable number of formatting parameters
+ *
+ * Guidelines: colorClient should not be used to colour the recipient's name, and they should not be referred to in the third person.
+ * This parameter should be used to colour the name of another client who has done something the recipient needs to be aware of.
+ * For example, they are the recipient's killer, or they granted them a bonus or performed some action.
+  */
+stock void TF2_PrintToChat(int client, int colorClient = 0, const char[] format, any ...)
+{
+	char buffer[254];
+	SetGlobalTransTarget(client);
+	VFormat(buffer, sizeof(buffer), format, 4);
+	
+	BfWrite message = UserMessageToBfWrite(StartMessageOne("SayText2", client, USERMSG_RELIABLE|USERMSG_BLOCKHOOKS));
+	
+	if (message != null)
+	{
+		message.WriteByte(colorClient);
+		message.WriteByte(true);		// bChat?
+		message.WriteString(buffer);
+		
+		EndMessage();
+	}
+	else
+	{
+		PrintToChat(client, buffer);
+	}
+}
+
+
+
+/**
+ * Sends a SayText2 User Message to a client which team-colours text when \x02 or \x03 are used in the string.
+ * Additionally specify up to two Source translation keys, and the game will translate them into the user's local language.
+ *
+ * @param	client			Recipient client index
+ * @param	colorClient		Team-coloured text will use this client's team, or light green if left blank
+ * @param	translate1		Source translation key
+ * @param	translate2		Source translation key
+ * @param	format			Formatting rules
+ * @param	any				Variable number of formatting parameters
+ *
+ * Guidelines: colorClient should not be used to colour the recipient's name, and they should not be referred to in the third person.
+ * This parameter should be used to colour the name of another client who has done something the recipient needs to be aware of.
+ * For example, they are the recipient's killer, or they granted them a bonus or performed some action.
+ */
+stock void TF2_PrintToChatEx(int client, int colorClient = 0, const char[] translation1 = "", const char[] translation2 = "", const char[] format, any ...)
+{
+	BfWrite message = UserMessageToBfWrite(StartMessageOne("SayText2", client, USERMSG_RELIABLE|USERMSG_BLOCKHOOKS));
+	
+	if (message != null)
+	{
+		SetGlobalTransTarget(client);
+		char buffer[254];
+		VFormat(buffer, sizeof(buffer), format, 6);
+		
+		message.WriteByte(colorClient);
+		message.WriteByte(true);
+		message.WriteString(buffer)
+
+		message.WriteString("");
+		message.WriteString("");
+		message.WriteString(translation1);
+		message.WriteString(translation2);
+		
+		/*
+			This works like a format function.
+			We supply a format string first, and any formatting parameters afterwards.
+			String parameters three and four are translated.
+		*/
+		
+		EndMessage();
+	}
+}
+
+
+
+
+/**
+ * Sends a SayText2 User Message to a client which team-colours text when \x02 or \x03 are used in the string.
+ * If the command was issued from the console, the reply is sent there.
+ * 
+ * @param	client			Recipient client index
+ * @param	colorClient		Team-coloured text will use this client's team, or light green if left blank
+ * @param	format			Formatting rules
+ * @param	any				Variable number of formatting parameters
+ *
+ * Guidelines: colorClient should not be used to colour the recipient's name, and they should not be referred to in the third person.
+ * This parameter should be used to colour the name of another client who has done something the recipient needs to be aware of.
+ * For example, they are the recipient's killer, or they granted them a bonus or performed some action.
+ */
+stock void TF2_ReplyToCommand(int client, int colorClient = 0, const char[] format, any ...)
+{
+	char buffer[254];
+	SetGlobalTransTarget(client);
+	VFormat(buffer, sizeof(buffer), format, 4);
+
+	if (GetCmdReplySource() == SM_REPLY_TO_CONSOLE)
+	{
+		PrintToConsole(client, buffer);
+		return;
+	}
+
+	BfWrite message = UserMessageToBfWrite(StartMessageOne("SayText2", client, USERMSG_RELIABLE|USERMSG_BLOCKHOOKS));
+	
+	if (message != null)
+	{
+		message.WriteByte(colorClient);
+		message.WriteByte(true);		// bChat?
+		message.WriteString(buffer);
+		
+		EndMessage();
+	}
+	else
+	{
+		PrintToChat(client, buffer);
+	}
+}
+
+
+
+
+/**
+ * Sends a SayText2 User Message to all client which team-colours text when \x02 or \x03 are used in the string.
+ * 
+ * @param	colorClient		Team-coloured text will use this client's team, or light green if left blank
+ * @param	format			Formatting rules
+ * @param	any				Variable number of formatting parameters
+  */
+stock void TF2_PrintToChatAll(int colorClient = 0, const char[] format, any ...)
+{
+	char buffer[254];
+	
+	for (int client = 1; client <= MaxClients; client++)
+	{
+		if (IsClientInGame(client))
+		{
+			SetGlobalTransTarget(client);
+			VFormat(buffer, sizeof(buffer), format, 3);
+			
+			BfWrite message = UserMessageToBfWrite(StartMessageOne("SayText2", client, USERMSG_RELIABLE|USERMSG_BLOCKHOOKS));
+			
+			if (message != null)
+			{
+				message.WriteByte(colorClient);
+				message.WriteByte(true);
+				message.WriteString(buffer);
+				
+				EndMessage();
+			}
+			else
+			{
+				PrintToChat(client, buffer);
+			}
+		}
+	}
 }
 
 

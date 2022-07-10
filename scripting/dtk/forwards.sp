@@ -10,15 +10,15 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 	
 	GetGameFolderName(game_folder, sizeof(game_folder));
 	
-	if 		(StrEqual(game_folder, "tf"))				game.SetGame(Mod_TF);
-	else if (StrEqual(game_folder, "open_fortress"))	game.SetGame(Mod_OF);
-	else if (StrEqual(game_folder, "tf2classic"))		game.SetGame(Mod_TF2C);
+	if 		(StrEqual(game_folder, "tf"))				DRGame.SetGame(Mod_TF);
+	else if (StrEqual(game_folder, "open_fortress"))	DRGame.SetGame(Mod_OF);
+	else if (StrEqual(game_folder, "tf2classic"))		DRGame.SetGame(Mod_TF2C);
 	else	LogError("DTK is designed for TF2. Some things may not work!");
 	
 	MarkNativeAsOptional("Steam_SetGameDescription");
 	MarkNativeAsOptional("SCR_SendEvent");
 	
-	if (late) game.AddFlag(GF_LateLoad);
+	if (late) DRGame.AddFlag(GF_LateLoad);
 	
 	return APLRes_Success;
 }
@@ -62,10 +62,7 @@ void LibraryChanged(const char[] name, bool loaded)
 
 
 
-
-/**
- * OnPluginStart
- */
+// OnPluginStart - also called on late load
 public void OnPluginStart()
 {
 	LoadTranslations("dtk.phrases");
@@ -78,7 +75,7 @@ public void OnPluginStart()
 	g_ConVars[P_Debug]				= CreateConVar("dtk_debug", "0", "Enable verbose plugin action log events in server console to aid debugging");
 	g_ConVars[P_SCR]				= CreateConVar("dtk_source_chat_relay", "1", "Use 'Source Chat Relay' to communicate game mode events to a Discord channel");
 	g_ConVars[P_MapInstructions]	= CreateConVar("dtk_map_instructions", "1", "Allow maps to alter player properties and weapons on demand for game play purposes");
-	g_ConVars[P_Description]		= CreateConVar("dtk_game_description", "{plugin_name} | {plugin_version}", "Game description that appears in the server browser when the game mode is enabled. Leave blank to not change it at all. {plugin_name} and {plugin_version} will be filled in by the plugin");
+	g_ConVars[P_Description]		= CreateConVar("dtk_game_description", "{plugin_name} | {plugin_version}", "Game description that appears in the server browser when the DRGame mode is enabled. Leave blank to not change it at all. {plugin_name} and {plugin_version} will be filled in by the plugin");
 	
 	g_ConVars[P_ChatKillFeed]		= CreateConVar("dtk_kill_feed", "1", "Tell clients which entity killed them in chat");
 	g_ConVars[P_RoundStartMessage]	= CreateConVar("dtk_round_start_message", "1", "Show round start messages in chat");
@@ -88,7 +85,7 @@ public void OnPluginStart()
 	g_ConVars[P_LockActivator]		= CreateConVar("dtk_lock_activator", "1", "Prevent activators from suiciding or switching teams. 1 = during round, 2 = also during pre-round");
 		
 	// Player Attributes
-	if (game.IsGame(Mod_TF))
+	if (DRGame.IsGame(Mod_TF))
 	{
 		g_ConVars[P_RedSpeed]			= CreateConVar("dtk_red_speed", "0", "Apply a flat run speed in u/s to all red players");
 		g_ConVars[P_RedScoutSpeed]		= CreateConVar("dtk_red_speed_scout", "0", "Adjust the run speed in u/s of red scouts");
@@ -107,7 +104,7 @@ public void OnPluginStart()
 	g_ConVars[S_WFPTime]			= FindConVar("mp_waitingforplayers_time");
 	
 	// Mod-specific ConVars
-	if (game.IsGame(Mod_OF))
+	if (DRGame.IsGame(Mod_OF))
 		g_ConVars[S_Pushaway]	 	= FindConVar("of_teamplay_collision");
 	else
 	{
@@ -116,7 +113,7 @@ public void OnPluginStart()
 	}
 	
 	// Work-in-Progress Features
-	if (game.IsGame(Mod_TF))
+	if (DRGame.IsGame(Mod_TF))
 		g_ConVars[P_BlueBoost]		= CreateConVar("dtk_wip_blue_boost", "0", "Allow activators to sprint using the +speed key bind");
 	g_ConVars[P_RestrictItems]		= CreateConVar("dtk_wip_restrict_items", "1", "Toggle item restrictions");
 	g_ConVars[P_EnhancedMobility]	= CreateConVar("dtk_wip_enhanced_mobility", "0", "Set enhanced mobility level 0-2 (charging)", _, true, 0.0, true, 2.0);
@@ -128,21 +125,23 @@ public void OnPluginStart()
 			g_ConVars[i].AddChangeHook(ConVar_ChangeHook);
 	
 	// Commands
-	RegConsoleCmd("sm_drmenu", Command_Menu, "Open the deathrun menu");
-	RegConsoleCmd("sm_dr", Command_Menu, "Open the deathrun menu");
-	RegConsoleCmd("sm_drtoggle", Command_ToggleActivator, "Toggle activator preference");
-	RegConsoleCmd("sm_points", Command_ShowPoints, "Print your deathrun queue points to chat");
-	RegConsoleCmd("sm_pts", Command_ShowPoints, "Print your deathrun queue points to chat");
-	RegConsoleCmd("sm_reset", Command_ResetPoints, "Reset your deathrun queue points");
-	RegConsoleCmd("sm_na", Command_NextActivators, "Show the next activator(s) in chat");
-	RegConsoleCmd("sm_drhelp", Command_Help, "Open the help page");
+	RegConsoleCmd("sm_dr", 			Command_Menu, 				"Open the deathrun menu");
+	RegConsoleCmd("sm_drmenu", 		Command_Menu, 				"Open the deathrun menu");
+	RegConsoleCmd("sm_drtoggle",	Command_ToggleActivator, 	"Toggle activator preference");
+	RegConsoleCmd("sm_points", 		Command_ShowPoints, 		"Print your deathrun queue points to chat");
+	RegConsoleCmd("sm_pts", 		Command_ShowPoints, 		"Print your deathrun queue points to chat");
+	RegConsoleCmd("sm_reset", 		Command_ResetPoints, 		"Reset your deathrun queue points");
+	RegConsoleCmd("sm_na", 			Command_NextActivators, 	"Show the next activator(s) in chat");
+	RegConsoleCmd("sm_drnext", 		Command_NextActivators, 	"Show the next activator(s) in chat");
+	RegConsoleCmd("sm_drhelp", 		Command_Help, 				"Open the help page");
 	
 	// Admin Commands
-	RegAdminCmd("sm_setclass", AdminCommand_SetClass, ADMFLAG_SLAY, "Immediately change a player's class");
-	RegAdminCmd("sm_setspeed", AdminCommand_SetSpeed, ADMFLAG_SLAY, "Immediately change a player's run speed. Work-in-progress, may not function");
-	RegAdminCmd("sm_draward", AdminCommand_AwardPoints, ADMFLAG_SLAY, "Grant a player a quantity of queue points");
-	RegAdminCmd("sm_drresetdatabase", AdminCommand_ResetDatabase, ADMFLAG_CONVARS|ADMFLAG_CONFIG|ADMFLAG_RCON, "Drop the DTK database table");
-	RegAdminCmd("sm_drresetuser", AdminCommand_ResetUser, ADMFLAG_CONVARS|ADMFLAG_CONFIG|ADMFLAG_RCON, "Deletes a player's data from the DTK database table. They will be treated as a new player");
+	RegAdminCmd("sm_setclass", 					AdminCommand_SetClass, 			ADMFLAG_SLAY, "Immediately change a player's class");
+	RegAdminCmd("sm_setspeed", 					AdminCommand_SetSpeed, 			ADMFLAG_SLAY, "Immediately change a player's run speed. Work-in-progress, may not function");
+	RegAdminCmd("sm_draward", 					AdminCommand_AwardPoints, 		ADMFLAG_SLAY, "Grant a player a quantity of queue points");
+	RegAdminCmd("dtk_remove_database_table", 	AdminCommand_RemoveDBTable, 	ADMFLAG_CONVARS|ADMFLAG_CONFIG|ADMFLAG_RCON, "Drop (delete) the DTK table from your SQLite database");
+	RegAdminCmd("dtk_remove_database_user", 	AdminCommand_RemoveDBUser, 		ADMFLAG_CONVARS|ADMFLAG_CONFIG|ADMFLAG_RCON, "Deletes a player's data from the DTK database table. They will be treated as a new player");
+	RegAdminCmd("dtk_reload_configs",		 	AdminCommand_ReloadConfigs, 	ADMFLAG_CONVARS|ADMFLAG_CONFIG|ADMFLAG_RCON, "Reload DTK config files");
 	
 	// Debug Commands
 	RegAdminCmd("sm_drdata", AdminCommand_PlayerData, ADMFLAG_SLAY, "Print internal data about client flags to your console, for debugging");
@@ -151,24 +150,32 @@ public void OnPluginStart()
 	g_hSounds = BuildSoundList();
 	
 	// Load Restriction System Configs
-	LoadKVFiles();
-	
-	// Construct Activator ArrayList
-	g_Activators 	= new ArrayList(AL_Max);
-	g_NPCs 			= new ArrayList(AL_Max);
+	LoadConfigs();
 	
 	// Announce Plugin Load
 	PrintToServer("%s %s has loaded", PLUGIN_NAME, PLUGIN_VERSION);
 }
 
 
+public void OnPluginEnd()
+{
+	// Save Player Data
+	if (g_db != null)
+	{
+		for (int i = 1; i <= MaxClients; i++)
+		{
+			if (Player(i).InGame && !Player(i).IsBot)
+				Player(i).SaveData();
+		}
+	}
+	
+	g_ConVars[P_Enabled].SetBool(false);
+}
 
 
-/**
- * OnMapStart
- *
- * Also Called on Late Load
- */
+
+
+// OnMapStart - also called on late load
 public void OnMapStart()
 {
 	// Database Maintenance
@@ -179,10 +186,10 @@ public void OnMapStart()
 	g_iTickTimer = 0;
 	
 	// Round State Reset
-	game.RoundState = Round_Waiting;
+	DRGame.RoundState = Round_Waiting;
 	
 	// Late Loading
-	if (game.HasFlag(GF_LateLoad))
+	if (DRGame.HasFlag(GF_LateLoad))
 	{
 		// Initialise Player Data Array
 		for (int i = 1; i <= MaxClients; i++)
@@ -202,18 +209,22 @@ public void OnMapStart()
 			}
 		}
 		
-		game.RemoveFlag(GF_LateLoad);
+		DRGame.RemoveFlag(GF_LateLoad);
 	}
+}
+
+
+public void OnMapEnd()
+{
+	delete g_db;
+	
+	if (g_ConVars[P_Enabled].BoolValue)
+		g_ConVars[P_Enabled].SetBool(false);
 }
 
 
 
 
-/**
- * OnConfigsExecuted
- *
- * Execute config_deathrun.cfg when all other configs have loaded.
- */
 public void OnConfigsExecuted()
 {
 	// Detect deathrun maps
@@ -236,44 +247,6 @@ public void OnConfigsExecuted()
 
 
 
-/**
- * OnMapEnd
- */
-public void OnMapEnd()
-{
-	delete g_db;
-	
-	if (g_ConVars[P_Enabled].BoolValue)
-		g_ConVars[P_Enabled].SetBool(false);
-}
-
-
-
-
-/**
- * OnPluginEnd
- */
-public void OnPluginEnd()
-{
-	// Save Player Data
-	if (g_db != null)
-	{
-		for (int i = 1; i <= MaxClients; i++)
-		{
-			if (Player(i).InGame && !Player(i).IsBot)
-				Player(i).SaveData();
-		}
-	}
-	
-	g_ConVars[P_Enabled].SetBool(false);
-}
-
-
-
-
-/**
- * OnClientAuthorized
- */
 public void OnClientAuthorized(int client, const char[] auth)
 {
 	Player(client).CheckPlayer();
@@ -282,9 +255,6 @@ public void OnClientAuthorized(int client, const char[] auth)
 
 
 
-/**
- * OnClientPutInServer
- */
 public void OnClientPutInServer(int client)
 {
 	if (!g_ConVars[P_Enabled].BoolValue)
@@ -298,34 +268,16 @@ public void OnClientPutInServer(int client)
 
 
 
-/**
- * OnClientDisconnect
- */
 public void OnClientDisconnect(int client)
 {
 	// Save Player Data
 	if (g_db != null && !Player(client).IsBot)
 		Player(client).SaveData();
-
-	if (!g_ConVars[P_Enabled].BoolValue)
-		return;
-	
-	// Hide Health Bar if Client Was Boss
-	/*
-	if (game.IsBossBarActive && client == g_iBoss)
-	{
-		g_iBoss = -1;
-		RefreshBossHealthHUD();
-	}
-	*/
 }
 
 
 
 
-/**
- * OnPlayerRunCmdPost
- */
 public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float vel[3], const float angles[3], int weapon, int subtype, int cmdnum, int tickcount, int seed, const int mouse[2])
 {
 	if (!g_ConVars[P_Enabled].BoolValue)
@@ -336,6 +288,17 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 	
 	// Monitor and apply activator boosts
 	ActivatorBoost(client, buttons, tickcount);
+}
+
+
+
+
+public void OnGameFrame()
+{
+	if (!g_ConVars[P_Enabled].BoolValue)
+		return;
+		
+	BossBar_Check();
 }
 
 

@@ -8,71 +8,32 @@
 	Phrases which have been modified since they were translated will have 'modified' in a comment after them.
 	
 
-	About Colour
-	------------
+	Coloured Text Guidelines
+	------------------------
 	
-	The colour of chat is set by inserting an ASCII control character and a six or eight character
-	hexadecimal value before the chat. When using eight characters, the last two are for
-	alpha transparency. You can type the control characters in Windows by holding Alt and pressing
-	specific numerical key pad keys. https://www.ascii-code.com/
+	Radio and chat strings can have control characters embedded to set colors.
+	For the control characters to be used, one must be at the start of the string.
+	The control characters can be copied and pasted in notepad or typed on the numerical keypad
+	by holding Alt then pressing the numbers in sequence. e.g. Alt + 01 = .
+
+	 = 0x02 (STX) - Use team color up to the end of the player name.
+		This only works at the start of the string, and precludes using the other control characters.
+		Sometimes doesn't work for some reason.
+	 = 0x03 (ETX) - Use team color from this point forward (or light green)
+	 = 0x04 (EOT) - Use location color from this point forward (bright green)
+	 = 0x05 (ENQ) - Use achievement color from this point forward (olive)
+	 = 0x01 (SOH) - Use normal color from this point forward
 	
-		Alt + 01				Used to return to the default colour.
-		Alt + 07				Used with a six character hex value.
-		Alt + 08				Used with an eight character hex value.
-		
-	An example phrase:
 	
-		"Your name is 87CEEB{1} and you have 87CEEB{1} queue points"
-		
-	Other colour codes:
+	I recommend only colouring player names, items and achievements.
+	All other text should ideally be the default colour for readability.
+	Note that team colour codes will default to light green if the plugin doesn't implement support for them.
 	
-		Alt + 02				Seemingly default
-		Alt + 03				Uses the receiving client's team colour
-		Alt + 04				Bright green (good for highlighting)
-		Alt + 05				Olive (good for prefixes or slight highlights)
-		Alt + 06				Black
-		
-	TF2 default colour is 'Blanched Almond' FBECCB
+	In TF2 it's possible to use RGB and alpha values for colours and transparency.
+	
+	 = 0x07 (BEL) - Suffix with a six character hex RGB value
+	  = 0x08 (BS)  - Suffix with an eight character hex RGBA value
 */
-
-
-	/**
-	 * Colour Tags
-	 * ----------------------------------------------------------------------------------------------------
-	 */
-
-	"{default}"
-	{	
-		"en"	""
-	}
-	
-	"{highlight}"
-	{
-		"en"	"CCFF4E"
-	}
-	
-	"{killing_entity}"
-	{
-		"en"	"CD5C5C"
-	}
-
-
-	/**
-	 * Chat Prefixes
-	 * ----------------------------------------------------------------------------------------------------
-	 */
-
-	"chat_prefix_client"
-	{
-		//"en"			"CCFF4EC0[CCFF4EDRCCFF4EC0]{default} "
-		"en"			"CCFF4EDR {default}:  "
-	}
-	
-	"chat_prefix_all"
-	{
-		//"en"			"FFD800C0[FFD800DRFFD800C0]{default} "
-		"en"			"FFD800DR {default}:  "
-	}
 
 
 
@@ -84,21 +45,21 @@
 	"name_has_been_made_activator"
 	{
 		"#format"		"{1:s}"
-		"en"			"{highlight}{1}{default} has been made an activator"
-		"da"			"{highlight}{1}{default} er blevet valgt som aktivator"
-		"it"			"{highlight}{1}{default} è stato creato un attivatore"
-		"fr"			"{highlight}{1}{default} est devenu l'activateur"
-		"ee"			"{highlight}{1}{default} on muudetud aktivaatoriks"
+		"en"			"{1} has been made an activator"
+		"da"			"{1} er blevet valgt som aktivator"
+		"it"			"{1} è stato creato un attivatore"
+		"fr"			"{1} est devenu l'activateur"
+		"ee"			"{1} on muudetud aktivaatoriks"
 	}
 	
 	"name_no_class_moved_spec"
 	{
 		"#format"		"{1:s}"
-		"en"			"Moved {highlight}{1}{default} to spectator, as no class was chosen"
-		"da"			"Flyttede {highlight}{1}{default} til spectator, da der ikke blev valgt klasse"
-		"it"			"Spostato {highlight}{1}{default} per lo spettatore, come nessuna classe è stata scelta"
-		"fr"			"Mis {highlight}{1}{default} en spectateur, car aucune classe n'a été choisi"
-		"ee"			"Mäng liigutas {highlight}{1}{default} pealtvaatajate tiimi, kuna ta ei valinud klassi.
+		"en"			"Moved {1} to spectator, as no class was chosen"
+		"da"			"Flyttede {1} til spectator, da der ikke blev valgt klasse"
+		"it"			"Spostato {1} per lo spettatore, come nessuna classe è stata scelta"
+		"fr"			"Mis {1} en spectateur, car aucune classe n'a été choisi"
+		"ee"			"Mäng liigutas {1} pealtvaatajate tiimi, kuna ta ei valinud klassi.
 	}
 	
 	"restarting_round_seconds"
@@ -111,37 +72,24 @@
 		"ee"			"Taaskäivitan mängu {1} sekundi pärast" 
 	}
 
-	/*
-		"need more players"
-		{
-			"en"			"Looks like we need more players before we can continue"
-			"de"			"Sieht so aus als würden wir mehr Spieler benötigen um fortzufahren"
-			"it"			"Sembra che abbiamo bisogno di più giocatori prima di poter continuare"
-			"tr"			"Görünüşe göre daha fazla oyuncuya ihtiyacımız var devam etmeden önce"
-			"da"			"Det ser ud som der mangler spillere før vi kan fortsætte"
-			"fr"			"On dirait que l'on a besoin de plus de joueurs pour continuer"
-			"ee"			"Meil on vaja rohkem mängijaid enne kui saame jätkata"
-		}
-	*/
 
 
 
 /**
- * Replies - Messages to Individual Clients
+ * Messages to Individual Clients
  * ----------------------------------------------------------------------------------------------------
  */
-	
 	
 	"received_queue_points_from_an_admin"	// modified
 	{
 		"#format"		"{1:s},{2:i},{3:i}"		// 1. Name of admin, 2. points awarded, 3. player's new total
-		"en"			"{1} has awarded you {2} queue points ({3})"
-		"de"			"{1} hat Dir {2} Punkte verleiht, somit ist deine Gesamtpunktzahl {3}"
-		"it"			"{1} ti ha assegnato {2} punti di coda ({3})"
-		"tr"			"{1} sana {2} puan ödül verdi, senin toplamını {3} yaptı"
-		"da"			"{1} har doneret {2} point til dig, og dine samlede point er {3}"
-		"fr"			"{1} t'as donné {2} points de file ({3})"
-		"ee"			"{1} on andnud sulle {2} järjekorra punkti ({3})"
+		"en"			"{1} has awarded you {2} queue points ({3})"
+		"de"			"{1} hat Dir {2} Punkte verleiht, somit ist deine Gesamtpunktzahl {3}"
+		"it"			"{1} ti ha assegnato {2} punti di coda ({3})"
+		"tr"			"{1} sana {2} puan ödül verdi, senin toplamını {3} yaptı"
+		"da"			"{1} har doneret {2} point til dig, og dine samlede point er {3}"
+		"fr"			"{1} t'as donné {2} points de file ({3})"
+		"ee"			"{1} on andnud sulle {2} järjekorra punkti ({3})"
 	}
 	
 	"you_have_i_queue_points"	// modified
@@ -178,19 +126,7 @@
 		"fr"			"Désolé, tes points de files ne peuvent être réinitialisés car ils ont une valeur négative"
 		"ee"			"Sorri, sinu järjekorrapunkte ei saa lähtesdada kuna praegune järjekorrapunktide arv on negatiivses väärtuses"
 	}
-	
-	"current preference is to never be the activator"
-	{
-		"en"			"Your current preference is to never be the activator"
-		"de"			"Deine momentane Präferenz ist niemals zum Aktivierer werden"
-		"it"			"La tua preferenza attuale è di non essere mai l'attivatore"
-		"tr"			"Senin şuanlık tercihin asla aktivatör olmamak"
-		"da"			"Dine nuværende præferencer er aldrig at blive aktivator"
-		"fr"			"Ton paramètre actuel est de ne jamais être l'activateur"
-		"ee"			"Sinu praegune eelistus on mitte olla aktivaator"
-		// Shown in response to using the /pref command with no arguments
-	}
-	
+		
 	"opted_out_activator"	// modified
 	{
 		"en"			"You've opted out of becoming an activator"
@@ -221,88 +157,14 @@
 	"welcome_player_to_deathrun_toolkit"
 	{
 		"#format"		"{1:s}"		// Player name
-		"en"			"Hello, {1}. This server is running Deathrun Toolkit.\n  Type {highlight}/dr{default} for the menu to change your preferences"
-		"de"			"Willkommen zu Deathrun Toolkit, {1}. Öffne das Menü mit {highlight}/dr{default}"
-		"it"			"Buongiorno, {1}. Questo server sta eseguendo Deathrun Toolkit.\n  Scrito {highlight}/dr{default} per il menu per cambiare le tue preferenze"
-		"tr"			"Merhaba, {1}. Bu sunucu Deathrun Toolkit çalıştırıyor.\n  Menü için {highlight}/dr{default} yazarak senin tercihlerini değiştir"
-		"da"			"Velkommen, {1}. Denne server kører med Deathrun Toolkit.\n  Skriv {highlight}/dr{default} i chatten for at ændre din præferencer"
-		"fr"			"Bienvenue, {1}. Ce serveur utilise Deathrun Toolkit.\n  Ecrit {highlight}/dr{default} pour ouvrir le menu et changer tes paramètres"
-		"ee"			"Tere, {1}. See server kasutab Deathrun Toolkiti.\n  Kirjuta {highlight}/dr{default} menüü jaoks et muuta oma eelistusi."
+		"en"			"Hello, {1}. This server is running Deathrun Toolkit.\n  Type /dr for the menu to change your preferences"
+		"de"			"Willkommen zu Deathrun Toolkit, {1}. Öffne das Menü mit /dr"
+		"it"			"Buongiorno, {1}. Questo server sta eseguendo Deathrun Toolkit.\n  Scrito /dr per il menu per cambiare le tue preferenze"
+		"tr"			"Merhaba, {1}. Bu sunucu Deathrun Toolkit çalıştırıyor.\n  Menü için /dr yazarak senin tercihlerini değiştir"
+		"da"			"Velkommen, {1}. Denne server kører med Deathrun Toolkit.\n  Skriv /dr i chatten for at ændre din præferencer"
+		"fr"			"Bienvenue, {1}. Ce serveur utilise Deathrun Toolkit.\n  Ecrit /dr pour ouvrir le menu et changer tes paramètres"
+		"ee"			"Tere, {1}. See server kasutab Deathrun Toolkiti.\n  Kirjuta /dr menüü jaoks et muuta oma eelistusi."
 	}
-	
-	/*
-		"queue points consumed"
-		{
-			"en"			"Your queue points have been consumed"
-			"de"			"Deine Punkte wurden verbraucht"
-			"it"			"I tuoi punti di coda sono stati consumati"
-			"tr"			"Senin sıra puanların tüketildi"
-			"da"			"Dine point er blevet brugt"
-			"fr"			"Tes points de file ont été consommés"
-			"ee"			"Teie järjekora punktid on tarbitud"
-		}
-		
-		"not using the points system"
-		{
-			"en"			"We're not using the points system at the moment"
-			"de"			"Momentan wird das Punktesystem nicht benutzt"
-			"it"			"Non stiamo usando il sistema dei punti al momento"
-			"tr"			"Biz şuanlık puanlar sistemini kullanmıyoruz"
-			"da"			"Vi benytter os ikke af point systemet lige pt"
-			"fr"			"Nous n'utilisons pas le système de points en ce moment"
-			"ee"			"Me hetkel ei kasuta punktisüsteemi"
-			// Sent in response to the use of the /points command
-		}
-		
-		"current preference is to receive i points per round"
-		{
-			"#format"		"{1:i}"		// Calculated number of points player will receive at round end
-			"en"			"Your current preference is to receive {1} points per round"
-			"de"			"Deine momentane Präferenz ist {1} Punkte per Runde zu bekommen"
-			"it"			"La vostra preferenza corrente è di ricevere {1} punti per roundi"
-			"tr"			"Senin şuanki tercihin her roundda {1} puan almak"
-			"da"			"Dine nuværende præferencer er at modtage {1} point per runde"
-			"fr"			"Ton paramètre actuel est de gagner {1} points par tour"
-			"ee"			"Sinu praegune eelistus on saada {1} punkti matši lõpus"
-			// Shown in response to using the /pref command with no arguments
-		}
-		
-		"no longer receive queue points"
-		{
-			"en"			"You will no longer be the activator or receive queue points"
-			"de"			"Du wirst nicht mehr Aktivierer werden oder Punkte erhalten"
-			"it"			"Non sarai più l'attivatore o riceverai punti di coda"
-			"tr"			"Sen bundan sonra aktivatör olmayacak veya sıra puanları almayacaksın"
-			"da"			"Du vil ikke længere kunne være aktivator eller modtage point"
-			"fr"			"Tu ne seras plus l'activateur et ne recevra plus de points de file"
-			"ee"			"Te enam ei ole aktivaator ning te ei saa järjekorrapunkte.
-			// Sent in response to setting activator preference to off
-		}
-		
-		"you will now receive fewer queue points"
-		{
-			"en"			"You will now receive fewer queue points"
-			"de"			"Du wirst jetzt weniger Punkte erhalten"
-			"it"			"Ora riceverai meno punti di coda"
-			"tr"			"Sen şimdi daha az sıra puanları alacaksın"
-			"da"			"Du vil nu modtage færre point"
-			"fr"			"Tu reçoit maintenant moins de points de file"
-			"ee"			"Te nüüd saate vähem järjekorrapunkte"
-			// Sent in response to setting points gan preference to fewer
-		}
-		
-		"you will receive the maximum amount of queue points"
-		{
-			"en"			"You will receive the full amount of queue points"
-			"de"			"Du wirst die volle Punktzahl erhalten"
-			"it"			"Riceverai l'intero importo dei punti di coda"
-			"tr"			"Sen şimdi tam miktarda sıra puanları alacaksın"
-			"da"			"Du vil modtage den fulde mængde point"
-			"fr"			"Tu reçoit maintenant la quantité maximale de points de file"
-			"ee"			"Te nüüd saate kogu summa punkte"
-			// Sent in response to setting points gan preference to full
-		}
-	*/
 	
 	
 	
@@ -314,13 +176,13 @@
 	"killed_by_entity_classname"
 	{
 		"#format"		"{1:s},{2:s}"	// 1. killing entity classname, 2. targetname (if it exists)
-		"en"			"You were killed by a {killing_entity}{1}{default}{2}"
-		"de"			"Du wurdest von {killing_entity}{1}{default}{2} getötet"
-		"it"			"Sei stato ucciso da un {killing_entity}{1}{default}{2}"
-		"tr"			"Sen bir {killing_entity}{1}{default}{2} tarafından öldürüldün"
-		"da"			"Du blev dræbt af en {killing_entity}{1}{default}{2}"
-		"fr"			"Tu as été tué par un {killing_entity}{1}{default}{2}"
-		"ee"			"Sind tappis ära {killing_entity}{1}{default}{2}" 
+		"en"			"You were killed by a CD5C5C{1} {2}"
+		"de"			"Du wurdest von CD5C5C{1} {2} getötet"
+		"it"			"Sei stato ucciso da un CD5C5C{1} {2}"
+		"tr"			"Sen bir CD5C5C{1} {2} tarafından öldürüldün"
+		"da"			"Du blev dræbt af en CD5C5C{1} {2}"
+		"fr"			"Tu as été tué par un CD5C5C{1} {2}"
+		"ee"			"Sind tappis ära CD5C5C{1} {2}" 
 	}
 	
 	"wrong_usage_of_award_command"
@@ -336,70 +198,23 @@
 	
 	"next_activators"
 	{
-		"en"			"Next activators: {highlight}"
-		"de"			"Nächste Aktivierer: {highlight}"
-		"it" 			"Prossimo attivatori: {highlight}"
-		"tr"			"Sonraki aktivatörler: {highlight}"
-		"da"			"Næste aktivatorer: {highlight}"
-		"fr"			"Prochains activateurs: {highlight}"
-		"ee"			"Järgmised aktivaatorid: {highlight}" 
+		"en"			"Next activators: "
+		"de"			"Nächste Aktivierer: "
+		"it" 			"Prossimo attivatori: "
+		"tr"			"Sonraki aktivatörler: "
+		"da"			"Næste aktivatorer: "
+		"fr"			"Prochains activateurs: "
+		"ee"			"Järgmised aktivaatorid: " 
 	}
 	
 	"next_activator"	// modified
 	{
-		"en"			"Next activator: {highlight}"
-		"da"			"Næste aktivator: {highlight}"
-		"fr"			"Prochain activateur: {highlight}"
-		"it"			"Prossimo attivatore: {highlight}"
-		"ee"			"Järgmine aktivaator: {highlight}"
+		"en"			"Next activator: "
+		"da"			"Næste aktivator: "
+		"fr"			"Prochain activateur: "
+		"it"			"Prossimo attivatore: "
+		"ee"			"Järgmine aktivaator: "
 	}
-	
-	/*
-		"team mate pushing enabled"
-		{
-			"en"			"Team mate pushing has been enabled"
-			"de"			"'Team mate pushing' wurde aktiviert"
-			"it"			"Il compagno di squadra che spinge è stato abilitato"
-			"tr"			"Takım dostu itişi etkinleştirildi"
-			"da"			"Medspiller push er blevet aktiveret"
-			"fr"			"La solidité entre joueurs a été activé"
-			"ee"			"Tiimikaaslaste lükkamine on nüüd võimalik"
-		}
-		
-		"round end queue points received"
-		{
-			"#format"		"{1:i},{2:i}"	// 1. Points awarded at the end of the round, 2. Player's new points total
-			"en"			"You have received {1} queue points for a total of {2}"
-			"de"			"Du hast {1} Punkte erhalten für einen Punktestand von {2}"
-			"it"			"ti ricevuta {1} punti di coda pet un total di {2}"
-			"tr"			"Sen {1} sıra puanı alarak toplamını {2} yaptın"
-			"da"			"Du har modtage {1} point, og din nuværende total er {2}"
-			"fr"			"Tu as reçu {1} points de file pour un total de {2}"
-			"ee"			"Sa oled saanud {1} järjekorrapunkti ning sul on kokku {2} punkti"
-		}
-		
-		"usage of pref command"
-		{
-			"en"			"Usage: sm_prefs 0/1/2. 0 = Don't be activator. 1 = Receive fewer points. 2 = Receive full points"
-			"de"			"Benutzung: sm_prefs 0/1/2. 0 = Nicht Aktivierer sein. 1 = Weniger Punkte erhalten. 2 = Volle Punktzahl erhalten"
-			"it"			"Uso: sm_prefs 0/1/2. 0 = Non essere attivatore. 1 = Ricevi meno punti. 2 = Ricevi punti completi"
-			"tr"			"Kullanım: sm_prefs 0/1/2. 0 = Aktivatör olma. 1 = Daha az puanlar al. 2 = Tam puanlar al"
-			"da"			"Benyttelse: sm_prefs 0/1/2. 0 = Vær ikke aktivator. 2 = Modtag færre point. 3 = Modtag fulde mængde point"
-			"fr"			"Utilisation: sm_prefs 0/1/2. 0 = Ne pas être l'activateur. 1 - Recevoir moins de points. 2 - Recevoir le maximum de points"
-			"ee"			"Kasutus: sm_prefs 0/1/2. 0 = Ära ole aktivaator. 1 = Saa vähem punkte. 2 = Saa kogu summa punkte"
-		}
-		
-		"not enough activators"
-		{
-			"en"			"Too few willing activators. Everyone will take turns"
-			"de"			"Zu wenig freiwillige Aktivierer. Jeder kommt mal an die Reihe"
-			"it"			"Troppo pochi attivatori disposti. Ognuno farà a turno"
-			"tr"			"Çok az istekli aktivatörler var. Herkes sıra alacak"
-			"da"			"Der er for få der vil være aktivator. Alle vil skiftes til at være aktivator"
-			"fr"			"Pas assez d'activateurs volontaires. Tout le monde prendra son tour"
-			"ee"			"Liiga vähe inimesi kes tahavad olla aktivaator. Kõik on vaheldumisi aktivaator"
-		}
-	*/
 	
 
 /**
@@ -410,121 +225,102 @@
 	
 	"round_has_begun_1"
 	{
-		"en"			"The round has begun. Tread carefully!"
-		"de"			"Die Runde hat begonnen. Sei vorsichtig!"
-		"it"			"Il giro è iniziato. Procedere con cautela!"
-		"tr"			"Tur başladı. Hareketlerine dikkat et!"
-		"da"			"Runden er begyndt. Træd forsigtigt!"
-		"fr"			"Le tour a commencé. Avance avec prudence!"
-		"ee"			"Matš on alanud. Ole ettevaatlik!"
+		"en"			"The round has begun. Tread carefully!"
+		"de"			"Die Runde hat begonnen. Sei vorsichtig!"
+		"it"			"Il giro è iniziato. Procedere con cautela!"
+		"tr"			"Tur başladı. Hareketlerine dikkat et!"
+		"da"			"Runden er begyndt. Træd forsigtigt!"
+		"fr"			"Le tour a commencé. Avance avec prudence!"
+		"ee"			"Matš on alanud. Ole ettevaatlik!"
 	}
 	
 	"round_has_begun_2"
 	{
-		"en"			"It's dangerous to go alone... take <insert object>"
-		"de"			"Es ist gefährlich alleine zu gehen... nimm <objekt einfügen>"
-		"it"			"È pericoloso andare da soli... prendere <inserire oggetto>"
-		"tr"			"Yalnız gitmek tehlikeli... yanına <obje ekle> al"
-		"da"			"Det er farligt at gå alene... tag <indsæt objekt>"
-		"fr"			"C'est dangereux d'y aller seul... prend <inserez objet>"
-		"ee"			"On ohtlik olla üksi... võta <sisesta objekt>"
+		"en"			"It's dangerous to go alone... take <insert object>"
+		"de"			"Es ist gefährlich alleine zu gehen... nimm <objekt einfügen>"
+		"it"			"È pericoloso andare da soli... prendere <inserire oggetto>"
+		"tr"			"Yalnız gitmek tehlikeli... yanına <obje ekle> al"
+		"da"			"Det er farligt at gå alene... tag <indsæt objekt>"
+		"fr"			"C'est dangereux d'y aller seul... prend <inserez objet>"
+		"ee"			"On ohtlik olla üksi... võta <sisesta objekt>"
 	}
 	
 	"round_has_begun_3"
 	{
-		"en"			"I declare this round officially open! Woooo!"
-		"de"			"Hiermit erkläre ich diese Runde offiziell für eröffnet! Woooo!"
-		"it"			"Dichiaro questo round ufficialmente aperto! Woooo!"
-		"tr"			"Bu turun resmi olarak açık olduğunu ilan ediyorum! Woooo!"
-		"da"			"Jeg erklærer denne runde for officielt åben! Woooo!"
-		"fr"			"Je déclare ce tour officiellement overt! Woooo!"
-		"ee"			"Ma kuulutan matši alustunuks! Woooo!"
+		"en"			"I declare this round officially open! Woooo!"
+		"de"			"Hiermit erkläre ich diese Runde offiziell für eröffnet! Woooo!"
+		"it"			"Dichiaro questo round ufficialmente aperto! Woooo!"
+		"tr"			"Bu turun resmi olarak açık olduğunu ilan ediyorum! Woooo!"
+		"da"			"Jeg erklærer denne runde for officielt åben! Woooo!"
+		"fr"			"Je déclare ce tour officiellement overt! Woooo!"
+		"ee"			"Ma kuulutan matši alustunuks! Woooo!"
 	}
 	
 	"round_has_begun_4"
 	{
-		"en"			"I wasn't always a round start announcer, you know"
-		"de"			"Weißt Du, ich war nicht immer ein Rundenstart Ansager"
-		"it"			"Non sono sempre stato un annunciatore, sai"
-		"tr"			"Bilirsin, ben her zaman bir tur başlayış spikeri değildim"
-		"da"			"Vidste du, at jeg ikke altid har annonceret runde start"
-		"fr"			"Je n'ai pas toujours été un annonceur de début de tour, vous savez"
-		"ee"			"Ma polnud alati matši alustuse teadustaja, tead sa"
+		"en"			"I wasn't always a round start announcer, you know"
+		"de"			"Weißt Du, ich war nicht immer ein Rundenstart Ansager"
+		"it"			"Non sono sempre stato un annunciatore, sai"
+		"tr"			"Bilirsin, ben her zaman bir tur başlayış spikeri değildim"
+		"da"			"Vidste du, at jeg ikke altid har annonceret runde start"
+		"fr"			"Je n'ai pas toujours été un annonceur de début de tour, vous savez"
+		"ee"			"Ma polnud alati matši alustuse teadustaja, tead sa"
 	}
 	
 	"round_has_begun_5"
 	{
-		"en"			"I don't know about you, but I'd say it's a safe bet some people are gonna die"
-		"de"			"Ich weiß nicht wie es Dir geht, aber ich würde behaupten dass hier einige Leute sterben werden"
-		"it"			"Non so tu, ma io direi che è una scommessa sicura che alcune persone moriranno"
-		"tr"			"Seni bilmiyorum, ama ben derdim ki bazı insanların öleceği güvenli bir bahisdir"
-		"da"			"Jeg ved ikke med dig, men jeg vil sige det er sikkert at nogle folk dør"
-		"fr"			"Je sais pas ce que t'en penses, mais je parie qu'il y aura beacoup de morts"
-		"ee"			"Ma ei tea mis sina arvad, aga mina arvan et on päris kindel et mõned inimesed surevad ära"
+		"en"			"I don't know about you, but I'd say it's a safe bet some people are gonna die"
+		"de"			"Ich weiß nicht wie es Dir geht, aber ich würde behaupten dass hier einige Leute sterben werden"
+		"it"			"Non so tu, ma io direi che è una scommessa sicura che alcune persone moriranno"
+		"tr"			"Seni bilmiyorum, ama ben derdim ki bazı insanların öleceği güvenli bir bahisdir"
+		"da"			"Jeg ved ikke med dig, men jeg vil sige det er sikkert at nogle folk dør"
+		"fr"			"Je sais pas ce que t'en penses, mais je parie qu'il y aura beacoup de morts"
+		"ee"			"Ma ei tea mis sina arvad, aga mina arvan et on päris kindel et mõned inimesed surevad ära"
 	}
 	
 	"round_has_begun_6"
 	{
-		"en"			"Beep boop beep! Round has begun, maggots!"
-		"de"			"Beep boop beep! Runde hat begonnen, Maden!"
-		"it"			"Beep boop beep! Il giro è iniziato, vermi!"
-		"tr"			"Beep boop beep! Tur başladı, kurtçuklar!"
-		"da"			"Beep boop beep! Runden er begyndt, madiker!"
-		"fr"			"Bip boop bip! Le tour a commencé, vermines!"
-		"ee"			"Piiks puuks piiks! Matš on alanud, tõugad!"
+		"en"			"Beep boop beep! Round has begun, maggots!"
+		"de"			"Beep boop beep! Runde hat begonnen, Maden!"
+		"it"			"Beep boop beep! Il giro è iniziato, vermi!"
+		"tr"			"Beep boop beep! Tur başladı, kurtçuklar!"
+		"da"			"Beep boop beep! Runden er begyndt, madiker!"
+		"fr"			"Bip boop bip! Le tour a commencé, vermines!"
+		"ee"			"Piiks puuks piiks! Matš on alanud, tõugad!"
 	}
 		
 	"round_has_begun_7"
 	{
-		"en"			"FYI the round has started. You should probably move"
-		"de"			"Nur damit du es auch weißt: Die Runde hat begonnen. Vielleicht solltest du dich bewegen"
-		"it"			"per tua informazione il giro è iniziato. Probabilmente dovresti muoverti"
-		"tr"			"Bilginize, tur başladı. Muhtemelen hareket etmelisin"
-		"da"			"Til information er runden altså startet. Du burde bevæge dig"
-		"fr"			"Pour ton information le tour a commencé, tu devrais probablement bouger"
-		"ee"			"Sinu teadmiseks, matš on alanud. Sa võiksid hakata liikuma"
+		"en"			"FYI the round has started. You should probably move"
+		"de"			"Nur damit du es auch weißt: Die Runde hat begonnen. Vielleicht solltest du dich bewegen"
+		"it"			"per tua informazione il giro è iniziato. Probabilmente dovresti muoverti"
+		"tr"			"Bilginize, tur başladı. Muhtemelen hareket etmelisin"
+		"da"			"Til information er runden altså startet. Du burde bevæge dig"
+		"fr"			"Pour ton information le tour a commencé, tu devrais probablement bouger"
+		"ee"			"Sinu teadmiseks, matš on alanud. Sa võiksid hakata liikuma"
 	}
 	
 	"round_has_begun_8"
 	{
-		"en"			"Take your 'I want to be alive' attitude outside, no one wants to hear that in here"
-		"de"			"Nimm deine 'Ich will nicht sterben' einstellung nach draußen, dass will hier keiner hören"
-		"it"			"Prendi il tuo atteggiamento 'voglio essere vivo' fuori, nessuno vuole sentire questo qui"
-		"tr"			"Senin o 'Ben yaşamak istiyorum' tavrını dışarı al, kimse onu burda duymak istemiyor"
-		"da"			"Tag din 'Jeg vil ikke leve' attitude med ud, ingen vil høre sådan noget herinde"
-		"fr"			"Prends ton 'Je veux vivre' attitude dehors, personne veux entendre ça ici"
-		"ee"			"Vii oma 'Ma tahan elada' suhtumine õue, keegi siin ei taha seda kuulata"
+		"en"			"Take your 'I want to be alive' attitude outside, no one wants to hear that in here"
+		"de"			"Nimm deine 'Ich will nicht sterben' einstellung nach draußen, dass will hier keiner hören"
+		"it"			"Prendi il tuo atteggiamento 'voglio essere vivo' fuori, nessuno vuole sentire questo qui"
+		"tr"			"Senin o 'Ben yaşamak istiyorum' tavrını dışarı al, kimse onu burda duymak istemiyor"
+		"da"			"Tag din 'Jeg vil ikke leve' attitude med ud, ingen vil høre sådan noget herinde"
+		"fr"			"Prends ton 'Je veux vivre' attitude dehors, personne veux entendre ça ici"
+		"ee"			"Vii oma 'Ma tahan elada' suhtumine õue, keegi siin ei taha seda kuulata"
 	}
 	
 	"round_has_begun_9"
 	{
-		"en"			"Hello. How may I assist you with your death?"
-		"de"			"Guten Tag. Wie kann ich Ihnen mit ihrem Tod helfen?"
-		"it"			"Ciao. Come posso aiutarvi con la vostra morte?"
-		"tr"			"Merhaba. Ölümünde sana nasıl yardımcı olabilirim?"
-		"da"			"Hej. Hvordan kan jeg hjælpe dig med døden?"
-		"fr"			"Bonjour. Comment puis-je vous assister avec votre mort?"
-		"ee"			"Tere. Kuidas ma saaksin teid aidata oma surmaga?"
+		"en"			"Hello. How may I assist you with your death?"
+		"de"			"Guten Tag. Wie kann ich Ihnen mit ihrem Tod helfen?"
+		"it"			"Ciao. Come posso aiutarvi con la vostra morte?"
+		"tr"			"Merhaba. Ölümünde sana nasıl yardımcı olabilirim?"
+		"da"			"Hej. Hvordan kan jeg hjælpe dig med døden?"
+		"fr"			"Bonjour. Comment puis-je vous assister avec votre mort?"
+		"ee"			"Tere. Kuidas ma saaksin teid aidata oma surmaga?"
 	}
-	
-	/* No longer using these as they are too long
-		"round_has_begun_5"
-		{
-			"en"			"I haven't seen the Round End announcer in some time. Are they still in the business?"
-			"de"			"Ich habe den Rundenend Ansager schon eine weile lang nicht gesehen. Macht der noch was in der Richtung?"
-			"tr"			"Ben epey zamandır Tur Sonu spikerini görmedim. O hala işte mi?"
-			"da"			"Jeg har ikke set ham der annoncerer at runden slutter i noget tid. Er han stadig i brancen?"
-			
-		}
-		
-		"round_has_begun_10"
-		{
-			"en"			"The Quest stands upon the edge of a knife. Stray but a little, and it will fail"
-			"de"			"Das Abenteuer steht auf der Kante eines Messers. Komm nur ein wenig ab, und es wird scheitern"
-			"tr"			"Macera bıçağın kenarında duruyor. Başıboş ama biraz, ve başarısız olacak"
-			"da"			"Missionen står på en knivsæk. Træd forkert og den fejler"
-		}
-	*/
 
 
 
@@ -586,40 +382,7 @@
 		"fr"			"Admin"
 		"ee"			"Administraator"
 	}
-	
-	/*
-		"menu queue points"	
-		{
-			"#format"		"{1:d}"
-			"en"			"You have {1} queue points"
-			"it"			"Ti hanno {1} punti di coda"
-			"tr"			"Senin {1} sıra puanın var"
-			"da"			"Du har {1} point"
-			"fr"			"Tu as {1} points de file"
-			"ee"			"Sul on {1} järjekorrapunkti"
-		}
 		
-		"menu item commands"
-		{
-			"en"			"Commands"
-			"it"			"Comandi"
-			"tr"			"Puanlar"
-			"da"			"Kommandoer"
-			"fr"			"Commandes"
-			"ee"			"Käsud"
-		}
-		
-		"menu item admin commands"
-		{
-			"en"			"Admin Commands"
-			"it"			"Admin Comandi"
-			"tr"			"Yönetim Komutları"
-			"da"			"Admin Kommandoer"
-			"fr"			"Commandes admin"
-			"ee"			"Administraatori käsud"
-		}
-	*/
-	
 	
 /**
  * Preferences Menu
@@ -654,58 +417,6 @@
 		"ee"			"Inglise keel SourceMod messages\n \n"
 	}
 	
-	/*
-		"menu full queue points"
-		{
-			"en"			"You currently receive full queue points"
-			"it"			"Attualmente ricevi i punti di coda completi"
-			"tr"			"Şuanlık tam sıra puanları alacaksın"
-			"da"			"Du modtager nu den fulde mængde point"
-			"fr"			"Tu reçoit maintenant le nombre maximal de points de file"
-			"ee"			"Sa praegu saad kogu summa järjekorrapunkte"
-		}
-		
-		"menu fewer queue points"
-		{
-			"en"			"You currently receive fewer queue points"
-			"it"			"Attualmente ricevi meno punti di coda"
-			"tr"			"Şuanlık daha az sıra puanları alacaksın"
-			"da"			"Du modtager nu færre point"
-			"fr"			"Tu reçoit maintenant moins de points de file"
-			"ee"			"Sa praegu saad vähem järjekorrapunkte"
-		}
-		
-		"menu item full queue points"
-		{
-			"en"			"Receive full queue points"
-			"it"			"Ricevi i punti di coda completi"
-			"tr"			"Tam sıra puanları al"
-			"da"			"Modtag fuld mængde point"
-			"fr"			"Tu es devenu l'activateur"
-			"ee"			"Saa kogu summa järjekorrapunkte"
-		}
-		
-		"menu item fewer queue points"
-		{
-			"en"			"Receive fewer queue points"
-			"it"			"Ricevi meno punti di coda"
-			"tr"			"Daha az sıra puanları al"
-			"da"			"Modtag færre point"
-			"fr"			"Recevoir moins de points de file"
-			"ee"			"Saa vähem järjekorrapunkte"
-		}
-		
-		"menu not the activator"
-		{
-			"en"			"You currently prefer not to be the activator"
-			"it"			"Attualmente preferisci non essere l'attivatore"
-			"tr"			"Şuanlık aktivatör olmamayı tercih ediyorsun"
-			"da"			"Du foretræker nu ikke at være aktivator"
-			"fr"			"Tu ne préfère ne pas être l'activateur"
-			"ee"			"Te praegu eelistate mitte olla aktivaator"
-		}
-	*/
-	
 	
 /**
  * Reset Points Menu
@@ -721,71 +432,6 @@
 		"ee"			"Kas te olete kindel et te tahate\nlähtestada oma järjekorrapunkte?"
 	}
 	
-	
-/**
- * Commands Menu // not used anymore
- */
-	 
-	 /* not used anymore so translations aren't necessary
-		"menu item command points"
-		{
-			"en"			"sm_points / sm_pts\nShow your queue points in chat\n \n"
-			"tr"			"sm_points / sm_pts\nSenin sıra puanlarını sohbette göster\n \n"
-			"da"			"sm_points / sm_pts\nSe dine point i chatten\n \n"
-		}
-		
-		"menu item command reset"
-		{
-			"en"			"sm_reset\nReset your queue points immediately\n \n"
-			"tr"			"sm_reset\nHemen senin sıra puanlarını sıfırla\n \n"
-			"da"			"sm_reset\nNulstil dine points med det samme\n \n"
-		}
-		
-		"menu item command prefs"
-		{
-			"en"			"sm_prefs\nQuickly change your queue points preference.\n0 = Don't receive queue points,\n1 = Receive fewer queue points,\n2 = Receive full queue points.\n \n"
-			"tr"			"sm_prefs\nHızlıca senin sıra puanları tercihlerini değiştir.\n0 = Sıra puanları alma,\n1 = Daha az sıra puanları al,\n2 = Tam sıra puanları al.\n \n"
-			"da"			"sm_prefs\nOpdater dine point præferencer hurtigt.\n0 = Modtag ingen point,\n1 = Modtag færre point,\n2 = Modtag den fulde mængde point.\n \n"
-		}
-	*/
-	
-	
-/**
- * Admin Commands Menu // not used anymore
- */
-	/*
-		"menu item admin command award"
-		{
-			"en"			"sm_draward\nAward queue points to a player\n \n"
-			"it"			"sm_draward\nAssegna punti in coda ad un giocatore\n \n"
-			"tr"			"sm_draward\nBir oyuncuya puanlar ödül ver\n \n"
-			"da"			"sm_draward\nTildel point til andre spillere\n \n"
-		}
-		
-		"menu item admin command setclass"
-		{
-			"en"			"sm_setclass\nChange the TF2 class of targets\n \n"
-			"it"			"sm_setclass\nCambia la classe di bersagli TF2\n \n"
-			"tr"			"sm_setclass\nHedeflerin TF2 sınıfını değiştir\n \n"
-			"da"			"sm_setclass\nÆndre TF2 klassen for personer\n \n"
-		}
-		
-		"menu item admin command drdata"
-		{
-			"en"			"sm_drdata\nShow player data in the console for debugging\n \n"
-			"it"			"sm_drdata\nMostra i dati del giocatore nella console per il debug\n \n"
-			"tr"			"sm_drdata\nOnarmak için oyuncu verisini konsolda göster\n \n"
-			"da"			"sm_drdata\nVis spiller data i konsol for debugging\n \n"
-		}
-	
-		"menu item admin command drscalehealth"
-		{
-			"en"			"sm_drscalehealth\nScale the activator's health up based\non the number of red players alive\n \n"
-			"it"			"sm_drscalehealth\nScala la vita dell'attivatore in base\non al numero di giocatori rossi vivi\n \n"
-			"tr"			"sm_drscalehealth\nAktivatörün canını yaşayan kırmızı oyuncuların sayısına göre ölçekle\n \n"
-			"da"			"sm_drscalehealth\nSkaler aktivatorens liv op baseret\npå mængden af røde spillere i live\n \n"
-		}
-	*/
 	
 	
 /**
@@ -848,18 +494,6 @@
 		"ee"			"Ei"
 	}
 	
-	/*
-		"menu item back"
-		{
-			"en"			"< Back"
-			"it"			"< Indietro"
-			"tr"			"< Geri"
-			"da"			"< Tilbage"
-			"fr"			"< Retour"
-			"ee"			"< Tagasi"
-		}
-	*/
-
 
 /**
  * Warnings
@@ -878,69 +512,6 @@
 	}
 	
 	
-
-/**
- * Attributes
- * ----------------------------------------------------------------------------------------------------
- */
-
-	/*
-		"class default run speed"	// Console
-		{
-			"en"			"Your run speed is class default"
-			"de"			"Deine Laufgeschwindigkeit ist dein Klassenstandard"
-			"it"			"La velocità di esecuzione è la classe predefinita"
-			"tr"			"Senin koşma hızın sınıf varsayılanı"
-			"da"			"Din løbshastighed er klasse standard"
-			"fr"			"Ta vitesse de course est mise en défaut"
-			"ee"			"Sinu jooksukiirus on klasside tavaline"
-		}
-
-		"red scout double jump disabled"	// Console
-		{
-			"en"			"Red scout double jump has been disabled"
-			"de"			"Doppelsprünge wurden deaktiviert"
-			"it"			"Il doppio salto Red Scout è stato disabilitato"
-			"tr"			"Kırmızı scout takım çift zıplayışı devre dışı bırakıldı"
-			"da"			"Rød scout dobbelt hop er blevet deaktiveret"
-			"fr"			"Double saut du Scout rouge a été désactivé"
-			"ee"			"Punase skaudi topelthüpe on keelatud"
-		}
-		
-		"red spy cloak limited"
-		{
-			"en"			"Red spy cloaks are limited"
-			"de"			"Spion-Unsichtbarkeitsmäntel sind begrenzt"
-			"it"			"Mantelli spia rossa sono limitati"
-			"tr"			"Kırmızı spy saatleri limitlendirildi"
-			"da"			"Rød spion kappe er begrænset"
-			"fr"			"L'invisibilité de l'Espion rouge a été limitée"
-			"ee"			"Punase spiooni nähtamatuse mantel on piiratud"
-		}
-
-		"red demo charge limited"
-		{
-			"en"			"Red demo charges are limited"
-			"de"			"Demo-Sturmangriffe sind begrenzt"
-			"it"			"Rosso demo oneri sono limitati"
-			"tr"			"Kırmızı demo sarjları limitlendirildi"
-			"da"			"Rød demo mængder er begrænset"
-			"fr"			"La charge du Démo rouge a été limitée"
-			"ee"			"Punase lammutaja charge´id on piiratud"
-		}
-		
-		"red demo charge disabled"
-		{
-			"en"			"Red demo charges are turned off"
-			"de"			"Demo-Sturmangriffe sind ausgeschaltet"
-			"it"			"Rosso demo cariche sono disattivate"
-			"tr"			"Kırmızı demo sarjları kapatıldı"
-			"da"			"Rød demo mænder er deaktiveret"
-			"fr"			"La charge du Démo rouge a été désactivée"
-			"ee"			"Punase lammutaja charge´id on välja lülitatud"
-		}
-	*/
-	
 	
 /**
  * HUD Elements
@@ -955,27 +526,7 @@
 		"fr"			"Activateurs"
 		"ee"			"Aktivaatorid"
 	}
-	
-	/*
-		"hud_overheal"
-		{
-			"en"			"Overheal"
-			"da"			"Overheal"
-			"it"			"Overheal"
-			"fr"			"Overheal"
-			"ee"			"Üleparanemine"
-		}
 		
-		"hud_health"
-		{
-			"en"			"Health"
-			"da"			"Liv"
-			"it"			"Vita"
-			"fr"			"Vie"
-			"ee"			"Tervis
-		}
-	*/
-	
 	
 	
 /**

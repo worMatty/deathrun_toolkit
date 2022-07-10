@@ -15,11 +15,13 @@ void FunStuff_ScaleHealth(int commander)
 	
 	if (health)
 	{
-		ChatMessageAll("Scaled activator health to %d", health);
+		TF2_PrintToChatAll(_, "Scaled activator health to %d", health);
+		EmitMessageSoundToAll();
 	}
 	else
 	{
-		ChatMessage(commander, "Unable to scale any activator's health");
+		TF2_PrintToChat(commander, _, "Unable to scale any activator's health");
+		EmitMessageSoundToClient(commander);
 	}
 }
 
@@ -66,12 +68,14 @@ Action Timer_Jetpacks(Handle timer, int client)
 				AddAttribute(weapon, "item_meter_charge_rate", 0.01);
 				CreateTimer(0.1, Timer_Jetpacks2, client);
 				
-				ChatMessage(client, "You are now a pyro with unlimited jet pack uses");
+				TF2_PrintToChat(client, _, "You are now a pyro with unlimited jet pack uses");
+				EmitMessageSoundToClient(client);
 			}
 			else
 			{
 				RemoveEntity(weapon);
-				ChatMessage(client, "We tried to make you a pyro with a jetpack but it went missing");
+				TF2_PrintToChat(client, _, "We tried to make you a pyro with a jetpack but it went missing");
+				EmitMessageSoundToClient(client);
 			}
 			
 			
@@ -96,12 +100,13 @@ Action Timer_Jetpacks2(Handle timer, int client)
 void FunStuff_PeriodicSlap()
 {
 	CreateTimer(10.0, Timer_PeriodicSlap, _, TIMER_REPEAT);
-	ChatMessageAll("Runners will now be slapped every ten seconds");
+	TF2_PrintToChatAll(_, "Runners will now be slapped every ten seconds");
+	EmitMessageSoundToAll();
 }
 
 Action Timer_PeriodicSlap(Handle timer)
 {
-	if (game.RoundState == Round_Active)
+	if (DRGame.RoundState == Round_Active)
 	{
 		for (int i = 1; i <= MaxClients; i++)
 		{

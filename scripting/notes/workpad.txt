@@ -92,6 +92,17 @@ Deal with first round.
 	- Find a way to restore WFP time?
 
 
+Future Plans
+------------
+
+Move activator health bar display logic to a game frame system where it checks health on each frame or so. This will get rid of all the event hooks and problems where the bar is no accurate after death. Should update more quickly as well. I will still need to store max health from overheals but I can get the client's health easily enough as it's just a property access. 
+- Done in 0.4.5 
+
+Consider putting activator checks into a game frame system rather than in response to team changes. This may help with double round restart glitches. 
+
+Implement a WFP time for one minute (adjustable) where reds are respawned every five or ten seconds (wave time). Activator could be chosen at random and no points are deducted. Or players get put on both teams. 
+
+Decouple instructions from deathrun plugin.
 
 
 TO DO

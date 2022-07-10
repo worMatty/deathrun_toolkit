@@ -472,13 +472,13 @@ methodmap BasePlayer
 		{
 			if (GetEntProp(iWeapon, Prop_Data, "m_iClip1") != -1)
 			{
-				DebugEx(view_as<int>(this), "Slot %d weapon had %d ammo", slot, GetEntProp(iWeapon, Prop_Data, "m_iClip1"));
+				Debug("StrimpAmmo -- %L weapon in slot %d had %d ammo", view_as<int>(this), slot, GetEntProp(iWeapon, Prop_Data, "m_iClip1"));
 				SetEntProp(iWeapon, Prop_Send, "m_iClip1", 0);
 			}
 			
 			if (GetEntProp(iWeapon, Prop_Data, "m_iClip2") != -1)
 			{
-				DebugEx(view_as<int>(this), "Slot %d weapon had %d ammo", slot, GetEntProp(iWeapon, Prop_Data, "m_iClip2"));
+				Debug("StrimpAmmo -- %L weapon in slot %d had %d ammo", view_as<int>(this), slot, GetEntProp(iWeapon, Prop_Data, "m_iClip2"));
 				SetEntProp(iWeapon, Prop_Send, "m_iClip2", 0);
 			}
 			

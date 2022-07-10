@@ -1,0 +1,102 @@
+Control
+-------
+
+//	Round win
+	Gamerules: entering state 'GR_STATE_TEAM_WIN'
+	[DTK] [Debug] Round state set to ROUND WIN
+	[DTK] --- The round has ended ---
+//	Round restart
+	Gamerules: entering state 'GR_STATE_PREROUND'
+	[DTK] --- The round has restarted ---
+	[DTK] [Debug] Round state set to ROUND FREEZE
+	[DTK] [Debug] Moving all players to Red
+	[DTK] [Debug] Moving CreepyPasta(ger) to RED
+	[DTK] [Debug] CreepyPasta(ger)<35><[U:1:1011802847]><> switched away from BLUE
+	[DTK] [Debug] CreepyPasta(ger) removed the ACTIVATOR flag
+	[DTK] [Debug] CreepyPasta(ger)<35><[U:1:1011802847]><> joined RED
+	[DTK] [Debug] CreepyPasta(ger)<35><[U:1:1011802847]><> given the RUNNER flag
+	[DTK] [Debug] Selecting activators
+	[DTK] [Debug] Selected Bandusino as an activator and moving them to Blue
+	[DTK] [Debug] Bandusino given the ACTIVATOR flag
+	[DTK] [Debug] Bandusino<33><[U:1:934200609]><> switched away from RED
+	[DTK] [Debug] Bandusino<33><[U:1:934200609]><> removed the RUNNER flag
+	[DTK] [Debug] Bandusino<33><[U:1:934200609]><> joined BLUE with the ACTIVATOR flag
+	[DTK] [Debug] Watch Mode ENABLED
+//	Round active (stalemate in arena)
+	Gamerules: entering state 'GR_STATE_STALEMATE'
+	[DTK] [Debug] Watch Mode DISABLED
+	[DTK] [Debug] Round state set to ROUND ACTIVE
+	[DTK] --- The round is now active ---
+
+
+Problem
+-------
+
+//	Round win
+	Gamerules: entering state 'GR_STATE_TEAM_WIN'
+	[DTK] [Debug] Round state set to ROUND WIN
+	[DTK] --- The round has ended ---
+//	A client disconnects from red
+	[DTK] [Debug] chad<11><[U:1:190285622]><> switched away from RED
+	[DTK] [Debug] chad<11><[U:1:190285622]><> removed the RUNNER flag
+	Dropped chad from server (Client Disconnect)
+//	Round restart
+	Gamerules: entering state 'GR_STATE_PREROUND'
+//	Pre-game state?
+	Gamerules: entering state 'GR_STATE_PREGAME'
+//	Some map entities produce errors
+	Dynamic prop prop_dynamic: no sequence named:idle
+	Dynamic prop d1_boss_skele_hand_model: no sequence named:idle
+	Dynamic prop prop_dynamic: no sequence named:idle
+	Dynamic prop prop_dynamic: no sequence named:idle
+	logic_measure_movement: Unable to find movement target entity 
+	[DTK] --- The round has restarted ---
+	[DTK] [Debug] Round state set to ROUND FREEZE
+	[DTK] [Debug] Moving all players to Red
+	[DTK] [Debug] Selecting activators
+	[DTK] [Debug] Selected ⛐ worMatty as an activator and moving them to Blue
+	[DTK] [Debug] ⛐ worMatty given the ACTIVATOR flag
+	[DTK] [Debug] ⛐ worMatty<12><[U:1:1047392]><> switched away from RED
+	[DTK] [Debug] ⛐ worMatty<12><[U:1:1047392]><> removed the RUNNER flag
+	[DTK] [Debug] ⛐ worMatty<12><[U:1:1047392]><> joined BLUE with the ACTIVATOR flag
+	[DTK] [Debug] Watch Mode ENABLED
+//	Start game state??
+	Gamerules: entering state 'GR_STATE_STARTGAME'
+	[DTK] [Debug] We have enough activators
+//	Round restart again
+	Gamerules: entering state 'GR_STATE_PREROUND'
+//	The map entities from before seem to have respawned
+	Dynamic prop prop_dynamic: no sequence named:idle
+	Dynamic prop d1_boss_skele_hand_model: no sequence named:idle
+	Dynamic prop prop_dynamic: no sequence named:idle
+	Dynamic prop prop_dynamic: no sequence named:idle
+	logic_measure_movement: Unable to find movement target entity 
+	[DTK] --- The round has restarted ---
+	[DTK] [Debug] Round state set to ROUND FREEZE
+	[DTK] [Debug] Moving all players to Red
+	[DTK] [Debug] Moving ⛐ worMatty to RED
+	[DTK] [Debug] ⛐ worMatty<12><[U:1:1047392]><> switched away from BLUE
+	[DTK] [Debug] ⛐ worMatty removed the ACTIVATOR flag
+	[DTK] [Debug] ⛐ worMatty<12><[U:1:1047392]><> joined RED
+	[DTK] [Debug] ⛐ worMatty<12><[U:1:1047392]><> given the RUNNER flag
+	[DTK] [Debug] Selecting activators
+	[DTK] [Debug] Selected Fibert as an activator and moving them to Blue
+	[DTK] [Debug] Fibert given the ACTIVATOR flag
+	[DTK] [Debug] Fibert<6><[U:1:354983752]><> switched away from RED
+	[DTK] [Debug] Fibert<6><[U:1:354983752]><> removed the RUNNER flag
+	[DTK] [Debug] Fibert<6><[U:1:354983752]><> joined BLUE with the ACTIVATOR flag
+	[DTK] [Debug] Watch Mode ENABLED
+	[DTK] [Debug] We have enough activators
+	[DTK] [Debug] We have enough activators
+	[DTK] [Debug] Lotta<46><[U:1:276084588]><> switched away from RED
+	[DTK] [Debug] Lotta<46><[U:1:276084588]><> removed the RUNNER flag
+	Dropped Lotta from server (Client Disconnect)
+	[DTK] [Debug] We have enough activators
+	bread: rtv
+//	Round starts (stalemate in Arena)
+	Gamerules: entering state 'GR_STATE_STALEMATE'
+	[DTK] [Debug] Watch Mode DISABLED
+	[DTK] [Debug] Round state set to ROUND ACTIVE
+	[DTK] --- The round is now active ---
+//	I noticed a selected player has been skipped over
+	⛐ worMatty: DOUBLE ROUND RESET

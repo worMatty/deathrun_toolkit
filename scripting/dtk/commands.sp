@@ -12,7 +12,8 @@ Action Command_ShowPoints(int client, int args)
 	if (!g_ConVars[P_Enabled].BoolValue)
 		return Plugin_Handled;
 	
-	ChatMessage(client, "%t", "you_have_i_queue_points", Player(client).Points);
+	TF2_PrintToChat(client, _, "%t", "you_have_i_queue_points", Player(client).Points);
+	EmitMessageSoundToClient(client);
 	
 	return Plugin_Handled;
 }
@@ -28,11 +29,13 @@ Action Command_ResetPoints(int client, int args)
 	if (Player(client).Points >= 0)
 	{
 		Player(client).SetPoints(QP_Consumed);
-		ChatMessage(client, "%t", "points_have_been_reset_to_i", Player(client).Points);
+		TF2_PrintToChat(client, _, "%t", "points_have_been_reset_to_i", Player(client).Points);
+		EmitMessageSoundToClient(client);
 	}
 	else
 	{
-		ChatMessage(client, "%t", "points_cannot_be_reset");
+		TF2_PrintToChat(client, _, "%t", "points_cannot_be_reset");
+		EmitMessageSoundToClient(client);
 	}
 	
 	return Plugin_Handled;
@@ -52,12 +55,14 @@ Action Command_ToggleActivator(int client, int args)
 	if (player.HasFlag(PF_PrefActivator))
 	{
 		player.RemoveFlag(PF_PrefActivator);
-		ChatMessage(client, "%t", "opted_out_activator");
+		TF2_PrintToChat(client, _, "%t", "opted_out_activator");
+		EmitMessageSoundToClient(client);
 	}
 	else
 	{
 		player.AddFlag(PF_PrefActivator);
-		ChatMessage(client, "%t", "opted_in_activator");
+		TF2_PrintToChat(client, _, "%t", "opted_in_activator");
+		EmitMessageSoundToClient(client);
 	}
 	
 	return Plugin_Handled;
@@ -82,7 +87,8 @@ Action Command_NextActivators(int client, int args)
 	
 	if (FormatNextActivators(buffer, number))
 	{
-		ChatMessage(client, buffer);
+		TF2_PrintToChat(client, _, buffer);
+		EmitMessageSoundToClient(client);
 	}
 	
 	return Plugin_Handled;
@@ -94,8 +100,8 @@ Action Command_NextActivators(int client, int args)
 // Help
 Action Command_Help(int client, int args)
 {
-	ChatMessage(client, "Opening the help page. You need HTML MOTD enabled");
-	PrintToChat(client, "%s", HELP_URL);
+	TF2_PrintToChat(client, _, "Opening the help page. You need HTML MOTD enabled");
+	TF2_PrintToChat(client, _, "%s", HELP_URL);
 	
 	KeyValues kv = CreateKeyValues("data");
 	kv.SetString("msg", HELP_URL);
@@ -109,11 +115,11 @@ Action Command_Help(int client, int args)
 
 
 
-
+/*
 // Show player flags in console
 Action AdminCommand_PlayerData(int client, int args)
 {
-	PrintToConsole(client, "\n %s Player points and preference flags\n  Please note: The table will show values for unoccupied slots. These are from\n  previous players and are reset when someone new takes the slot.\n", PREFIX_SERVER);
+	PrintToConsole(client, "\n %s Player points and preference flags\n  Please note: The table will show values for unoccupied slots. These are from\n  previous players and are reset when someone new takes the slot.\n", PLUGIN_PREFIX);
 	PrintToConsole(client, " Index | Name                             | Points | Flags         | Activator Last");
 	PrintToConsole(client, " ----------------------------------------------------------------------------------");
 	
@@ -136,8 +142,74 @@ Action AdminCommand_PlayerData(int client, int args)
 	}
 	
 	PrintToConsole(client, " ----------------------------------------------------------------------------------");
-	PrintToConsole(client, " Game State Flags: %06b  Round State: %d  Game: %03b\n\n", g_iGameState, game.RoundState, g_iGame);
-	if (client) ChatMessage(client, "Check console for output");
+	PrintToConsole(client, " Game State Flags: %06b  Round State: %d  Game: %03b\n\n", g_iGameState, DRGame.RoundState, g_iGame);
+	if (client) TF2_PrintToChat(client, "Check console for output");
+	
+	return Plugin_Handled;
+}
+*/
+
+
+
+// Show player flags in console
+Action AdminCommand_PlayerData(int client, int args)
+{
+	PrintToConsole(client, "\n %s Player points and preference flags\n  Please note: The table will show values for unoccupied slots. These are from\n  previous players and are reset when someone new takes the slot.\n", PLUGIN_PREFIX);
+	
+	for (int i = 1; i <= MaxClients; i++)
+	{
+		char name[25] = "----", flags[128];
+		Player player = Player(i);
+		
+		if (player.InGame)
+		{
+			Format(name, sizeof(name), "%N", player.Index);
+		}
+		
+/*		enum {
+			PF_PrefActivator = 0x1,			// Wants to be activator
+			//PF_PrefFullQP = 0x2,			// Wants full queue points (no longer used)
+			PF_PrefEnglish = 0x4,			// Wants English SourceMod
+			
+			PF_Welcomed = 0x10000,			// Has been welcomed to the server
+			PF_Activator = 0x20000,			// Is an activator
+			PF_Runner = 0x40000,			// Is a runner
+			PF_TurnToken = 0x80000,			// Turn token
+			PF_CanBoost = 0x140000,			// Is allowed to use the +speed boost
+		}
+*/		
+		
+		if (player.Flags & PF_Activator)
+		{
+			Format(flags, sizeof(flags), " ACTIVATOR");
+		}
+		if (player.Flags & PF_Runner)
+		{
+			Format(flags, sizeof(flags), "%s | RUNNER", flags);
+		}
+		if (player.Flags & PF_PrefActivator)
+		{
+			Format(flags, sizeof(flags), "%s | OPTED-IN", flags);
+		}
+		if (player.Flags & PF_Welcomed)
+		{
+			Format(flags, sizeof(flags), "%s | WELCOMED", flags);
+		}
+		if (player.Flags & PF_PrefEnglish)
+		{
+			Format(flags, sizeof(flags), "%s | ENGLISH", flags);
+		}
+		
+		PrintToConsole(client, " %2d. %24s (#%d - %d) Points: %d ActLast: %d \
+			Flags:%s", i, name, player.ArrayUserID, (player.InGame) ? player.SteamID : 0, player.Points, player.ActivatorLast, flags);
+	}
+	
+	PrintToConsole(client, "\n Game State Flags: %06b  Round State: %s\n\n", g_iGameState, g_sRoundStates[DRGame.RoundState]);
+	if (client)
+	{
+		TF2_PrintToChat(client, _, "Check console for output");
+		EmitMessageSoundToClient(client);
+	}
 	
 	return Plugin_Handled;
 }
@@ -148,7 +220,7 @@ Action AdminCommand_SetClass(int client, int args)
 {
 	if (args < 1 || args > 2)
 	{
-		ChatMessage(client, "Usage: sm_setclass <target(s)> [class] (blank for random)");
+		ReplyToCommand(client, "Usage: sm_setclass <target(s)> [class] (blank for random)");
 		return Plugin_Handled;
 	}
 	
@@ -184,12 +256,19 @@ Action AdminCommand_SetClass(int client, int args)
 	{
 		for (int i = 0; i < iTargetCount; i++)
 		{
-			int player = iTarget[i];
-			Player(player).SetClass(class);
+			Player(iTarget[i]).SetClass(class);
+			RequestFrame(ApplyPlayerAttributes, client);
+			
 			if (client == iTarget[i])
-				ChatMessage(iTarget[i], "You are now a %s", sClass);
+			{
+				TF2_PrintToChat(iTarget[i], _, "You are now a %s", sClass);
+				EmitMessageSoundToClient(client);
+			}
 			else
-				ChatMessage(iTarget[i], "%N has made you a %s", client, sClass);
+			{
+				TF2_PrintToChat(iTarget[i], client, "\x02%N has made you a %s", client, sClass);
+				EmitMessageSoundToClient(client);
+			}
 			LogAction(client, iTarget[i], "%L changed class of %L to %s", client, iTarget[i], sClass);
 		}
 	}
@@ -204,7 +283,7 @@ Action AdminCommand_SetSpeed(int client, int args)
 {
 	if (args < 1 || args > 2)
 	{
-		ChatMessage(client, "Usage: sm_setspeed <target(s)> [speed]");
+		TF2_PrintToChat(client, _, "Usage: sm_setspeed <target(s)> [speed]");
 		return Plugin_Handled;
 	}
 	
@@ -231,9 +310,15 @@ Action AdminCommand_SetSpeed(int client, int args)
 			int player = iTarget[i];
 			Player(player).SetSpeed(speed);
 			if (client == iTarget[i])
-				ChatMessage(iTarget[i], "Your speed has been set to %du/s", speed);
+			{
+				TF2_PrintToChat(iTarget[i], _, "Your speed has been set to %du/s", speed);
+				EmitMessageSoundToClient(client);
+			}
 			else
-				ChatMessage(iTarget[i], "%N has set your speed to %du/s", client, speed);
+			{
+				TF2_PrintToChat(iTarget[i], client, "\x02%N has set your speed to %du/s", client, speed);
+				EmitMessageSoundToClient(client);
+			}
 			LogAction(client, iTarget[i], "%L changed speed of %L to %d", client, iTarget[i], speed);
 		}
 	}
@@ -251,7 +336,8 @@ Action AdminCommand_AwardPoints(int client, int args)
 	
 	if (args != 2)
 	{
-		ChatMessage(client, "%t", "wrong_usage_of_award_command");
+		TF2_PrintToChat(client, _, "%t", "wrong_usage_of_award_command");
+		EmitMessageSoundToClient(client);
 		return Plugin_Handled;
 	}
 	
@@ -272,9 +358,10 @@ Action AdminCommand_AwardPoints(int client, int args)
 		char sTargetName[MAX_NAME_LENGTH];
 		GetClientName(client, sTargetName, sizeof(sTargetName));
 		
-		ChatMessage(iTarget, "%t", "received_queue_points_from_an_admin", sTargetName, iPoints, Player(iTarget).Points);
+		TF2_PrintToChat(iTarget, client, "%t", "received_queue_points_from_an_admin", sTargetName, iPoints, Player(iTarget).Points);
+		EmitMessageSoundToClient(iTarget);
 		
-		ChatAdmins("%N awarded %N %d queue points. New total: %d", client, iTarget, iPoints, Player(iTarget).Points);
+		ShowActivity(client, "Awarded %d queue points to %N. New total: %d", iPoints, iTarget, Player(iTarget).Points);
 		LogMessage("%L awarded %L %d queue points", client, iTarget, iPoints);
 		
 		return Plugin_Handled;
@@ -283,24 +370,20 @@ Action AdminCommand_AwardPoints(int client, int args)
 
 
 
-// Reset the player database
-Action AdminCommand_ResetDatabase(int client, int args)
+// Delete the table from the database
+Action AdminCommand_RemoveDBTable(int client, int args)
 {
-	if (!g_ConVars[P_Enabled].BoolValue)
-		return Plugin_Handled;
-	
 	char confirm[8];
 	GetCmdArg(1, confirm, sizeof(confirm));
 	
-	if (!StrEqual(confirm, "confirm", false))
+	if (StrEqual(confirm, "confirm", false))
+	{
+		ReplyToCommand(client, "Deleting the table from your database");
+		DBReset(client);
+	}
+	else
 	{
 		ReplyToCommand(client, "To reset the database, supply the argument 'confirm'");
-		return Plugin_Handled;
-	}
-	else if (StrEqual(confirm, "confirm", false))
-	{
-		ReplyToCommand(client, "Resetting the player database...");
-		DBReset(client);
 	}
 	
 	return Plugin_Handled;
@@ -308,37 +391,48 @@ Action AdminCommand_ResetDatabase(int client, int args)
 
 
 
-// Reset a user (delete them from the database)
-Action AdminCommand_ResetUser(int client, int args)
+// Delete a user from the database
+Action AdminCommand_RemoveDBUser(int client, int args)
 {
-	if (!g_ConVars[P_Enabled].BoolValue)
-		return Plugin_Handled;
+	char command[64], confirm[8];
 	
-	char confirm[8];
+	GetCmdArg(0, command, sizeof(command));
 	GetCmdArg(2, confirm, sizeof(confirm));
 	
-	if (args != 2 || !StrEqual(confirm, "confirm"))
+	if (args == 2 && StrEqual(confirm, "confirm"))
 	{
-		ReplyToCommand(client, "Usage: sm_resetuser <user> confirm");
-		return Plugin_Handled;
-	}
-	else if (args == 2 && StrEqual(confirm, "confirm"))
-	{
-		char sPlayer[65];
-		GetCmdArg(1, sPlayer, sizeof(sPlayer));
+		char player[64];
+		int target;
 		
-		int iTarget = FindTarget(client, sPlayer, true, false);
-		if (iTarget == -1)
+		GetCmdArg(1, player, sizeof(player));
+		target = FindTarget(client, player, true, false);
+		
+		if (target == -1)
 		{
 			ReplyToTargetError(client, COMMAND_TARGET_AMBIGUOUS);
-			return Plugin_Handled;
 		}
 		else
 		{
-			ReplyToCommand(client, "Deleting %N from the database...", iTarget);
-			Player(iTarget).DeleteRecord(client);
+			ReplyToCommand(client, "Deleting %N from the database table", target);
+			Player(target).DeleteRecord(client);
 		}
 	}
+	else
+	{
+		ReplyToCommand(client, "Usage: %s <username/#userid> confirm\nUser must be present on the server", command);
+	}
+	
+	return Plugin_Handled;
+}
+
+
+
+// Reload configuration files
+Action AdminCommand_ReloadConfigs(int client, int args)
+{
+	ReplyToCommand(client, "Reloading the config files");
+	
+	LoadConfigs();
 	
 	return Plugin_Handled;
 }
@@ -357,10 +451,11 @@ Action CmdListener_LockBlue(int client, const char[] command, int args)
 	Player player = Player(client);
 	
 	// Prevent Activators Escaping
-	if (game.RoundState == Round_Active && player.Team == Team_Blue && player.IsAlive && player.HasFlag(PF_Activator) && g_ConVars[P_LockActivator].BoolValue)
+	if (DRGame.RoundState == Round_Active && player.Team == Team_Blue && player.IsAlive && player.HasFlag(PF_Activator) && g_ConVars[P_LockActivator].BoolValue)
 	{
-		ChatMessage(client, "%t", "activator_no_escape");
-		PrintToConsole(client, "%s Command '%s' has been disallowed by the server.", PREFIX_SERVER, command);
+		TF2_PrintToChat(client, _, "%t", "activator_no_escape");
+		EmitMessageSoundToClient(client);
+		PrintToConsole(client, "%s Command '%s' has been disallowed by the server.", PLUGIN_PREFIX, command);
 		return Plugin_Handled;
 	}
 	
@@ -383,7 +478,7 @@ Action CmdListener_Teams(int client, const char[] command, int args)
 		// Assign a class if a player has none
 		// We're now moving players with no class to Spec on round start
 		/*
-		if (game.RoundState == Round_Freeze && player.Class == Class_Unknown)
+		if (DRGame.RoundState == Round_Freeze && player.Class == Class_Unknown)
 		{
 			player.SetClass(GetRandomInt(1, 9), _, true);
 			Debug("%N had no class so we chose a random one for them", client);
@@ -393,17 +488,18 @@ Action CmdListener_Teams(int client, const char[] command, int args)
 		// Prevent Activators Escaping
 		if (player.Team == Team_Blue && player.HasFlag(PF_Activator))
 		{
-			if ((game.RoundState == Round_Active && g_ConVars[P_LockActivator].BoolValue) ||
-				(game.RoundState == Round_Freeze && g_ConVars[P_LockActivator].IntValue == 2))
+			if ((DRGame.RoundState == Round_Active && g_ConVars[P_LockActivator].BoolValue) ||
+				(DRGame.RoundState == Round_Freeze && g_ConVars[P_LockActivator].IntValue == 2))
 			{
-				ChatMessage(client, "%t", "activator_no_escape");
+				TF2_PrintToChat(client, _, "%t", "activator_no_escape");
+				EmitMessageSoundToClient(client);
 				return Plugin_Handled;
 			}
 		}
 		
 		// Prevent Players Joining Blue - Commented out as the Event-based system works
 		/*
-		if (StrEqual(arg1, "blue", false) && (game.RoundState == Round_Active || game.RoundState == Round_Freeze))
+		if (StrEqual(arg1, "blue", false) && (DRGame.RoundState == Round_Active || DRGame.RoundState == Round_Freeze))
 		{
 			ChangeClientTeam(client, Team_Red);	// Best for TF2C as blocking the command prevents them choosing a team
 			Debug("%N tried to join Blue but was moved instead to Red", client);
@@ -456,29 +552,34 @@ Action CmdListener_Builds(int client, const char[] command, int args)
 		
 		if (iArg1 == 0 && (g_ConVars[P_Buildings].IntValue & Build_Dispenser) == Build_Dispenser)
 		{
-			ChatMessage(client, "Sorry, you aren't allowed to build dispensers");
+			TF2_PrintToChat(client, _, "Sorry, you aren't allowed to build dispensers");
+			EmitMessageSoundToClient(client);
 			return Plugin_Handled;
 		}
 		if (iArg1 == 1 && iArg2 == 0 && (g_ConVars[P_Buildings].IntValue & Build_TeleEnt) == Build_TeleEnt)
 		{
-			ChatMessage(client, "Sorry, you aren't allowed to build teleporter entrances");
+			TF2_PrintToChat(client, _, "Sorry, you aren't allowed to build teleporter entrances");
+			EmitMessageSoundToClient(client);
 			return Plugin_Handled;
 		}
 		if (iArg1 == 1 && iArg2 == 1 && (g_ConVars[P_Buildings].IntValue & Build_TeleEx) == Build_TeleEx)
 		{
-			ChatMessage(client, "Sorry, you aren't allowed to build teleporter exits");
+			TF2_PrintToChat(client, _, "Sorry, you aren't allowed to build teleporter exits");
+			EmitMessageSoundToClient(client);
 			return Plugin_Handled;
 		}
 		if (iArg1 == 2 && (g_ConVars[P_Buildings].IntValue & Build_Sentry) == Build_Sentry)
 		{
-			ChatMessage(client, "Sorry, you aren't allowed to build sentries");
+			TF2_PrintToChat(client, _, "Sorry, you aren't allowed to build sentries");
+			EmitMessageSoundToClient(client);
 			return Plugin_Handled;
 		}
 		
 		// build 3 is for backwards compatability of the deprecated build argument to build a tele exit
 		if (iArg1 == 3 && (g_ConVars[P_Buildings].IntValue & Build_TeleEx) == Build_TeleEx && Player(client).Class == Class_Engineer)
 		{
-			ChatMessage(client, "Sorry, you aren't allowed to build teleporter exits");
+			TF2_PrintToChat(client, _, "Sorry, you aren't allowed to build teleporter exits");
+			EmitMessageSoundToClient(client);
 			return Plugin_Handled;
 		}
 	}

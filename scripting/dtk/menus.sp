@@ -81,7 +81,7 @@ stock void MenuFunction(int client, const char[] selection)
 	{
 		menu.ExitBackButton = true;
 		
-		int len = game.ActivatorPool;
+		int len = DRGame.ActivatorPool;
 		int[] list = new int[len];
 		CreateActivatorList(list);
 
