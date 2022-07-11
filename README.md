@@ -2,7 +2,7 @@
 
 ## About
 
-Deathrun Toolkit is a set of plugins for the Deathrun game mode in TF2, TF2 Classic and Open Fortress. The main plugin `dtk.smx` runs the game mode. The other plugins are optional extras which mitigate exploits and improve quality of life in older or flawed maps.
+Deathrun Toolkit is a set of plugins which run and support the Deathrun game mode in TF2, TF2 Classic and Open Fortress. The main plugin `dtk.smx` runs the game mode. The other plugins are optional extras which mitigate exploits and improve quality of life in older or flawed maps.
 
 ## Installation
 
