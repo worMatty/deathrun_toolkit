@@ -17,7 +17,7 @@ Place dtk.smx in addons/sourcemod/plugins, and dtk.phrases.txt in addons/sourcem
 ### Advanced
 
 Install the weapon restriction files in addons/sourcemod/configs/dtk. Add weapons you wish to restrict to restrictions.cfg.
-For TF2, install [TF2 Attributes]([https://forums.alliedmods.net/showthread.php?t=210221](https://github.com/nosoop/tf2attributes) to enable the plugin to apply attributes to players and weapons to restrict or modify their abilities. This is necessary for a *lot* of maps to prevent players skipping traps. Unfortunately there's no way I know of currently to modify player attributes or aspects in TF2 Classic and Open Fortress, so you will need to seek alternative methods of limiting their abilities.
+For TF2, install [TF2 Attributes](https://github.com/nosoop/tf2attributes) to enable the plugin to apply attributes to players and weapons to restrict or modify their abilities. This is necessary for a *lot* of maps to prevent players skipping traps. Unfortunately there's no way I know of currently to modify player attributes or aspects in TF2 Classic and Open Fortress, so you will need to seek alternative methods of limiting their abilities.
 
 You can get a list of plugin cvars by typing `sm cvars dtk` or `find dtk` in server console.
 If you only want to use DTK for certain deathrun maps, create a .cfg file in your game server's cfgs dir with the same name as the map. Put `dtk_auto_enable 0` in server.cfg and `dtk_auto_enable 1` in your map config. If you use another deathrun plugin you will need to disable it in your map config and enable it in server.cfg so both plugins aren't running the game mode at the same time.
