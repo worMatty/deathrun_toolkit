@@ -4,6 +4,28 @@ Deathrun Toolkit
 Changelog
 ---------
 
+**Changelog - Version 0.4.6**
+
+Minor changes:
+- sm_na can be used to set the next activator by an admin
+- sm_na now always shows the next three activators and doesn't accept a quantity
+- Next activator printed to chat every 120 seconds post round start
+
+Major changes:
+- Activator health scaling algorithm changed. Activator(s) have less scaled health now
+- Added a WIP cvar to switch between different health scaling modes (new, overheal, old, multiply)
+
+Bug fixes:
+- sm_setclass no longer plays multiple message sounds to the command user
+- sm_setclass was applying attributes to the command user instead of the targets
+- Boss health bar was initially at the wrong value when activator's health got scaled
+- Activator health scaling triggers were not working sometimes
+- When using the admin menu option to scale activator health, health pack reduction attribute was not being applied to the activators
+
+Known issues:
+- Players who were an activator with scaled health in the previous round have an overheal
+
+
 **Changelog - Version 0.4.1**
 
 Fixed a bug preventing the Activator boost HUD displaying after a map change.

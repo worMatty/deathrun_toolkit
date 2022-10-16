@@ -230,11 +230,27 @@ stock void ProcessMapInstruction(int client, const char[] instruction, const cha
 	{
 		// Pool
 		if (buffers[0][0] == '\0' || StrEqual(buffers[0], "pool", false))
-			ScaleActivatorHealth(false, _, client);
-		
+		{
+			int health = ScaleActivatorHealth(false, _);
+
+			if (health)
+			{
+				TF2_PrintToChatAll(_, "Scaled total activator health to %d", health);
+				EmitMessageSoundToAll();
+			}
+		}
+			
 		// Overheal
 		if (StrEqual(buffers[0], "overheal", false))
-			ScaleActivatorHealth(true, _, client);
+		{
+			int health = ScaleActivatorHealth(true, _);
+			
+			if (health)
+			{
+				TF2_PrintToChatAll(_, "Overhealed total activator health to %d", health);
+				EmitMessageSoundToAll();
+			}
+		}
 	}
 	
 	// Set move type

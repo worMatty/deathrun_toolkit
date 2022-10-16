@@ -77,20 +77,49 @@ Action Command_NextActivators(int client, int args)
 	if (!g_ConVars[P_Enabled].BoolValue)
 		return Plugin_Handled;
 	
-	char buffer[MAX_CHAT_MESSAGE], arg[3];
-	int number = GetNumActivatorsRequired();
-	
-	if (GetCmdArg(1, arg, sizeof(arg)))
+	if (args == 0)
 	{
-		number = StringToInt(arg);
+		char buffer[MAX_CHAT_MESSAGE];
+		int numact = GetNumActivatorsRequired();
+		
+		if (FormatNextActivators(buffer, (numact > 1) ? numact : 3))
+		{
+			TF2_PrintToChat(client, _, buffer);
+			EmitMessageSoundToClient(client);
+		}
 	}
-	
-	if (FormatNextActivators(buffer, number))
+	else if (args == 1 && Player(client).IsAdmin)
 	{
-		TF2_PrintToChat(client, _, buffer);
-		EmitMessageSoundToClient(client);
+		bool tn_is_ml;
+		char pattern[64], target_name[64];
+		int result, max_targets, tn_maxlength;
+		int[] targets = new int[MaxClients];
+		
+		GetCmdArg(1, pattern, sizeof(pattern));
+		
+		result = ProcessTargetString(pattern, client, targets, max_targets, COMMAND_FILTER_CONNECTED | COMMAND_FILTER_NO_MULTI, target_name, tn_maxlength, tn_is_ml);
+		
+		if (result == 1)
+		{
+			int target = targets[0];
+			Player(target).MakeNextActivator();
+			TF2_ReplyToCommand(client, target, "\x02%N will be the next activator", target);
+		}
+		else if (tn_is_ml)
+		{
+			ReplyToCommand(client, "Can't use this command with a multi-target specifier");
+		}
+		else if (result < 1)
+		{
+			ReplyToTargetError(client, result);
+		}
 	}
-	
+	else
+	{
+		ReplyToCommand(client, "\x01Usage: \x04/na\x01 or \x04/na *name*\x01 (admin)");
+		return Plugin_Handled;
+	}
+
 	return Plugin_Handled;
 }
 
@@ -256,21 +285,25 @@ Action AdminCommand_SetClass(int client, int args)
 	{
 		for (int i = 0; i < iTargetCount; i++)
 		{
-			Player(iTarget[i]).SetClass(class);
-			RequestFrame(ApplyPlayerAttributes, client);
+			int target = iTarget[i];
+			Player(target).SetClass(class);
+			RequestFrame(ApplyPlayerAttributes, target);
 			
-			if (client == iTarget[i])
+			if (client == target)
 			{
-				TF2_PrintToChat(iTarget[i], _, "You are now a %s", sClass);
-				EmitMessageSoundToClient(client);
+				TF2_PrintToChat(target, _, "You are now a %s", sClass);
+				EmitMessageSoundToClient(target);
 			}
 			else
 			{
-				TF2_PrintToChat(iTarget[i], client, "\x02%N has made you a %s", client, sClass);
-				EmitMessageSoundToClient(client);
+				TF2_PrintToChat(target, client, "\x02%N has made you a %s", client, sClass);
+				EmitMessageSoundToClient(target);
 			}
-			LogAction(client, iTarget[i], "%L changed class of %L to %s", client, iTarget[i], sClass);
+			
+			LogAction(client, target, "%L changed class of %L to %s", client, target, sClass);
 		}
+		
+		ShowActivity(client, "Changed %d %s to %s", iTargetCount, (iTargetCount > 1) ? "players" : "player", sClass);
 	}
 	
 	return Plugin_Handled;

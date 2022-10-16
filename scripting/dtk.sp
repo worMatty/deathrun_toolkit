@@ -34,7 +34,7 @@
  * ----------------------------------------------------------------------------------------------------
  */
 
-#define PLUGIN_VERSION 		"0.4.5"
+#define PLUGIN_VERSION 		"0.4.6.1"
 #define PLUGIN_NAME			"[DTK] Deathrun Toolkit"
 #define PLUGIN_SHORTNAME 	"Deathrun Toolkit"
 #define PLUGIN_PREFIX		"[DTK]"
@@ -45,6 +45,7 @@
 #define HEALTH_SCALE_BASE	300.0					// The base value used in the activator health scaling system
 #define DEFAULT_GAME_DESC	"Source Game Server"	// Default game description when using with unsupported games/mods
 #define TIMER_GRANTPOINTS	10.0
+#define TIMER_NA_MESSAGE	120.0
 
 #define HELP_URL					"https://steamcommunity.com/groups/death_experiments/discussions/3/3111395113752151418/"
 #define WEAPON_REPLACEMENTS_CFG		"addons/sourcemod/configs/dtk/replacements.cfg"
@@ -124,6 +125,7 @@ enum {
 	P_RestrictItems,
 	P_EnhancedMobility,
 	P_ExtraMobility,
+	P_HealthScaleMethod,
 	
 	ConVars_Max
 }

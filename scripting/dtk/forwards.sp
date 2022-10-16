@@ -118,6 +118,7 @@ public void OnPluginStart()
 	g_ConVars[P_RestrictItems]		= CreateConVar("dtk_wip_restrict_items", "1", "Toggle item restrictions");
 	g_ConVars[P_EnhancedMobility]	= CreateConVar("dtk_wip_enhanced_mobility", "0", "Set enhanced mobility level 0-2 (charging)", _, true, 0.0, true, 2.0);
 	g_ConVars[P_ExtraMobility]		= CreateConVar("dtk_wip_extra_mobility", "0", "Toggle extra mobility such as blast jumping");
+	g_ConVars[P_HealthScaleMethod]	= CreateConVar("dtk_wip_health_scale_method", "1", "Method of activator health scaling. 1 = New, 2 = new overheal, 3 = old, 4 = multiply health by reds, 0 = off", _, true, 0.0, true, 3.0);
 	
 	// Cycle through and hook each ConVar
 	for (int i = 0; i < ConVars_Max; i++)

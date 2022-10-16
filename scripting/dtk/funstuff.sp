@@ -15,7 +15,7 @@ void FunStuff_ScaleHealth(int commander)
 	
 	if (health)
 	{
-		TF2_PrintToChatAll(_, "Scaled activator health to %d", health);
+		TF2_PrintToChatAll(_, "Scaled total activator health to %d", health);
 		EmitMessageSoundToAll();
 	}
 	else

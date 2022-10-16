@@ -95,6 +95,28 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 			TF2_PrintToChatAll(i, "%t", "name_no_class_moved_spec", sname);
 		}
 	}
+	
+	// Start next activator message timer
+	static Handle timer;
+	if (timer != null)
+	{
+		delete timer;
+	}
+	timer = CreateTimer(TIMER_NA_MESSAGE, Timer_NextActivator_Message, _, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+}
+
+
+Action Timer_NextActivator_Message(Handle timer, any data)
+{
+	char buffer[MAX_CHAT_MESSAGE];
+	int numact = GetNumActivatorsRequired();
+	
+	if (FormatNextActivators(buffer, numact))
+	{
+		PrintToChatAll(buffer);
+	}
+	
+	timer = null;
 }
 
 

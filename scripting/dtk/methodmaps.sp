@@ -184,7 +184,7 @@ methodmap Player
 	{
 		public get()
 		{
-			return (GetUserAdmin(view_as<int>(this)) != INVALID_ADMIN_ID);
+			return (view_as<int>(this) == 0) || (GetUserAdmin(view_as<int>(this)) != INVALID_ADMIN_ID);
 		}
 	}
 	
@@ -382,7 +382,7 @@ methodmap Player
 		
 		if (resent != -1)
 		{
-			AddAttribute(view_as<int>(this), "max health additive bonus", float(max - GetTFClassHealth(view_as<TFClassType>(this))));
+			AddAttribute(view_as<int>(this), "max health additive bonus", float(max - GetTFClassHealth(view_as<TFClassType>(this.Class))));
 			return max;
 		}
 		else
@@ -549,6 +549,24 @@ methodmap Player
 		// Remove the player from the Activators dynamic array (health bar)
 		int index = g_Activators.FindValue(this);
 		if (index != -1) g_Activators.Erase(index);
+	}
+	
+	public void MakeNextActivator()
+	{
+		int[] activators = new int[MaxClients];
+		CreateActivatorList(activators);
+		
+		int nextact = activators[0];
+		
+		if (this.Index != nextact)
+		{
+			this.Points = Player(nextact).Points + 1000;
+			Debug("Player.MakeNextActivator --> %N.Points == %d  %N.Points == %d", this.Index, this.Points, Player(nextact).Index, Player(nextact).Points);
+		}
+		else
+		{
+			Debug("Player.MakeNextActivator --> %N is already next activator", this.Index);
+		}
 	}
 	
 	// Retrieve Player Data from the Database

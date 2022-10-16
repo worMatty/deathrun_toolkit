@@ -226,6 +226,10 @@ stock void CreateActivatorList(int[] list)
  */
 stock int SortPlayers(int[] a, int[] b, const int[][] array, Handle hndl)
 {
+	// [0] client index
+	// [1] queue points
+	// [2] last time activator timestamp
+	
 	if (b[1] == a[1])			// B and A have the same points
 	{
 		if (b[2] < a[2])			// B has an earlier Activator time than A
@@ -374,151 +378,89 @@ void ActivatorBoost(int client, int buttons, int tickcount)
  * 
  * @param		bool	Overheal or increase health pool
  * @param		int		Multiply health by this number * live reds
- * @param		int		Apply scaling to a specific client
  * @noreturn
  */
-int ScaleActivatorHealth(bool overheal = false, int value = 0, int client = 0)
+int ScaleActivatorHealth(bool overheal = false, int value = 0)
 {
-	/*
-		How it Works
-		------------
-		
-		Take a 'base' of 300
-		Set percentage float to 1.0
-		Get the client's max health (substitute with an average of all activators when scaling all?
-			Or give each client a different amount based on their existing max health?)
-		Store the player's max health in a float so we can use it to reduce health pack contribution
-			by a corresponding amount
-		
-		Get number of live reds
-		For each live red, add 'base' times 'percentage' to a variable containing the player's max health value.
-		Multiply percentage by 1.15. This is equivalent to increasing the percentage multiplier by 15%.
-		
-		Set player's health to new max.
-		Scale HP contribution.
-		Set player's health to new figure.
-		
-		
-		Thoughts
-		--------
-		
-		Why am I using a base? Why did I choose 300?
-		
-		
-		Method
-		------
-		
-		If client == 0
-			get average max health of activators
-			if value != 0
-				Get new max health from scaling maths
-			else
-				Get new max health from multiply maths
-			Give each activator the health pack attribute using their stored max health
-			Give each player the new health divided by number of live acts
-		else if client is specified
-			get class health of activator
-			if value != 0
-				Get new max health from scaling maths
-			else
-				Get new max health from multiply maths
-			Give the client the health pack attribute using their stored max health divided by number of live acts
-			Give the client the new health divided by number of live acts
-	*/
-	
-	
-	
 	int activators = DRGame.AliveActivators;
 	int reds = TFTeam_Red.Alive();
-	int ihealth;
-	
-	if (activators >= reds || !activators)	// Don't scale if teams are even or there are no activators
+
+	if (activators >= reds || !activators || g_ConVars[P_HealthScaleMethod].IntValue == 0)
+	{
 		return 0;
-	
-	if (client != 0)
-	{
-		Player player = Player(client);
-		
-		if (!player.IsAlive || !player.InGame || !player.IsActivator)
-			return 0;
-		
-		float health = float(GetTFClassHealth(TF2_GetPlayerClass(player.Index)));
-		float p = 1.0;
-		
-		if (value == 0)	// Scale
-		{
-			for (int i = 1; i < reds; i++)
-			{
-				health += (HEALTH_SCALE_BASE * p);
-				p *= 1.15;
-			}
-		}
-		else	// Multiply
-		{
-			health = float(value * reds);
-		}
-		
-		ihealth = RoundToNearest(health / activators);
-		
-		AddAttribute(client, "health from packs decreased", GetTFClassHealth(TF2_GetPlayerClass(player.Index)) / float(ihealth));
-		
-		if (!overheal) player.SetMaxHealth(ihealth);
-		player.Health = ihealth;
-		
-		int index = g_Activators.FindValue(client);
-		g_Activators.Set(index, ihealth, AL_MaxHealth);
-		g_Activators.Set(index, ihealth, AL_Health);
 	}
-	else
+	
+	float flHealth;
+	int len = g_Activators.Length;
+	
+	for (int i = 0; i < len; i++)
 	{
-		float health;
-		int len = g_Activators.Length;
+		Player player = Player(g_Activators.Get(i));
 		
-		for (int i = 0; i < len; i++)
+		if (player.InGame && player.IsAlive)
 		{
-			Player player = Player(g_Activators.Get(i));
-			
-			if (player.InGame && player.IsAlive)
-				health += GetTFClassHealth(TF2_GetPlayerClass(player.Index));
-		}
-		
-		health /= activators;
-		
-		float p = 1.0;
-		
-		if (value == 0)	// Scale
-		{
-			for (int i = 1; i < reds; i++)
-			{
-				health += (HEALTH_SCALE_BASE * p);
-				p *= 1.15;
-			}
-		}
-		else	// Multiply
-		{
-			health = float(value * reds);
-		}
-		
-		ihealth = RoundToNearest(health / activators);
-		
-		for (int i = 0; i < len; i++)
-		{
-			Player player = Player(g_Activators.Get(i));
-			
-			if (player.InGame && player.IsAlive)
-			{
-				AddAttribute(client, "health from packs decreased", GetTFClassHealth(TF2_GetPlayerClass(player.Index)) / float(ihealth));
-				
-				if (!overheal) player.SetMaxHealth(ihealth);
-				player.Health = ihealth;
-				
-				g_Activators.Set(i, ihealth, AL_MaxHealth);
-				g_Activators.Set(i, ihealth, AL_Health);
-			}
+			flHealth += GetTFClassHealth(TF2_GetPlayerClass(player.Index));
 		}
 	}
 	
-	return ihealth;
+	flHealth /= activators;	// TODO Proportion new health so it scales with original class health
+	
+	
+	// Multiply by value
+	if (value > 0)
+	{
+		flHealth = float((value / activators) * reds);
+	}
+	
+	
+	// Calculate using new method
+	else if (0 < g_ConVars[P_HealthScaleMethod].IntValue < 3)
+	{
+		flHealth = ((reds * 2) * flHealth) - flHealth;
+		overheal = (g_ConVars[P_HealthScaleMethod].IntValue == 2);
+	}
+	
+	
+	// Calculate using old method
+	else if (g_ConVars[P_HealthScaleMethod].IntValue == 3)
+	{
+		float p = 1.0;
+		for (int i = 1; i < reds; i++)
+		{
+			flHealth += (HEALTH_SCALE_BASE * p);
+			p *= 1.15;
+		}
+	}
+	
+	
+	
+	
+	
+	// Multiply health by number of reds
+	else if (g_ConVars[P_HealthScaleMethod].IntValue == 4)
+	{
+		flHealth = flHealth * reds;
+	}
+	
+	
+	// Apply health
+	for (int i = 0; i < len; i++)
+	{
+		Player player = Player(g_Activators.Get(i));
+		
+		if (player.InGame && player.IsAlive)
+		{
+			AddAttribute(player.Index, "health from packs decreased", GetTFClassHealth(TF2_GetPlayerClass(player.Index)) / flHealth);
+			
+			if (!overheal) player.SetMaxHealth(RoundToNearest(flHealth));
+			player.Health = RoundToNearest(flHealth);
+			
+			g_Activators.Set(i, RoundToNearest(flHealth), AL_MaxHealth);
+			g_Activators.Set(i, RoundToNearest(flHealth), AL_Health);
+		}
+	}
+	
+	return RoundToNearest(flHealth);
 }
 
 
@@ -554,9 +496,9 @@ int ScaleActivatorHealth(bool overheal = false, int value = 0, int client = 0)
 
 
 /**
- * Display up to the next three activators at the end of a round.
+ * Format a string containing the names of the next specified number of activators.
  * 
- * @noreturn
+ * @return		int		Number of cells written
  */
 int FormatNextActivators(char[] buffer, int max = 3)
 {
@@ -663,7 +605,7 @@ void BossBar_Check()
 		}
 	}
 
-	// Hide if round not active
+	// Hide if round not active - conveniently resetting stored values
 	if (DRGame.RoundState != Round_Active)
 	{
 		health = newhealth;
@@ -673,19 +615,30 @@ void BossBar_Check()
 	}
 	
 	// Update stored max health
-	if (health > maxhealth)
+	/*if (health > maxhealth)
 	{
 		maxhealth = health;
 	}
 	if (newmaxhealth > maxhealth)
 	{
 		maxhealth = newmaxhealth;
-	}
+	}*/
 
 	// If health has changed, display bar and reset timer
 	if (health != newhealth)
 	{
 		health = newhealth;
+		
+		// Update stored max health
+		if (health > maxhealth)
+		{
+			maxhealth = health;
+		}
+		if (newmaxhealth > maxhealth)
+		{
+			maxhealth = newmaxhealth;
+		}
+		
 		int barval = RoundToNearest( float(health) / float(maxhealth) * 255.0 );
 		SetEntProp(bar, Prop_Send, "m_iBossHealthPercentageByte", barval);
 		Debug("Boss bar -- health %d, maxhealth %d, barval %d", health, maxhealth, barval);
