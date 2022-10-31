@@ -172,14 +172,6 @@ methodmap Player
 		}
 	}
 	
-	property bool IsParticipating
-	{
-		public get()
-		{
-			return (GetClientTeam(view_as<int>(this)) == Team_Red || GetClientTeam(view_as<int>(this)) == Team_Blue);
-		}
-	}
-	
 	property bool IsAdmin
 	{
 		public get()
@@ -201,6 +193,14 @@ methodmap Player
 		public get()
 		{
 			return GetEntProp(view_as<int>(this), Prop_Send, "m_iClass");
+		}
+	}
+	
+	property bool IsParticipating
+	{
+		public get()
+		{
+			return (GetClientTeam(view_as<int>(this)) == Team_Red || GetClientTeam(view_as<int>(this)) == Team_Blue);
 		}
 	}
 	
@@ -248,21 +248,30 @@ methodmap Player
 	 * --------------------------------------------------
 	 */
 	
-	public void SetTeam(int team, bool respawn = true)
+	/*
+		Move a player to another team
+		@param	team		Team number
+		@param	respawn		Respawn the player after moving them
+		@noreturn
+	*/
+	public void SetTeam(int team, bool respawn = false)
 	{
 		if (GetFeatureStatus(FeatureType_Native, "TF2_RespawnPlayer") != FeatureStatus_Available)
 			respawn = false;
 		
-		if (respawn)
+		SetEntProp(view_as<int>(this), Prop_Send, "m_lifeState", LifeState_Dead);
+		ChangeClientTeam(view_as<int>(this), team);
+		Debug("%.3f %N.SetTeam -- ChangeClientTeam(%d)", GetGameTime(), view_as<int>(this), team);
+		
+		// BUG Testing if we really need to respawn players or if the game will do that for us
+		respawn = false;
+		
+		if (respawn && this.Class != Class_Unknown)
 		{
-			SetEntProp(view_as<int>(this), Prop_Send, "m_lifeState", LifeState_Dead);
-			ChangeClientTeam(view_as<int>(this), team);
 			SetEntProp(view_as<int>(this), Prop_Send, "m_lifeState", LifeState_Alive);
-			TF2_RespawnPlayer(view_as<int>(this));
-		}
-		else
-		{
-			ChangeClientTeam(view_as<int>(this), team);
+			Debug("%.3f %N.SetTeam -- SetEntProp m_lifeState = %d", GetGameTime(), view_as<int>(this), LifeState_Alive);
+			RequestFrame(RespawnPlayer, view_as<int>(this));
+			//TF2_RespawnPlayer(view_as<int>(this));
 		}
 	}
 	

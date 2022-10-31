@@ -254,8 +254,16 @@ void ModulateSpeed(int client)
 */
 
 
-
-
+/*
+	Respawn a player
+	@param	client		Client index
+	@error	Invalid client index, client not in game, or no mod support
+*/
+void RespawnPlayer(int client)
+{
+	TF2_RespawnPlayer(client);
+	Debug("%.3f RespawnPlayer(%N)", GetGameTime(), client);
+}
 
 
 

@@ -36,7 +36,7 @@ void Event_RoundRestart (Event event, const char[] name, bool dontBroadcast)
 			if (player.Team == Team_Blue)
 			{
 				Debug("Moving %N to RED", player.Index);
-				player.SetTeam(Team_Red);
+				player.SetTeam(Team_Red, true);
 			}
 			ApplyPlayerAttributes(i);
 		}
@@ -83,28 +83,34 @@ void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 		SCR_SendEvent(PLUGIN_PREFIX, "The round is now active");
 	
 	// Move players with no class to Spectator
-	for (int i = 1; i <= MaxClients; i++)
-	{
-		Player player = Player(i);
-		
-		if (player.InGame && player.IsParticipating && player.Class == Class_Unknown)
-		{
-			player.SetTeam(Team_Spec);
-			char sname[MAX_NAME_LENGTH];
-			GetClientName(i, sname, sizeof(sname));
-			TF2_PrintToChatAll(i, "%t", "name_no_class_moved_spec", sname);
-		}
-	}
+	//for (int i = 1; i <= MaxClients; i++)
+	//{
+		//Player player = Player(i);
+		//
+		//if (player.InGame && player.Class == Class_Unknown && player.Team != Team_Spec)
+		//{
+			//player.SetTeam(Team_Spec);
+			//char sname[MAX_NAME_LENGTH];
+			//GetClientName(i, sname, sizeof(sname));
+			//TF2_PrintToChatAll(i, "%t", "name_no_class_moved_spec", sname);
+		//}
+	//}
 	
 	// Start next activator message timer
-	static Handle timer;
+	static Handle timer = null;
 	delete timer;
-	timer = CreateTimer(TIMER_NA_MESSAGE, Timer_NextActivator_Message, _, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+	timer = CreateTimer(TIMER_NA_MESSAGE, Timer_NextActivator_Message, _, TIMER_REPEAT);
 }
 
 
 Action Timer_NextActivator_Message(Handle timer, any data)
 {
+	if (DRGame.RoundState != Round_Active)
+	{
+		timer = null;
+		return Plugin_Stop;
+	}
+	
 	char buffer[MAX_CHAT_MESSAGE];
 	int numact = GetNumActivatorsRequired();
 	
@@ -112,6 +118,8 @@ Action Timer_NextActivator_Message(Handle timer, any data)
 	{
 		PrintToChatAll(buffer);
 	}
+	
+	return Plugin_Continue;
 }
 
 
@@ -391,6 +399,15 @@ Action Event_TeamsChanged(Event event, const char[] name, bool dontBroadcast)
 		Debug("%L joined RED", player.Index);
 		player.AddFlag(PF_Runner);
 		Debug("%L given the RUNNER flag", player.Index);
+		
+		// Kill players joining red during the round to prevent them being in limbo
+		// because they can't choose a class so won't spawn. Game bug!
+		//if (DRGame.RoundState == Round_Active && player.IsAlive)
+		//{
+			//player.IsAlive = false;
+			//Debug("%L joined red during an active round but had no class, so their life state has been set to Dead", player.Index);
+			//ShowActivity(player.Index, "Joined red team without a chosen class. Their life state has been set to Dead");
+		//}
 	}
 	
 	// Non-Activator switches to Blue during a running game
@@ -420,5 +437,5 @@ Action Event_TeamsChanged(Event event, const char[] name, bool dontBroadcast)
 void RF_MoveToRed(int client)
 {
 	Debug("Moving %L to RED from BLUE", client);
-	Player(client).SetTeam(Team_Red, false);
+	Player(client).SetTeam(Team_Red);
 }

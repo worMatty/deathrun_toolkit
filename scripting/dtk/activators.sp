@@ -92,7 +92,7 @@ void SelectActivators()
 			Debug("Selected %N as an activator and moving them to Blue", player.Index);
 			
 			player.MakeActivator();
-			player.SetTeam(Team_Blue);
+			player.SetTeam(Team_Blue, true);
 			
 			if (DRGame.RoundState != Round_Waiting)
 			{
