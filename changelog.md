@@ -1,9 +1,7 @@
 # Deathrun Toolkit
-
 ## Changelog
 
 ### Version 0.4.7
-
 New features:
 * Activator ban using Steam ID via console commands or admin menu
 * Option to flag selected players to receive twice the amount of queue points so they become activator sooner. This is useful for playtesting.
@@ -35,7 +33,6 @@ Code changes:
 
 
 ### Version 0.4.6.3
-
 Minor changes:
 * Plugin can be compiled with SP 1.11 without errors.
 
@@ -44,7 +41,6 @@ Bug fixes:
 
 
 ### Version 0.4.6.2
-
 Bug fixes:
 * Players that were moved to spec because they had no class mistakenly had their life state set to 'alive'. When they joined a team, the game thought they were alive so the round would not end when everyone else died.
 
@@ -56,7 +52,6 @@ Known issues:
 
 
 ### Version 0.4.6
-
 Minor changes:
 * sm_na can be used to set the next activator by an admin
 * sm_na now always shows the next three activators and doesn't accept a quantity
@@ -76,14 +71,10 @@ Bug fixes:
 Known issues:
 * Players who were an activator with scaled health in the previous round have an overheal
 
-
 ### Version 0.4.1
-
 Fixed a bug preventing the Activator boost HUD displaying after a map change.
 
-
 ### Version 0.4
-
 Major Changes
 * Improved team balancing
 * Improved activator queue
@@ -127,10 +118,7 @@ The plugin disables push-away when the game mode is enabled but if a server want
 __Activator Lock During Freeze-Time__
 You can now set dtk_lock_activator to 2 to prevent activators switching away from blue during pre-round freeze time after they have been selected. This is not normally something I recommend you do but it may be useful in some cases.
 
-
-
 ### Version 0.3
-
 Complete rewrite.
 
 Removed:
@@ -170,9 +158,7 @@ I used to give player attributes by creating a trigger_add_or_remove_tf_player_a
 - Attributes given this way could not be removed or modified later.
 TF2 Attributes plugin is now required if you want to change player attributes.
 
-
 ### Version 0.285
-
 * Added ConVar to toggle map instructions.
 * Added a map instruction to remove a weapon from a specified slot.
 * Added a map instruction to switch to a specified weapon slot.
@@ -183,9 +169,7 @@ TF2 Attributes plugin is now required if you want to change player attributes.
 
 [1] I used to use the cvar mp_humans_must_join_team and value 'red' to prevent players joining the blue team but this was ignored by bots and doesn't function in Open Fortress or TF2 Classic. Now, if a player tries to join the blue team and they're not an activator they will be put on the red team. The same goes for bots. This works two ways: 1. Intercepts the jointeam command from players and changes its argument from blue to red. 2. Hook the player_team event that fires when a player switches teams, reads the new team and responds appropriately.
 
-
 ### Version 0.284
-
 * DTK now executes config_deathrun.cfg after all other configs have been executed.
 * The server's game description is now changed back to Team Fortress on map end. [1]
 * Improved the menu code by simplifying it, and adding the ability to use translated phrases.
@@ -213,9 +197,7 @@ TF2 Attributes plugin is now required if you want to change player attributes.
 [4] Player property changes are something all deathrun plugins could do if they are simple, like a class change, weapon change, etc. It is better to create a system that all deathrun plugin authors can use, so for these kinds of changes I will use logic_cases named deathrun_properties. A logic_branch named deathrun_enabled can be used by the map to check if the server supports these property changes. Features like activator health scaling involve a series of changes that could be different depending on the plugin, so for now I will keep using a dtk prefix for that, and the mapper can use a dtk_enabled logic_branch to check for it.
 I settled on deathrun_properties because it better represents mid-round player property changes, and deathrun_settings can be used to tell the plugin to change certain environment variables for the map to work, such as the number of activators, air acceleration and turbo physics.
 
-
 ### Version 0.283
-
 * Added an admin command to change a player's class. [1]
 * Increased array sizes to accommodate Source TV client.
 * Changed the way attributes are given to players. [2]
@@ -228,9 +210,7 @@ I settled on deathrun_properties because it better represents mid-round player p
 
 [3] DTK Base now works on Open Fortress. Most things work fine. I had to replace some TF2-specific functions with general functions. The plugin is now in a better position to be adapted to other Source mods.
 
-
 ### Version 0.282
-
 * Made dependencies optional. [1]
 * Added some events for Source Chat Relay (Discord relay). [2]
 
@@ -238,9 +218,7 @@ I settled on deathrun_properties because it better represents mid-round player p
 
 [2] Another optional dependency is Source Chat Relay (SCR). If you have an SCR server set up to relay chat between your game servers and Discord servers, you can turn on event messages using `dtk_scr 1`. If you don't have the plugin installed, DTK won't use it. At the moment I am only communicating round start, round end and activator selection.
 
-
 ### Version 0.281
-
 * Changed the welcome message to be a bit more informative.
 * Blast pushing cvar settings 0 and 1 are now the right way around.
 * Removed the message in chat saying there aren't enough players to start.
@@ -254,9 +232,7 @@ I settled on deathrun_properties because it better represents mid-round player p
 [2] Trigger a logic_relay named either dtk_health_scalemax or -scaleoverheal and the activator will have their health scaled up with the number of live enemies. Scalemax increases their maximum health pool allowing them to pick up health kits, and the value of health kits is scaled down to match their standard class amount. Scaleoverheal just overheals them. They can't pick up health kits in this state and their overheal will decay over time. Personally I recommend scalemax as it allows the activator to deny health kits, making the game interesting. It also uses the boss health bar properly, whereas when the activator is overhealed the boss health bar is always at 100% when above their max health, and the overheal is displayed in numerical form in a text element which isn't as attractive or as intuitive.
 Backstab damage is capped on the activator at 300. This is to prevent instant kills when their health is scaled, but will (in most cases) still kill them if their health has not been scaled. 300 is a significant chunk of health which still feels rewarding for enemy spies and alarming for the activator. I chose a flat amount because it is consistent with a player's expectations.
 
-
 ### Version 0.28
-
 * Put plugin debug messages behind a cvar (dtk_debug).
 * Spectators should no longer be shown in the 'Next Activators' message.
 * The health bar now has an 'overheal' text element. [1]
@@ -284,9 +260,7 @@ Because I wanted to store data about a player for the length of their server ses
 
 For this reason, and because I had a bug where a player could sometimes inherit the preferences of a previous player, I am now using SourceMod's functions but am also storing their User ID. When the player reconnects after a map change, if their User ID is the same as the one in the array their data is not touched in any way. If the User ID is different, the player must also be different so the data in the array for that client index is reset to defaults and the plugin checks if the player has a database record. This is much more robust than using player_connect and simplifies things a bit.
 
-
 ### Version 0.27
-
 * Updated the localisation files (translation file!).
 * New cvar to disable the round start message (dtk_roundstartmessages).
 * Addressed a bug where players were not being distributed to blue on map start.
@@ -327,9 +301,7 @@ For this reason, and because I had a bug where a player could sometimes inherit 
 
 [10] If using `mp_forceautoteam 1` to force players onto a team when they join the server to prevent them from late spawning, you will bypass the cvar that DTK uses to prevent players joining the blue team. This will cause there to be more than one player on blue until the round resets. It's not a problem unless people join during the pre-round freeze time prior to a round starting, as anyone who joins blue while the round is active will be dead. You might want to disable this cvar for now until DTK has a better way of blocking blue joins and late spawning.
 
-
 ### Version 0.26
-
 * New cvar to restrict engineer buildings (dtk_buildings).
 * Streamlining of database values and player flags.
 * Added basic weapon replacement functionality.
@@ -349,9 +321,7 @@ When the plugin detects an engineer receiving the Eureka Effect, depending on a 
 
 The change to switching players to primary when melee mode is not enabled for them comes from wanting to remind the activator they can use normal, non-melee weapons to activate traps. If the player was playing on the red team previously and melee only mode was enabled, they will still have their melee weapon equipped when they spawn on blue so they may not realise they can change.
 
-
 ### Version 0.25
-
 * Included a coloured text native library and set up some nice text colours.
 * Added a welcome message that informs new clients of the existence of the menu.
 * Fixed a bug where clients who had chosen not to be activator were still being chosen because they had enough points.
@@ -393,9 +363,7 @@ Blast pushing is something I would like to keep for fun, but only in a reduced f
   dtk_usesql                       1
   dtk_version                      0.25
 
-
-Version 0.24
-
+### Version 0.24
 * Queue point grants by admins are now shown in chat to other admins and logged.
 * Changed some definitions to enumerations because they look prettier.
 * Added a menu system to handle preferences and viewing and resetting points.
@@ -403,9 +371,7 @@ Version 0.24
 * Players who opt out of being activator will no longer receive a message at the end of the round telling them they received 0 points.
 * New kill feed option which tells players what entity and targetname killed them. sm_dt_chatkillfeed.
 
-
-Version 0.23
-
+### Version 0.23
 * New cvar: sm_dt_teampush_remaining [5]
 	Controls when the plugin will activate team pushing based on the number of players alive. 0 is off.
 * New cvars: sm_dt_redglow [0], sm_dt_redglow_remaining [3]
@@ -419,9 +385,7 @@ Version 0.23
 	Choose whether you would like to receive no points, half points or maximum points.
 	Choosing no points also opts you out of being activator. If there aren't enough willing activators at the start of a round, the plugin will revert to a turn-based system.
 
-
-Version 0.22
-
+### Version 0.22
 * Added a points-based queue system and commands to show and reset points (see more).
 * Fixed the bug caused by replacing an escaping activator during freeze time (see more).
 
@@ -429,15 +393,11 @@ Queue points: The queue points system is a better way for players to understand 
 
 The bug: The activator can switch teams during the freeze time before the round is active. Previously the plugin replaced them so soon that it caused the reported number of red players to go up by one, and I think that was responsible for a server crash when the map ended. Now, the replacement player is requested to be switched on the next game frame. It seems to have solved the problem.
 
-
-Version 0.21
-
+### Version 0.21
 * Made players swap teams silently. No more death screams and dropped items.
 * New player swapping logic replaces activators who leave or switch in freeze time.
 
-
-Version 0.2 - Limited Public Testing
-
+### Version 0.2 - Limited Public Testing
 * Basic team swapper using a turn-based system.
 * Attributes set for demo charging and spy cloak, cvar. (see more)
 * Cvar for controlling team mate pushing.
@@ -447,19 +407,14 @@ Version 0.2 - Limited Public Testing
 * Cycles through the round start messages found in the translation file.
 * Red players can't join blue (uses a game cvar).
 
-
-Version 0.1
-
+### Version 0.1
 * Attributes for runner, activator and red scout run speeds, cvars (see more).
 * Red scout (only) double jump attribute, cvar.
 * Support for multiple activators, cvar (see more).
 * Prevent the activator from suiciding or switching teams (see more).
 * Recognises Workshop maps.
 
-
-Design Brief
-------------
-
+## Design Brief
 Player and weapon attributes and restrictions:
 
 Since the inception of the game mode in TF2, server environments have become more and more restrictive of weapons and player abilities in order to stop weaknesses in maps from being exploited. A blanket approach of removing any movement or health-altering item, and making all classes the same does provide a level playing field but limits what a map author can do. As a result of playing on servers with these restrictions, new map authors only design their maps with platform distances that can only be jumped by classes running at a minimum speed of 300u/s (pyro), and interactive elements that can only be punched instead of being shot. There is no reason to choose any particular class other than what character model and noises you like and what cosmetic you have. The innate class abilities and balance of TF2 are lost. Their strength actually lies in their limitations because a player can only fulfill one or two roles at a time and so team play is necessary, instead of making every class the same which encourages solo play and strips potential for rewarding cooperation.
@@ -476,17 +431,14 @@ A few class aspects and capabilities overlap with those of other classes, so pla
 
 Deathrun Redux alters player speed and empties the spy cloak meter by setting the maximum speed, and a cloak meter value of 0.0, on every game frame. That was probably a clever solution when the plugin was first developed but it has some drawbacks. Anything which modifies player run speed, such as a trigger_stun, Disciplinary Action condition, spinning up a minigun or charging, would be overriden. Today we can modify speed using TF2 attributes, so any modification to player speed will be kept. This lets us allow demoman charging and spy cloaking in some form and introduce them as additional tools in avoiding death. Charging through a trap could be problematic on maps with cheap traps with no obstacles, but on maps like Steamworks Extreme and Neonoir charging could get you killed, so we include a cvar to either disable, modify or leave such abilities untouched.
 
-No tf_logic_arena:
+### No tf_logic_arena
 Deathrun maps traditionally use a tf_logic_arena to force arena mode because it is convenient and fits the game mode. Players can only live once, and when all players on a team are dead a victor is declared. But Arena comes with its own limitations. For one, you need to have at least one player on each team to start a round. Another is you may not want to prevent players respawning completely or have the round automatically finish when everyone is dead. What if you wanted to let players play some mini games when they die, while waiting for the round to end, instead of being forced to spectate and do nothing for several minutes? What if you wanted to move dead red players to the blue team, like Zombie modes do? Or what if you wanted to make a map that has no activator? Steamworks Extreme and Neonoir have proven there is demand for automated maps, and from my experience building the former, it is a lot easier to make decent automated traps than it is to come up with ideas for manual traps that are fun and fair.
 
-mp_enableroundwaittime:
-
+### mp_enableroundwaittime
 mp_enableroundwaittime is the time before a round starts where you are frozen in place. During this time, you can change teams and will be respawned straight away. At the end of the period, the round start event is fired so the round is officially begun from a server logic perspective. In Arena you have ten seconds before the round begins but outside of that you only have five. To emulate the same length of time you can set this cvar to 2, which is a multiplier, so 2*5s is 10s.
 
-Support for multiple activators:
-
+### Support for multiple activators
 While I don't expect this feature to be popular, it might be fun to occasionally have more than one activator, especially on larger servers where players won't get to be the activator for some time given that a map session lasts about ten rounds. It is probably dependent on the map as well. On maps with few useable traps there isn't enough for one player to do.
 
-Activator escape prevention:
-
+### Activator escape prevention
 From what I have gathered from other deathrun players, it is annoying when an activator switches team or commits suicide in the middle of a round. It wastes everyone's time. I would prefer it if a player on blue actually tried to play properly but I can understand if they would rather be on red. But it's too easy to quit and it's tempting. By preventing the blue player from escaping we are more likely to have an uninterrupted round and players should feel more inclined to make use of any available deathrun options which keep them off the blue team.
