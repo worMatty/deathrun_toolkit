@@ -1,6 +1,0 @@
-Level 3 225
-Level 6 375
-Level 12 1125
-Level 24 270000
-
-Health worked out by shooting them with a scout pistol and counting the number of hits/clips it took to kill. Level 24 is the least accurate. It would be simpler to set the level and then set the health using an input. Levels 1, 2 and 3 use the level 3 model while any level after 3 uses the level 1 model. Using the ficool FGD.

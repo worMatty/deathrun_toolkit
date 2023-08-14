@@ -1,55 +1,106 @@
-Deathrun Toolkit
-================
+# Deathrun Toolkit
 
-Changelog
----------
+## Changelog
 
-**Changelog - Version 0.4.6**
+### Version 0.4.7
 
-Minor changes:
-- sm_na can be used to set the next activator by an admin
-- sm_na now always shows the next three activators and doesn't accept a quantity
-- Next activator printed to chat every 120 seconds post round start
+New features:
+* Activator ban using Steam ID via console commands or admin menu
+* Option to flag selected players to receive twice the amount of queue points so they become activator sooner. This is useful for playtesting.
 
 Major changes:
-- Activator health scaling algorithm changed. Activator(s) have less scaled health now
-- Added a WIP cvar to switch between different health scaling modes (new, overheal, old, multiply)
+* Map instructions system removed because VScript can do all that now
+* Activator health displays removed so as not to interfere with VScript maps in future
+
+Minor changes:
+* Game description now works with SteamWorks, not SteamTools
+* Players no longer see, or can reset their queue points. It's a transparent system
+* Two new translation phrases awaiting translation
+* Database records are now deleted six months after the player last played, up from one month
+* Melee only mode no longer gives the 'Cannot switch from melee' condition
+* Melee only mode removes all other weapons, not just primary and secondary
+* The activator's backstab damage taken is no longer capped
+* Blue melee-only convar
+* All Spy watches have been added to the restrictions config for removal
+
+Bug fixes
+* Players who opt out of being an activator will no longer receive queue points
+
+Code changes:
+* Database functions and commands cleaned up, changed and improved
+* New ArrayList methodmaps with custom methods for entities, players and activators
+* Learned how to use enum structs a bit, for the player data array
+* VScript is used to apply attributes instead of TF2 Attributes, saving a dependency
+* No more hard-coded Spy cloak attributes. Use the item restrictions config
+
+
+### Version 0.4.6.3
+
+Minor changes:
+* Plugin can be compiled with SP 1.11 without errors.
 
 Bug fixes:
-- sm_setclass no longer plays multiple message sounds to the command user
-- sm_setclass was applying attributes to the command user instead of the targets
-- Boss health bar was initially at the wrong value when activator's health got scaled
-- Activator health scaling triggers were not working sometimes
-- When using the admin menu option to scale activator health, health pack reduction attribute was not being applied to the activators
+* The timer that refreshed the HUD text display of the Activators' health was active between map changes and while the plugin was not enabled (when switching to non-deathrun maps). It was checking the array of Activators, but it doesn't exist while the plugin is disabled, so it was throwing an exception every second. The timer is now stopped if the plugin is not enabled.
+
+
+### Version 0.4.6.2
+
+Bug fixes:
+* Players that were moved to spec because they had no class mistakenly had their life state set to 'alive'. When they joined a team, the game thought they were alive so the round would not end when everyone else died.
+
+Minor changes:
+* Players with no class are no longer moved to spec. Instead, they are just dead, which is the game's normal behaviour.
 
 Known issues:
-- Players who were an activator with scaled health in the previous round have an overheal
+* Players on red or blue who have not chosen a class are included in the activator pool. On servers with one activator this is not a problem as the player will be dead so the round will simply end. However with multiple activators, there will be at least one dead activator. Proposed future fix is to change how the plugin views players as participating.
 
 
-**Changelog - Version 0.4.1**
+### Version 0.4.6
+
+Minor changes:
+* sm_na can be used to set the next activator by an admin
+* sm_na now always shows the next three activators and doesn't accept a quantity
+* Next activator printed to chat every 120 seconds post round start
+
+Major changes:
+* Activator health scaling algorithm changed. Activator(s) have less scaled health now
+* Added a WIP cvar to switch between different health scaling modes (new, overheal, old, multiply)
+
+Bug fixes:
+* sm_setclass no longer plays multiple message sounds to the command user
+* sm_setclass was applying attributes to the command user instead of the targets
+* Boss health bar was initially at the wrong value when activator's health got scaled
+* Activator health scaling triggers were not working sometimes
+* When using the admin menu option to scale activator health, health pack reduction attribute was not being applied to the activators
+
+Known issues:
+* Players who were an activator with scaled health in the previous round have an overheal
+
+
+### Version 0.4.1
 
 Fixed a bug preventing the Activator boost HUD displaying after a map change.
 
 
-**Changelog - Version 0.4**
+### Version 0.4
 
 Major Changes
-- Improved team balancing
-- Improved activator queue
-- Improved multiple activator support
-- Added basic configurable weapon restriction system
+* Improved team balancing
+* Improved activator queue
+* Improved multiple activator support
+* Added basic configurable weapon restriction system
 
 Minor Changes
-- /prefs gone, /drtoggle toggles activator preference directly
-- New command for Next Activators: /na [number]
-- Menu system simplified and options shortened
-- Players with no class are moved to spec on round start
-- Activator lock extended to pre-round freeze time
+* /prefs gone, /drtoggle toggles activator preference directly
+* New command for Next Activators: /na [number]
+* Menu system simplified and options shortened
+* Players with no class are moved to spec on round start
+* Activator lock extended to pre-round freeze time
 
 Other Stuff:
-- ConVar added for team mate push-away
-- Added a new fun mode: slap every ten seconds
-- Retired some translation phrases and added new ones
+* ConVar added for team mate push-away
+* Added a new fun mode: slap every ten seconds
+* Retired some translation phrases and added new ones
 
 __Improved Team Balancing__
 Much better protection against players joining the blue team when they are not designated activators. Improved ‘ready state’ detection in TF2 Classic and Open Fortress to prevent stalled rounds. Worked around a behaviour in TF2 where the first round of a map would have two restarts, causing two activator selections, with the first one selected being instantly replaced and their points lost. Potentially fixed a bug where the plugin would not ‘work’ in the first round, players could join any team and the queue system would not function.
@@ -78,31 +129,31 @@ You can now set dtk_lock_activator to 2 to prevent activators switching away fro
 
 
 
-**Changelog - Version 0.3**
+### Version 0.3
 
 Complete rewrite.
 
 Removed:
-:small_blue_diamond: System that turned on team mate pushaway at low reds.
+* System that turned on team mate pushaway at low reds.
 
 Added:
-:small_blue_diamond: WIP activator speed boost by binding +speed. Works like HL2 sprint.
-:small_blue_diamond: Sounds to some text chat messages.
-:small_blue_diamond: WIP ratio of activators. dtk_activators now functions as a cap.
-:small_blue_diamond: Map instructions to set custom model and use class animations.
-:small_blue_diamond: ConVar to customise the game description that's displayed in the server browser
+* WIP activator speed boost by binding +speed. Works like HL2 sprint.
+* Sounds to some text chat messages.
+* WIP ratio of activators. dtk_activators now functions as a cap.
+* Map instructions to set custom model and use class animations.
+* ConVar to customise the game description that's displayed in the server browser
 
 Changed:
-:small_blue_diamond: Standardised and simplified plugin chat messages.
-:small_blue_diamond: Disabld Waiting For Players time in OF and TF2C for better compatability. 
-:small_blue_diamond: Improved the system that prevents players joining Blue.
-:small_blue_diamond: TF2 Attributes is required if you want to change player attributes.
-:small_blue_diamond: Red players only receive queue points on round end if they were there from the start.
+* Standardised and simplified plugin chat messages.
+* Disabld Waiting For Players time in OF and TF2C for better compatability.
+* Improved the system that prevents players joining Blue.
+* TF2 Attributes is required if you want to change player attributes.
+* Red players only receive queue points on round end if they were there from the start.
 
 Fixed:
-:small_blue_diamond: Periodic team checks in OF to start a round when enough players are present.
-:small_blue_diamond: In TF2C and OF, Health: 0 is no longer displayed on round restart
-:small_blue_diamond: In TF2C, picking up a health kit updates the boss health text
+* Periodic team checks in OF to start a round when enough players are present.
+* In TF2C and OF, Health: 0 is no longer displayed on round restart
+* In TF2C, picking up a health kit updates the boss health text
 
 I like the idea of team mate pushaway because it makes a map need more skill and requires the player to be more patient and cooperate. Saxton Hell has this feature but Voidy disables it in certain parts of maps because it causes issues. In DTK I had a feature that enabled teammate pushway when there were only a few red players left. Through play testing it became clear than no one appreciated this feature other than me so I have removed it.
 
@@ -120,38 +171,38 @@ I used to give player attributes by creating a trigger_add_or_remove_tf_player_a
 TF2 Attributes plugin is now required if you want to change player attributes.
 
 
-**Changelog - Version 0.285**
+### Version 0.285
 
-:small_blue_diamond: Added ConVar to toggle map instructions.
-:small_blue_diamond: Added a map instruction to remove a weapon from a specified slot.
-:small_blue_diamond: Added a map instruction to switch to a specified weapon slot.
+* Added ConVar to toggle map instructions.
+* Added a map instruction to remove a weapon from a specified slot.
+* Added a map instruction to switch to a specified weapon slot.
 
-:small_blue_diamond: Fixed taunting players reversing a slot switch when they stop taunting.
+* Fixed taunting players reversing a slot switch when they stop taunting.
 
-:small_blue_diamond: Changed the way players are restricted to the red team. [1]
+* Changed the way players are restricted to the red team. [1]
 
 [1] I used to use the cvar mp_humans_must_join_team and value 'red' to prevent players joining the blue team but this was ignored by bots and doesn't function in Open Fortress or TF2 Classic. Now, if a player tries to join the blue team and they're not an activator they will be put on the red team. The same goes for bots. This works two ways: 1. Intercepts the jointeam command from players and changes its argument from blue to red. 2. Hook the player_team event that fires when a player switches teams, reads the new team and responds appropriately.
 
 
-**Changelog - Version 0.284**
+### Version 0.284
 
-:small_blue_diamond: DTK now executes config_deathrun.cfg after all other configs have been executed.
-:small_blue_diamond: The server's game description is now changed back to Team Fortress on map end. [1]
-:small_blue_diamond: Improved the menu code by simplifying it, and adding the ability to use translated phrases.
-:small_blue_diamond: Put English language toggle in the Preferences menu.
-:small_blue_diamond: Added chat command lists to the menu. Admin commands are only shown to admins.
-:small_blue_diamond: Added the beginnings of the map control framework used by mappers to affect players. [2]
-:small_blue_diamond: Replaced TF2 Items dependency with my own code for replacing weapons. [3]
-:small_blue_diamond: Restricted the Scout's cleaver completely because it can be thrown through all kinds of walls.
-:small_blue_diamond: More things work when you manually enable the plugin on non-deathrun maps. WIP.
-:small_blue_diamond: The plugin now also changes logic_branches named deathrun_enabled to true. [4]
-:small_blue_diamond: Added an Admin 'fun stuff' menu where experimental actions will go.
-:small_blue_diamond: Created Jetpack Game and added it to the Admin fun stuff menu.
+* DTK now executes config_deathrun.cfg after all other configs have been executed.
+* The server's game description is now changed back to Team Fortress on map end. [1]
+* Improved the menu code by simplifying it, and adding the ability to use translated phrases.
+* Put English language toggle in the Preferences menu.
+* Added chat command lists to the menu. Admin commands are only shown to admins.
+* Added the beginnings of the map control framework used by mappers to affect players. [2]
+* Replaced TF2 Items dependency with my own code for replacing weapons. [3]
+* Restricted the Scout's cleaver completely because it can be thrown through all kinds of walls.
+* More things work when you manually enable the plugin on non-deathrun maps. WIP.
+* The plugin now also changes logic_branches named deathrun_enabled to true. [4]
+* Added an Admin 'fun stuff' menu where experimental actions will go.
+* Created Jetpack Game and added it to the Admin fun stuff menu.
 
-:small_blue_diamond: Fixed players not receiving their attributes on spawn (double jump and so on).
-:small_blue_diamond: Fixed causing a melee-only mode check when changing any DTK cvar during a match.
-:small_blue_diamond: Fixed players being able to switch from melee weapons after spawning when melee-only mode is in effect.
-:small_blue_diamond: Fixed the plugin not getting enabled on VSH or Workshop maps.
+* Fixed players not receiving their attributes on spawn (double jump and so on).
+* Fixed causing a melee-only mode check when changing any DTK cvar during a match.
+* Fixed players being able to switch from melee weapons after spawning when melee-only mode is in effect.
+* Fixed the plugin not getting enabled on VSH or Workshop maps.
 
 [1] Previously, DTK would change the server's game description to Team Fortress when a new map started and it determined that it wasn't a deathrun map. The problem with this is that on multi-game mode servers, it's possible it could override another plugin's attempt to change the description. Now, the description will be changed whenever the plugin is enabled or disabled, which happens at the start and end of every deathrun map. I will move more actions under this ConVar change hook in future to make the plugin even work even better on  multi-game mode servers.
 
@@ -163,12 +214,12 @@ TF2 Attributes plugin is now required if you want to change player attributes.
 I settled on deathrun_properties because it better represents mid-round player property changes, and deathrun_settings can be used to tell the plugin to change certain environment variables for the map to work, such as the number of activators, air acceleration and turbo physics.
 
 
-**Changelog - Version 0.283**
+### Version 0.283
 
-:small_blue_diamond: Added an admin command to change a player's class. [1]
-:small_blue_diamond: Increased array sizes to accommodate Source TV client.
-:small_blue_diamond: Changed the way attributes are given to players. [2]
-:small_blue_diamond: Made the plugin compatible with Open Fortress. [3]
+* Added an admin command to change a player's class. [1]
+* Increased array sizes to accommodate Source TV client.
+* Changed the way attributes are given to players. [2]
+* Made the plugin compatible with Open Fortress. [3]
 
 
 [1] sm_setclass <target> [class]. Leave the class field blank for a random class. You only need to type the first three letters of a class name, e.g. 'hea' for Heavy. This command should be used in place of any other class change plugin you have because it also gives players the attributes they should have for their class to control speed, if DTK is configured to do that.
@@ -178,46 +229,46 @@ I settled on deathrun_properties because it better represents mid-round player p
 [3] DTK Base now works on Open Fortress. Most things work fine. I had to replace some TF2-specific functions with general functions. The plugin is now in a better position to be adapted to other Source mods.
 
 
-**Changelog - Version 0.282**
+### Version 0.282
 
-:small_blue_diamond: Made dependencies optional. [1]
-:small_blue_diamond: Added some events for Source Chat Relay (Discord relay). [2]
+* Made dependencies optional. [1]
+* Added some events for Source Chat Relay (Discord relay). [2]
 
 [1] SteamTools, TF2 Items and TF2 Attributes are now optional. You can run DTK Base without them loaded but some features won't work. SteamTools changes the server's game description, TF2 Items replaces and issues new weapons, and TF2 Attributes sets run speed and ability recharge rates.
 
 [2] Another optional dependency is Source Chat Relay (SCR). If you have an SCR server set up to relay chat between your game servers and Discord servers, you can turn on event messages using `dtk_scr 1`. If you don't have the plugin installed, DTK won't use it. At the moment I am only communicating round start, round end and activator selection.
 
 
-**Changelog - Version 0.281**
+### Version 0.281
 
-:small_blue_diamond: Changed the welcome message to be a bit more informative.
-:small_blue_diamond: Blast pushing cvar settings 0 and 1 are now the right way around.
-:small_blue_diamond: Removed the message in chat saying there aren't enough players to start.
-:small_blue_diamond: /drhelp to list commands.
-:small_blue_diamond: Added a hide timer to the activator health bar.
-:small_blue_diamond: Added some protection against late loading and unloading. [1]
-:small_blue_diamond: Added health scaling functions for mappers. [2]
+* Changed the welcome message to be a bit more informative.
+* Blast pushing cvar settings 0 and 1 are now the right way around.
+* Removed the message in chat saying there aren't enough players to start.
+* /drhelp to list commands.
+* Added a hide timer to the activator health bar.
+* Added some protection against late loading and unloading. [1]
+* Added health scaling functions for mappers. [2]
 
 [1] Previously when the plugin was reloaded, it lost all the data in its player data array, so when a client left the server their preferences and points would be overwritten with zeroes. Now, if the plugin is unloaded and players are present it saves all their data to the database. When it's loaded late and players are present, they are given default values and if a record exists for them it is retrieved.
 
-[2] Trigger a logic_relay named either dtk_health_scalemax or -scaleoverheal and the activator will have their health scaled up with the number of live enemies. Scalemax increases their maximum health pool allowing them to pick up health kits, and the value of health kits is scaled down to match their standard class amount. Scaleoverheal just overheals them. They can't pick up health kits in this state and their overheal will decay over time. Personally I recommend scalemax as it allows the activator to deny health kits, making the game interesting. It also uses the boss health bar properly, whereas when the activator is overhealed the boss health bar is always at 100% when above their max health, and the overheal is displayed in numerical form in a text element which isn't as attractive or as intuitive. 
+[2] Trigger a logic_relay named either dtk_health_scalemax or -scaleoverheal and the activator will have their health scaled up with the number of live enemies. Scalemax increases their maximum health pool allowing them to pick up health kits, and the value of health kits is scaled down to match their standard class amount. Scaleoverheal just overheals them. They can't pick up health kits in this state and their overheal will decay over time. Personally I recommend scalemax as it allows the activator to deny health kits, making the game interesting. It also uses the boss health bar properly, whereas when the activator is overhealed the boss health bar is always at 100% when above their max health, and the overheal is displayed in numerical form in a text element which isn't as attractive or as intuitive.
 Backstab damage is capped on the activator at 300. This is to prevent instant kills when their health is scaled, but will (in most cases) still kill them if their health has not been scaled. 300 is a significant chunk of health which still feels rewarding for enemy spies and alarming for the activator. I chose a flat amount because it is consistent with a player's expectations.
 
 
-**Changelog - Version 0.28**
+### Version 0.28
 
-:small_blue_diamond: Put plugin debug messages behind a cvar (dtk_debug).
-:small_blue_diamond: Spectators should no longer be shown in the 'Next Activators' message.
-:small_blue_diamond: The health bar now has an 'overheal' text element. [1]
-:small_blue_diamond: Boss health bar now correctly shows the current health.
-:small_blue_diamond: Team mate pushing 'remaining' is reevaluated if an admin changes the cvar value.
-:small_blue_diamond: Removed anything that affects a player's 'glow' outline. [2]
-:small_blue_diamond: Welcome message now appears the moment the new player chooses a class. [3]
-:small_blue_diamond: The number of old records pruned from the database is now logged.
-:small_blue_diamond: Switched to using a method map for most player and database functions.
-:small_blue_diamond: Changed the way users' values are set up and carried across maps. [4]
-:small_blue_diamond: This fixed a bug where players could inherit preferences from a previous player.
-:small_blue_diamond: /english has been moved to permanent preference storage.
+* Put plugin debug messages behind a cvar (dtk_debug).
+* Spectators should no longer be shown in the 'Next Activators' message.
+* The health bar now has an 'overheal' text element. [1]
+* Boss health bar now correctly shows the current health.
+* Team mate pushing 'remaining' is reevaluated if an admin changes the cvar value.
+* Removed anything that affects a player's 'glow' outline. [2]
+* Welcome message now appears the moment the new player chooses a class. [3]
+* The number of old records pruned from the database is now logged.
+* Switched to using a method map for most player and database functions.
+* Changed the way users' values are set up and carried across maps. [4]
+* This fixed a bug where players could inherit preferences from a previous player.
+* /english has been moved to permanent preference storage.
 
 [1] If the activator is overhealed the boss health bar will be 100% and the additional health will be displayed in text underneath. This is a much simpler solution for me than trying to remember the player's highest health value and using that instead of their max health value. Let me know what you think.
 
@@ -234,26 +285,26 @@ Because I wanted to store data about a player for the length of their server ses
 For this reason, and because I had a bug where a player could sometimes inherit the preferences of a previous player, I am now using SourceMod's functions but am also storing their User ID. When the player reconnects after a map change, if their User ID is the same as the one in the array their data is not touched in any way. If the User ID is different, the player must also be different so the data in the array for that client index is reset to defaults and the plugin checks if the player has a database record. This is much more robust than using player_connect and simplifies things a bit.
 
 
-**Changelog - Version 0.27**
+### Version 0.27
 
-:small_blue_diamond: Updated the localisation files (translation file!).
-:small_blue_diamond: New cvar to disable the round start message (dtk_roundstartmessages).
-:small_blue_diamond: Addressed a bug where players were not being distributed to blue on map start.
-:small_blue_diamond: Addressed a bug caused when trying to switch to the primary weapon and not finding a weapon in the slot. [1]
-:small_blue_diamond: The 'Next Activators' message won't be shown if there aren't enough willing activators.
-:small_blue_diamond: Implemented a work in progress health bar for the activator that shows up when they are damaged. [2]
-:small_blue_diamond: Set the game description when SteamTools has loaded, to stop the first map of a server session not having the right description.
-:small_blue_diamond: Added the plugin version to the game description.
-:small_blue_diamond: Set the value of a logic_branch named 'dtk_enabled' to true on round start [3].
-:small_blue_diamond: Work in progress English language preference command /english. [4]
-:small_blue_diamond: New debugging command /drdata outputs the points and preferences for all clients in your console. [5]
-:small_blue_diamond: Two new cvars to control the 'enabled' state of the plugin. [6]
-:small_blue_diamond: Chat kill feed now filters out causes beginning with 'w' (worldspawn, i.e. fall damage). [7]
-:small_blue_diamond: Stopped using a coloured chat include because it seemed to cause translation errors.
-:small_blue_diamond: Health bar for boss logic. [8]
-:small_blue_diamond: If players respawn and there are enough, team pushing will be disabled again.
-:small_blue_diamond: Attempted a fix for spies disguised as you causing a kill feed chat message for you when they 'die'.
-:small_blue_diamond: New cvar for controlling Thermal Thruster charges and recharge rate. [9]
+* Updated the localisation files (translation file!).
+* New cvar to disable the round start message (dtk_roundstartmessages).
+* Addressed a bug where players were not being distributed to blue on map start.
+* Addressed a bug caused when trying to switch to the primary weapon and not finding a weapon in the slot. [1]
+* The 'Next Activators' message won't be shown if there aren't enough willing activators.
+* Implemented a work in progress health bar for the activator that shows up when they are damaged. [2]
+* Set the game description when SteamTools has loaded, to stop the first map of a server session not having the right description.
+* Added the plugin version to the game description.
+* Set the value of a logic_branch named 'dtk_enabled' to true on round start [3].
+* Work in progress English language preference command /english. [4]
+* New debugging command /drdata outputs the points and preferences for all clients in your console. [5]
+* Two new cvars to control the 'enabled' state of the plugin. [6]
+* Chat kill feed now filters out causes beginning with 'w' (worldspawn, i.e. fall damage). [7]
+* Stopped using a coloured chat include because it seemed to cause translation errors.
+* Health bar for boss logic. [8]
+* If players respawn and there are enough, team pushing will be disabled again.
+* Attempted a fix for spies disguised as you causing a kill feed chat message for you when they 'die'.
+* New cvar for controlling Thermal Thruster charges and recharge rate. [9]
 :small_red_triangle_down: Known issue: `mp_forceautoteam` should not be set to 1 for now. [10]
 
 [1] I'm not sure why the plugin can't find a weapon in the primary slot sometimes. The check happens after a player is given their inventory, so it should find the weapon. It's possible some weapons in the primary slot don't require an entity, so I have added a check to see if a weapon is found. If it's not, the plugin will just abandon the attempt to switch weapons and will add to the error log. Hopefully I'll find out what's causing this in future.
@@ -277,12 +328,12 @@ For this reason, and because I had a bug where a player could sometimes inherit 
 [10] If using `mp_forceautoteam 1` to force players onto a team when they join the server to prevent them from late spawning, you will bypass the cvar that DTK uses to prevent players joining the blue team. This will cause there to be more than one player on blue until the round resets. It's not a problem unless people join during the pre-round freeze time prior to a round starting, as anyone who joins blue while the round is active will be dead. You might want to disable this cvar for now until DTK has a better way of blocking blue joins and late spawning.
 
 
-**Changelog - Version 0.26**
+### Version 0.26
 
-:small_blue_diamond: New cvar to restrict engineer buildings (dtk_buildings).
-:small_blue_diamond: Streamlining of database values and player flags.
-:small_blue_diamond: Added basic weapon replacement functionality.
-:small_blue_diamond: Force switch to primary on receiving weapons if melee mode is not enabled.
+* New cvar to restrict engineer buildings (dtk_buildings).
+* Streamlining of database values and player flags.
+* Added basic weapon replacement functionality.
+* Force switch to primary on receiving weapons if melee mode is not enabled.
 
 The engineer building restriction cvar uses one value to restrict any combination of buildings. Add up the values to get your convar value:
 Sentry = 1
@@ -299,20 +350,20 @@ When the plugin detects an engineer receiving the Eureka Effect, depending on a 
 The change to switching players to primary when melee mode is not enabled for them comes from wanting to remind the activator they can use normal, non-melee weapons to activate traps. If the player was playing on the red team previously and melee only mode was enabled, they will still have their melee weapon equipped when they spawn on blue so they may not realise they can change.
 
 
-**Changelog - Version 0.25**
+### Version 0.25
 
-:small_blue_diamond: Included a coloured text native library and set up some nice text colours.
-:small_blue_diamond: Added a welcome message that informs new clients of the existence of the menu.
-:small_blue_diamond: Fixed a bug where clients who had chosen not to be activator were still being chosen because they had enough points.
-:small_blue_diamond: Player preferences are now stored in a bit flag array instead of an integer array.
-:small_blue_diamond: Changed the sm\_pref command to sm\_prefs. It shows usage info when the argument is "?" and outputs your preference flags to console. 
-:small_blue_diamond: Changed the sm\_giveqp command to sm\_award.
-:small_blue_diamond: Players with a negative points value are no longer able to reset their points.
-:small_blue_diamond: The plugin now uses a database to store player points and preferences.
-:small_blue_diamond: Added the admin command sm\_resetdatabase to delete the plugin's table from the database.
-:small_blue_diamond: Added the admin command sm\_resetuser to delete a player's entry from the database.
-:small_blue_diamond: Added quick and dirty blast pushing control. Disable, reduce or allow in full.
-:small_blue_diamond: Changed cvars from sm\_dt\_ to dtk\_
+* Included a coloured text native library and set up some nice text colours.
+* Added a welcome message that informs new clients of the existence of the menu.
+* Fixed a bug where clients who had chosen not to be activator were still being chosen because they had enough points.
+* Player preferences are now stored in a bit flag array instead of an integer array.
+* Changed the sm\_pref command to sm\_prefs. It shows usage info when the argument is "?" and outputs your preference flags to console.
+* Changed the sm\_giveqp command to sm\_award.
+* Players with a negative points value are no longer able to reset their points.
+* The plugin now uses a database to store player points and preferences.
+* Added the admin command sm\_resetdatabase to delete the plugin's table from the database.
+* Added the admin command sm\_resetuser to delete a player's entry from the database.
+* Added quick and dirty blast pushing control. Disable, reduce or allow in full.
+* Changed cvars from sm\_dt\_ to dtk\_
 
 Changing from an integer array to a bit flag array will only save a small amount of memory, but it makes things easier for me in the future, allowing me to add new settings without having to make many modifications, such as an option for admins to prevent a player from being the activator, and expanded personal preferences.
 

@@ -1,4 +1,6 @@
 
+#include "dtk/steamid.sp"
+
 /**
  * Player Allocation
  * ----------------------------------------------------------------------------------------------------
@@ -7,7 +9,7 @@
 
 /**
  * Check teams to see if we have the required number of players on each team
- * 
+ *
  * @noreturn
  */
 void CheckTeams()
@@ -16,31 +18,19 @@ void CheckTeams()
 		While the plugin makes changes to teams, it disables Watch Mode.
 		This prevents it from reacting to changes as if they were caused by players,
 		or from going into an infinite loop of activator selection.
-		
+
 		Disable Watch Mode before performing team distrubution, and enable it when you're done.
 	*/
-	
-	Debug("Checking teams");
-	
+
 	// Monitor Activators During Freeze Time
 	if (DRGame.InWatchMode)
 	{
 		int activatorsNeeded = GetNumActivatorsRequired();
-		
-		if (DRGame.Activators < activatorsNeeded && DRGame.Participants > activatorsNeeded)
+
+		if (g_Activators.Length < activatorsNeeded && GetActiveClientCount() > activatorsNeeded)
 		{
-			Debug("We have enough participants. Select activator(s)");
-			
 			DRGame.InWatchMode = false;
 			RequestFrame(SelectActivators);
-		}
-		else if (DRGame.Activators == activatorsNeeded)
-		{
-			Debug("We have enough activators");
-		}
-		else if (DRGame.Participants <= activatorsNeeded)
-		{
-			Debug("We have too few participants");
 		}
 	}
 	/*
@@ -51,9 +41,9 @@ void CheckTeams()
 		DRGame.InWatchMode = true;
 	}
 	*/
-	
+
 	// The Unbalancing ConVar helps manage Round Restart when the server is empty
-	if (DRGame.Participants > 1)
+	if (GetActiveClientCount() > 1)
 	{
 		g_ConVars[S_Unbalance].IntValue = 0;
 	}
@@ -68,67 +58,60 @@ void CheckTeams()
 
 /**
  * Select and move eligible activators
- * 
+ *
  * @noreturn
  */
 void SelectActivators()
-{	
-	Debug("Selecting activators");
-	
-	int len = DRGame.ActivatorPool;
-	int[] list = new int[len];
-	CreateActivatorList(list);
-	
+{
+	PlayerList pool = CreateActivatorPool();
+
 	// If we need activators and have enough on red to supply and not empty the team, move someone
 	int i = 0;
-	int activators = GetNumActivatorsRequired();
-	
-	while (TFTeam_Blue.Count() < activators && TFTeam_Red.Count() > 1 && i < len)
+	int num_required = GetNumActivatorsRequired();
+
+	while (TFTeam_Blue.Count() < num_required && TFTeam_Red.Count() > 1 && i < pool.Length)
 	{
-		Player player = Player(list[i]);
-		
+		DRPlayer player = DRPlayer(pool.Get(i));
+
 		if (player.InGame && player.Team == Team_Red)
 		{
-			Debug("Selected %N as an activator and moving them to Blue", player.Index);
-			
 			player.MakeActivator();
 			player.SetTeam(Team_Blue, true);
-			
+
 			if (DRGame.RoundState != Round_Waiting)
 			{
-				player.SetPoints(QP_Consumed);
+				player.Points = 0;
 				player.ActivatorLast = GetTime();
-				
+
 				TF2_PrintToChat(player.Index, _, "%t", "you_are_an_activator");
 				EmitMessageSoundToClient(player.Index);
-				
+
 				if (g_ConVars[P_BlueBoost] != null && g_ConVars[P_BlueBoost].BoolValue)
 				{
 					TF2_PrintToChat(player.Index, _, "Bind +speed to use the Activator speed boost");
 				}
-				
+
 				if (g_bSCR && g_ConVars[P_SCR].BoolValue)
 				{
-					SCR_SendEvent(PLUGIN_PREFIX, "%N has been made activator", player.Index);
+					SCR_SendEvent("Deathrun Activator Selected", "%N", player.Index);
 				}
-				
-				if (activators == 1)
+
+				if (num_required == 1)
 				{
 					CreateTimer(0.1, Timer_AnnounceActivatorToAll, player.Index);
-					//RequestFrame(RF_AnnounceActivatorToAll, player.Index);
 				}
 			}
 		}
 
 		i++;
 	}
-	
+
 	// Respawn teams if OF or TF2C
-	if (DRGame.IsGame(Mod_TF2C|Mod_OF) && GetFeatureStatus(FeatureType_Native, "TF2_RespawnPlayer") != FeatureStatus_Available) // TODO Does this work?
+	if ((IsGameOpenFortress() || IsGameTF2Classic()) && GetFeatureStatus(FeatureType_Native, "TF2_RespawnPlayer") != FeatureStatus_Available) // TODO Does this work?
 	{
 		RespawnTeamsUsingEntity();
 	}
-	
+
 	// Go into watch mode to replace activator if needed
 	DRGame.InWatchMode = true;
 }
@@ -137,7 +120,7 @@ Action Timer_AnnounceActivatorToAll (Handle timer, int client)
 {
 	char name[32];
 	GetClientName(client, name, sizeof(name));
-	
+
 	for (int i = 1; i <= MaxClients; i++)
 	{
 		if (IsClientInGame(i) && !IsFakeClient(i) && i != client)
@@ -145,6 +128,8 @@ Action Timer_AnnounceActivatorToAll (Handle timer, int client)
 			TF2_PrintToChat(i, client, "%t", "name_has_been_made_activator", name);
 		}
 	}
+
+	return Plugin_Stop;
 }
 
 
@@ -152,14 +137,14 @@ Action Timer_AnnounceActivatorToAll (Handle timer, int client)
 
 /**
  * Get the number of activators needed
- * 
+ *
  * @return		int		Number of activators
  */
 int GetNumActivatorsRequired()
 {
 	// Get the ratio of activators to participants
-	int activators = RoundFloat(DRGame.Participants * g_ConVars[P_ActivatorRatio].FloatValue);
-	
+	int activators = RoundFloat(GetActiveClientCount() * g_ConVars[P_ActivatorRatio].FloatValue);
+
 	// If we have specified an activator cap, clamp to it
 	if (g_ConVars[P_ActivatorsMax].IntValue > -1)
 	{
@@ -167,9 +152,8 @@ int GetNumActivatorsRequired()
 	}
 
 	// else, clamp between 1 and participants -1
-	ClampInt(activators, 1, DRGame.Participants - 1);
-	
-	Debug("Number of activators required: %d", activators);
+	ClampInt(activators, 1, GetActiveClientCount() - 1);
+
 	return activators;
 }
 
@@ -177,28 +161,58 @@ int GetNumActivatorsRequired()
 
 
 /**
- * Populate a 1D array of client indexes in order of activator queue position
- * 
- * @noreturn
+ * Create a PlayerList (ArrayList) of valid activators for selection
+ * sorted by order of queue points, then time last activator.
+ * Filters players who prefer not to be activator, or who are activator-banned.
+ * These conditions are ignored on low participant numbers.
+ *
+ * @return		PlayerList	List of client indexes
  */
-stock void CreateActivatorList(int[] list)
+PlayerList CreateActivatorPool()
 {
-	int len = DRGame.ActivatorPool;
-	bool optout = (DRGame.WillingActivators >= MINIMUM_WILLING);
+	PlayerList activator_pool = new PlayerList();
+	int len, pool;
+	bool use_all;
 
-	if (!len) return;
+	for (int i = 1; i <= MaxClients; i++)
+	{
+		DRPlayer player = DRPlayer(i);
+
+		if (player.InGame && (player.Team == Team_Red || player.Team == Team_Blue) && player.PrefersActivator && !player.ActivatorBanned)
+		{
+			pool += 1;
+		}
+	}
+
+	if (pool < MINIMUM_WILLING)
+	{
+		len = GetActiveClientCount();
+		use_all = true;
+	}
+	else
+	{
+		len = pool;
+	}
+
+	// Don't continue if the pool is empty
+	if (len == 0)
+	{
+		return activator_pool;
+	}
 
 	int[][] sort = new int[len][3];
 	int count;
-	
+
 	for (int i = 1; i <= MaxClients; i++)
 	{
-		Player player = Player(i);
-		
+		DRPlayer player = DRPlayer(i);
+
 		if (player.InGame && player.IsParticipating)
 		{
-			if (!player.HasFlag(PF_PrefActivator) && optout)
+			if (!use_all && (!player.PrefersActivator | player.ActivatorBanned))
+			{
 				continue;
+			}
 
 			sort[count][0] = player.Index;
 			sort[count][1] = player.Points;
@@ -206,13 +220,15 @@ stock void CreateActivatorList(int[] list)
 			count++;
 		}
 	}
-	
+
 	SortCustom2D(sort, len, SortPlayers);
-	
+
 	for (int i = 0; i < len; i++)
 	{
-		list[i] = sort[i][0];
+		activator_pool.Push(sort[i][0]);
 	}
+
+	return activator_pool;
 }
 
 
@@ -221,15 +237,15 @@ stock void CreateActivatorList(int[] list)
 /**
  * Sorting function used by SortCustom2D. Sorts players by queue points
  * and last activator time.
- * 
- * @return	int	
+ *
+ * @return	int
  */
-stock int SortPlayers(int[] a, int[] b, const int[][] array, Handle hndl)
+int SortPlayers(int[] a, int[] b, const int[][] array, Handle hndl)
 {
 	// [0] client index
 	// [1] queue points
 	// [2] last time activator timestamp
-	
+
 	if (b[1] == a[1])			// B and A have the same points
 	{
 		if (b[2] < a[2])			// B has an earlier Activator time than A
@@ -243,7 +259,7 @@ stock int SortPlayers(int[] a, int[] b, const int[][] array, Handle hndl)
 		else						// B and A have the same Activator time
 		{
 			return 0;
-		}	
+		}
 	}
 	else if (b[1] > a[1])		// B has more points than A
 	{
@@ -259,615 +275,38 @@ stock int SortPlayers(int[] a, int[] b, const int[][] array, Handle hndl)
 
 
 
-void ActivatorBoost(int client, int buttons, int tickcount)
-{
-	if (g_ConVars[P_BlueBoost] == null)
-		return;
-	
-	Player player = Player(client);
-	
-	if (!g_ConVars[P_BlueBoost].BoolValue || !player.IsActivator || !player.IsAlive)
-		return;
-	
-	// Activator Speed Boosting
-	static float boost[MAXPLAYERS] =  { 396.0, ... };
-	static int boosting[MAXPLAYERS];
-	
-	if (buttons & IN_SPEED)	// TODO Find an alternative way to boost speed in OF. Sprinting?
-	{
-		if (boost[client] > 0.0)
-		{
-			if (!boosting[client] && boost[client] > 132.0)
-			{
-				if (DRGame.IsGame(Mod_TF))
-				{
-					TF2_AddCondition(client, TFCond_SpeedBuffAlly, TFCondDuration_Infinite);
-				}
-				
-				boosting[client] = true;
-			}
-			
-			if (boosting[client])
-			{
-				boost[client] -= 1.0;
-			}
-			else
-			{
-				boost[client] += 0.5;
-			}
-		}
-		else if (boost[client] <= 0.0)
-		{
-			if (DRGame.IsGame(Mod_TF))
-			{
-				TF2_RemoveCondition(client, TFCond_SpeedBuffAlly);
-			}
-			
-			boosting[client] = false;
-			boost[client] += 0.5;
-		}
-	}
-	else if (!(buttons & IN_SPEED))
-	{
-		if (boost[client] < 396.0)
-		{
-			if (boosting[client])
-			{
-				if (DRGame.IsGame(Mod_TF))
-					TF2_RemoveCondition(client, TFCond_SpeedBuffAlly);
-				
-				boosting[client] = false;
-			}
-			
-			boost[client] += 0.5;
-		}
-	}
-	
-	// Tick timer for boost HUD
-	if (!g_iTickTimer)
-		g_iTickTimer = tickcount;
-	
-	// Show Boost HUD every half second
-	if ((tickcount) > (g_iTickTimer + 33))
-	{
-		g_iTickTimer = tickcount;
-		BoostHUD(client, boost[client]);
-	}
-}
-
-
-
-
-
-/*
-	Health Scaling
-	--------------
-	
-	Modes
-	-----
-	BUG These don't seem to be right. 1 is overheal and 3 is max
-	
-	1. Overheal and multiply internal value
-	2. Overheal and multiply set value
-	3. Overheal and multiply based on max health
-	4. Expand pool to a multiple of internal value
-	5. Expand pool to a multiple of set value
-	6. Expand pool to a multiple of max health
-	
-	Revised: 
-	
-	Pool
-		Plugin default scaling
-		Multiply by given health value
-	
-	Overheal
-		Plugin default scaling
-		Multiply by given health value
-	
-	
-	Back stab
-	Fall damage
-*/
-
-
-
-/**
- * Scale activator health
- * If a value is not specified, health will be scaled up using DTK's internal
- * health scaling calculation, which is tested for balancing
- * 
- * @param		bool	Overheal or increase health pool
- * @param		int		Multiply health by this number * live reds
- * @noreturn
- */
-int ScaleActivatorHealth(bool overheal = false, int value = 0)
-{
-	int activators = DRGame.AliveActivators;
-	int reds = TFTeam_Red.Alive();
-
-	if (activators >= reds || !activators || g_ConVars[P_HealthScaleMethod].IntValue == 0)
-	{
-		return 0;
-	}
-	
-	float flHealth;
-	int len = g_Activators.Length;
-	
-	for (int i = 0; i < len; i++)
-	{
-		Player player = Player(g_Activators.Get(i));
-		
-		if (player.InGame && player.IsAlive)
-		{
-			flHealth += GetTFClassHealth(TF2_GetPlayerClass(player.Index));
-		}
-	}
-	
-	flHealth /= activators;	// TODO Proportion new health so it scales with original class health
-	
-	
-	// Multiply by value
-	if (value > 0)
-	{
-		flHealth = float((value / activators) * reds);
-	}
-	
-	
-	// Calculate using new method
-	else if (0 < g_ConVars[P_HealthScaleMethod].IntValue < 3)
-	{
-		flHealth = ((reds * 2) * flHealth) - flHealth;
-		overheal = (g_ConVars[P_HealthScaleMethod].IntValue == 2);
-	}
-	
-	
-	// Calculate using old method
-	else if (g_ConVars[P_HealthScaleMethod].IntValue == 3)
-	{
-		float p = 1.0;
-		for (int i = 1; i < reds; i++)
-		{
-			flHealth += (HEALTH_SCALE_BASE * p);
-			p *= 1.15;
-		}
-	}
-	
-	
-	
-	
-	
-	// Multiply health by number of reds
-	else if (g_ConVars[P_HealthScaleMethod].IntValue == 4)
-	{
-		flHealth = flHealth * reds;
-	}
-	
-	
-	// Apply health
-	for (int i = 0; i < len; i++)
-	{
-		Player player = Player(g_Activators.Get(i));
-		
-		if (player.InGame && player.IsAlive)
-		{
-			AddAttribute(player.Index, "health from packs decreased", GetTFClassHealth(TF2_GetPlayerClass(player.Index)) / flHealth);
-			
-			if (!overheal) player.SetMaxHealth(RoundToNearest(flHealth));
-			player.Health = RoundToNearest(flHealth);
-			
-			g_Activators.Set(i, RoundToNearest(flHealth), AL_MaxHealth);
-			g_Activators.Set(i, RoundToNearest(flHealth), AL_Health);
-		}
-	}
-	
-	return RoundToNearest(flHealth);
-}
-
-
-	/*
-	float base = (value == -1) ? HEALTH_SCALE_BASE : float(value);
-	float percentage = 1.0;
-	float health = float(this.MaxHealth);
-	float largehealthkit = float(this.MaxHealth);
-	int count = DRGame.AliveReds;
-
-	for (int i = 2; i <= count; i++)
-	{
-		health += (base * percentage);
-		percentage *= 1.15;
-	}
-
-	// TODO Don't do any of this if the health has not been scaled
-	if (mode > 2)
-	{
-		this.SetMaxHealth(health);
-		AddAttribute(this.Index, "health from packs decreased", largehealthkit / health);
-	}
-	this.Health = RoundToNearest(health);
-	*/
-
-
-
-
-
-
-
-
-
 
 /**
  * Format a string containing the names of the next specified number of activators.
- * 
+ *
  * @return		int		Number of cells written
  */
-int FormatNextActivators(char[] buffer, int max = 3)
+int FormatNextActivators(char[] buffer, int max = 3, int maxlength = MAX_CHAT_MESSAGE)
 {
-	// Get number of activators
-	int len = DRGame.ActivatorPool;
-	int[] list = new int[len];
 	int cells;
-	
-	// Create activator list
-	CreateActivatorList(list);
+	PlayerList pool = CreateActivatorPool();
 
 	// Format the message
-	if (list[0])
+	if (!pool.IsEmpty)
 	{
-		cells += Format(buffer, MAX_CHAT_MESSAGE, "%t", (len == 1 || max == 1) ? "next_activator" : "next_activators");
-		
-		for (int i = 0; max > i < len; i++)
+		cells += Format(buffer, maxlength, "%t", (pool.Length == 1 || max == 1) ? "next_activator" : "next_activators");
+
+		for (int i; max > i < pool.Length; i++)
 		{
-			if (i == 0)
+			if (i == 0)		// is first name
 			{
-				cells += Format(buffer, MAX_CHAT_MESSAGE, "%s\x03%N", buffer, list[i]);
+				int client = pool.Get(i);
+				cells += Format(buffer, maxlength, "%s\x03%N", buffer, client);
 			}
 			else
 			{
-				cells += Format(buffer, MAX_CHAT_MESSAGE, "%s\x01, \x03%N", buffer, list[i]);
+				int client = pool.Get(i);
+				cells += Format(buffer, maxlength, "%s\x01, \x03%N", buffer, client);
 			}
 		}
 	}
-	
+
 	return cells;
 }
 
 
-
-
-
-
-
-
-
-/**
- * HUD Elements
- * ----------------------------------------------------------------------------------------------------
- */
-
-#define USE_BOSS_BAR
-
-
-
-/*
-
-	Each frame query
-	1. Check health values by iterating across the activators array and combining them
-	2. Check it with a static value. If it changes, update the bar and restart the timer.
-	3. Don't display outside of round active
-	4. Update max values outside of round active
-
-*/
-
-
-
-Handle g_hBossTextBarTimer;
-
-void BossBar_Check()
-{
-	// If boss bar cvar is disabled, use a text bar
-	if (!g_ConVars[P_BossBar].BoolValue)
-	{
-		if (g_hBossTextBarTimer == null)
-		{
-			g_hBossTextBarTimer = CreateTimer(1.0, BossBar_Text, _, TIMER_REPEAT);
-		}
-		return;
-	}
-	delete g_hBossTextBarTimer;
-	
-	// If monster_resource not found, disable the boss bar cvar
-	int bar = FindEntityByClassname(-1, "monster_resource");
-	if (bar == -1)
-	{
-		g_ConVars[P_BossBar].BoolValue = false;
-		LogError("monster_resource entity not found. Lack of mod support? Disabled boss bar");
-		return;
-	}
-	
-	// Stop if there are no activators and hide the bar
-	int len = g_Activators.Length;
-	if (!len)
-	{
-		SetEntProp(bar, Prop_Send, "m_iBossHealthPercentageByte", 0);
-		return;
-	}
-	
-	// Iterate across the Activators list and collect health & max health
-	static int health, maxhealth;
-	int newhealth, newmaxhealth;
-	for (int i = 0; i < len; i++)
-	{
-		Player player = Player(g_Activators.Get(i));
-		if (player.IsConnected && player.InGame)
-		{
-			newhealth += player.Health;
-			newmaxhealth += player.MaxHealth;
-		}
-	}
-
-	// Hide if round not active - conveniently resetting stored values
-	if (DRGame.RoundState != Round_Active)
-	{
-		health = newhealth;
-		maxhealth = newmaxhealth;
-		SetEntProp(bar, Prop_Send, "m_iBossHealthPercentageByte", 0);
-		return;
-	}
-	
-	// Update stored max health
-	/*if (health > maxhealth)
-	{
-		maxhealth = health;
-	}
-	if (newmaxhealth > maxhealth)
-	{
-		maxhealth = newmaxhealth;
-	}*/
-
-	// If health has changed, display bar and reset timer
-	if (health != newhealth)
-	{
-		health = newhealth;
-		
-		// Update stored max health
-		if (health > maxhealth)
-		{
-			maxhealth = health;
-		}
-		if (newmaxhealth > maxhealth)
-		{
-			maxhealth = newmaxhealth;
-		}
-		
-		int barval = RoundToNearest( float(health) / float(maxhealth) * 255.0 );
-		SetEntProp(bar, Prop_Send, "m_iBossHealthPercentageByte", barval);
-		Debug("Boss bar -- health %d, maxhealth %d, barval %d", health, maxhealth, barval);
-		DRGame.IsBossBarActive = true;
-		delete g_TimerHPBar;
-		g_TimerHPBar = CreateTimer(10.0, Timer_HideHealthBar);
-	}
-	// If the timer has elapsed hide the bar
-	else if (!DRGame.IsBossBarActive)
-	{
-		SetEntProp(bar, Prop_Send, "m_iBossHealthPercentageByte", 0);
-	}
-}
-
-
-Action BossBar_Text(Handle timer)
-{
-	// Stop if there are no activators and hide the bar
-	int len = g_Activators.Length;
-	if (!len || DRGame.RoundState != Round_Active)
-	{
-		return;
-	}
-	
-	char buffer[256];
-	
-	// If two activators, display their bars separately
-	if (TFTeam_Blue.Alive() <= 2)
-	{
-		for (int i = 0; i < len; i++)
-		{
-			Player player = Player(g_Activators.Get(i));
-			if (player.InGame && player.IsAlive)
-			{
-				Format(buffer, 256, "%s%N: %dHP\n", buffer, player.Index, player.Health);
-			}
-		}
-	}
-	// If three or more activators, combine their health
-	else
-	{
-		int health;
-		for (int i = 0; i < len; i++)
-		{
-			Player player = Player(g_Activators.Get(i));
-			if (player.InGame && player.IsAlive)
-				health += player.Health;
-		}
-		Format(buffer, 256, "%t: %dHP", "hud_activators", health);
-	}
-	
-	HealthText(buffer);
-}
-
-
-Action Timer_HideHealthBar(Handle timer)
-{
-	HealthText();
-	DRGame.IsBossBarActive = false;
-	g_TimerHPBar = null;
-}
-
-
-
-/**
- * Refresh boss health HUD display elements
- *
- * @noreturn
- */
-
-// Removed this in favout of the simpler OnGameFrame boss bar update.
-// Entity data will need to come later
-
-	/*
-		Priority
-		--------
-		
-		Boss bar: Boss
-		Text: Boss
-		Text: Activators
-		Boss bar: Activators
-		Text: Mini bosses
-		
-		Rules
-		-----
-		
-		Don't hide the boss bar if there is a math boss
-		Don't hide the text if there are mini bosses
-		Make sure bosses disappearing (dying) doesn't trigger activator health display as a side effect
-		
-		Should activator health be suppressed if there are NPCs?
-	*/
- 
-/*
-void RefreshBossHealthHUD()
-{
-	if (!g_ConVars[P_BossBar].BoolValue)
-		return;
-	
-	int len = g_Activators.Length;
-	int health, maxhealth;
-	
-	// Prevent the bar being shown if we have no activators
-	if (!len)return;
-
-#if defined USE_BOSS_BAR
-	if (g_iEnts[Ent_MonsterRes] != -1)	// monster_resource exists
-	{
-		// We have a boss math_counter with a health value
-		Debug("TF2 CLASSIC - g_NPCs.Length is %d and g_iEnts[Ent_MonsterRes] is %d", g_NPCs.Length, g_iEnts[Ent_MonsterRes]);
-		int ent = g_NPCs.Get(0);
-		health = RoundToNearest(g_NPCs.Get(0, AL_Health));
-		if (ent && health)
-		{
-			Debug("We have a boss math_counter %d with health %d", ent, health);
-			maxhealth = RoundToNearest(g_NPCs.Get(0, AL_MaxHealth));
-			SetEntProp(g_iEnts[Ent_MonsterRes], Prop_Send, "m_iBossState", 1);
-		}
-		// We will use the activators for the boss bar
-		else
-		{
-			for (int i = 0; i < len; i++)
-			{
-				health += g_Activators.Get(i, AL_Health);
-				maxhealth += g_Activators.Get(i, AL_MaxHealth);
-				SetEntProp(g_iEnts[Ent_MonsterRes], Prop_Send, "m_iBossState", 0);
-			}
-			Debug("Activator total health: %d total max: %d", health, maxhealth);
-		}
-		
-		int percent = RoundToNearest( float(health) / float(maxhealth) * 255.0 );
-		SetEntProp(g_iEnts[Ent_MonsterRes], Prop_Send, "m_iBossHealthPercentageByte", (percent > 255) ? 255 : percent);
-		Debug("Setting health bar to %d / 255", percent);
-	}
-	else	// Text alternative
-#endif
-	{
-		char buffer[256];
-		
-		if (TFTeam_Blue.Alive() <= 2)	// Two Activators
-		{
-			for (int i = 0; i < len; i++)
-			{
-				Player player = Player(g_Activators.Get(i));
-	
-				if (player.InGame && player.IsAlive)
-				{
-					Format(buffer, 256, "%s%N: %dHP\n", buffer, player.Index, player.Health);
-				}
-			}
-		}
-		else						// Three or more Activators
-		{
-			for (int i = 0; i < len; i++)
-			{
-				health += g_Activators.Get(i, AL_Health);
-			}
-			
-			Format(buffer, 256, "%t: %dHP", "hud_activators", health);
-		}
-		
-		HealthText(buffer);
-	}
-	
-	DRGame.IsBossBarActive = true;
-	
-	delete g_TimerHPBar;
-	g_TimerHPBar = CreateTimer(10.0, Timer_HideHealthBar);
-}
-*/
-
-
-
-/**
- * Display some text below the health bar.
- *
- * @param	char	The text.
- * @noreturn
- */
-void HealthText(const char[] string = "", any ...)
-{
-	static Handle hHealthText;
-	if (!hHealthText)
-		hHealthText = CreateHudSynchronizer();
-	
-	int len = strlen(string) + 255;
-	char[] buffer = new char[len];
-	
-	SetHudTextParams(-1.0, 0.16, 1.0, 123, 190, 242, 200);
-	
-	for (int i = 1; i <= MaxClients; i++)
-	{
-		if (IsClientInGame(i))
-		{
-			if (string[0])
-			{
-				SetGlobalTransTarget(i);
-				VFormat(buffer, len, string, 2);
-				ShowSyncHudText(i, hHealthText, buffer);
-			}
-			else
-			{
-				ClearSyncHud(i, hHealthText);
-			}
-		}
-	}
-}
-
-
-
-
-/**
- * Boost HUD
- *
- * @param		int		Client index
- * @noreturn
- */
-stock void BoostHUD(int client, float value)
-{
-	if (g_Text_Boost == null) g_Text_Boost = CreateHudSynchronizer();
-	
-	char buffer[256] = "Boost: ";
-	int characters = RoundToFloor(value / 33);
-	
-	for (int i = 0; i < characters; i++)
-	{
-		Format(buffer, sizeof(buffer), "%s▋", buffer);
-	}
-	
-	SetHudTextParamsEx(0.20, 0.85, 0.54, { 255, 255, 255, 255 }, { 255, 255, 255, 255 }, 0, 0.0, 0.0);
-	ShowSyncHudText(client, g_Text_Boost, buffer);
-}

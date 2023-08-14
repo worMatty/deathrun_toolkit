@@ -1,3 +1,5 @@
+#pragma semicolon 1
+
 
 /**
  * Commands
@@ -6,13 +8,13 @@
 
 /**
  * Test the activator health scaling.
- * 
+ *
  * @noreturn
  */
 void FunStuff_ScaleHealth(int commander)
 {
-	int health = ScaleActivatorHealth();
-	
+	int health = g_Activators.ScaleHealth(TFTeam_Red.AliveCount());
+
 	if (health)
 	{
 		TF2_PrintToChatAll(_, "Scaled total activator health to %d", health);
@@ -30,63 +32,52 @@ void FunStuff_ScaleHealth(int commander)
 /**
  * Make red players a pyro and give them a jetpack with unlimited uses.
  * Give them a slow run speed.
- * 
+ *
  * @noreturn
  */
 void FunStuff_JetpackGame()
 {
 	float time;
-	
+
 	for (int i = 1; i <= MaxClients; i++)
 	{
-		if (IsClientInGame(i) && GetClientTeam(Team_Red))
+		Player player = Player(i);
+
+		if (IsClientInGame(i) && player.IsAlive)
 		{
-			CreateTimer(time, Timer_Jetpacks, i);
+			CreateTimer(time, Timer_Jetpacks, player);
 			time += 0.5;
 		}
 	}
 }
 
-Action Timer_Jetpacks(Handle timer, int client)
+Action Timer_Jetpacks(Handle timer, Player player)
 {
-	Player player = Player(client);
-	
-	if (player.InGame && player.Team == Team_Red && player.IsAlive)
+	if (player.InGame && player.IsAlive)
 	{
-		int weapon = CreateWeapon(1179, "tf_weapon_rocketpack");
-		
+		player.SetClass(Class_Pyro);
+
+		int weapon = ReplaceWeapon(player.Index, GetPlayerWeaponSlot(player.Index, TFWeaponSlot_Secondary), 1179, "tf_weapon_rocketpack");
+
 		if (weapon != -1)
 		{
-			player.SetClass(Class_Pyro);
-			
-			int oldweapon = player.GetWeapon(Weapon_Secondary);
-			
-			if (oldweapon != -1)
-			{
-				RemoveEntity(oldweapon);
-				GiveWeapon(client, weapon);
-				AddAttribute(weapon, "item_meter_charge_rate", 0.01);
-				CreateTimer(0.1, Timer_Jetpacks2, client);
-				
-				TF2_PrintToChat(client, _, "You are now a pyro with unlimited jet pack uses");
-				EmitMessageSoundToClient(client);
-			}
-			else
-			{
-				RemoveEntity(weapon);
-				TF2_PrintToChat(client, _, "We tried to make you a pyro with a jetpack but it went missing");
-				EmitMessageSoundToClient(client);
-			}
-			
-			
+			AddAttribute(weapon, "item_meter_charge_rate", 0.01);
+			CreateTimer(0.1, Timer_Jetpacks2, player.Index);
+
+			TF2_PrintToChat(player.Index, _, "You are now a pyro with unlimited jet pack uses");
+			EmitMessageSoundToClient(player.Index);
 		}
 	}
+
+	return Plugin_Stop;
 }
 
 Action Timer_Jetpacks2(Handle timer, int client)
 {
 	Player player = Player(client);
-	player.SetSlot(Weapon_Secondary);
+	player.SetSlot(TFWeaponSlot_Secondary);
+
+	return Plugin_Stop;
 }
 
 
@@ -94,7 +85,7 @@ Action Timer_Jetpacks2(Handle timer, int client)
 
 /**
  * Slap runners every ten seconds
- * 
+ *
  * @noreturn
  */
 void FunStuff_PeriodicSlap()
@@ -111,7 +102,7 @@ Action Timer_PeriodicSlap(Handle timer)
 		for (int i = 1; i <= MaxClients; i++)
 		{
 			Player player = Player(i);
-			
+
 			if (player.InGame && player.Team == Team_Red && player.IsAlive)
 			{
 				SlapPlayer(i, 0);
@@ -122,6 +113,6 @@ Action Timer_PeriodicSlap(Handle timer)
 	{
 		return Plugin_Stop;
 	}
-	
+
 	return Plugin_Continue;
 }

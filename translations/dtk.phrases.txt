@@ -1,3 +1,18 @@
+/*
+	Phrases in need of translation:
+	
+	"menu_item_admin_bonus_points"
+	{
+		"en"			"Bonus queue points"
+	}
+	
+	"menu_item_admin_activator_ban"
+	{
+		"en"			"Activator ban"
+	}
+*/
+
+
 "Phrases"
 {
 
@@ -52,16 +67,6 @@
 		"ee"			"{1} on muudetud aktivaatoriks"
 	}
 	
-	"name_no_class_moved_spec"
-	{
-		"#format"		"{1:s}"
-		"en"			"Moved {1} to spectator, as no class was chosen"
-		"da"			"Flyttede {1} til spectator, da der ikke blev valgt klasse"
-		"it"			"Spostato {1} per lo spettatore, come nessuna classe è stata scelta"
-		"fr"			"Mis {1} en spectateur, car aucune classe n'a été choisi"
-		"ee"			"Mäng liigutas {1} pealtvaatajate tiimi, kuna ta ei valinud klassi.
-	}
-	
 	"restarting_round_seconds"
 	{
 		"#format"		"{1:d}"
@@ -80,54 +85,7 @@
  * ----------------------------------------------------------------------------------------------------
  */
 	
-	"received_queue_points_from_an_admin"	// modified
-	{
-		"#format"		"{1:s},{2:i},{3:i}"		// 1. Name of admin, 2. points awarded, 3. player's new total
-		"en"			"{1} has awarded you {2} queue points ({3})"
-		"de"			"{1} hat Dir {2} Punkte verleiht, somit ist deine Gesamtpunktzahl {3}"
-		"it"			"{1} ti ha assegnato {2} punti di coda ({3})"
-		"tr"			"{1} sana {2} puan ödül verdi, senin toplamını {3} yaptı"
-		"da"			"{1} har doneret {2} point til dig, og dine samlede point er {3}"
-		"fr"			"{1} t'as donné {2} points de file ({3})"
-		"ee"			"{1} on andnud sulle {2} järjekorra punkti ({3})"
-	}
-	
-	"you_have_i_queue_points"	// modified
-	{
-		"#format"		"{1:i}"
-		"en"			"You have {1} queue points"
-		"de"			"Du hast {1} Punkte"
-		"it"			"Ti havo {1} punti"
-		"tr"			"Senin {1} puanın var"
-		"da"			"Du har {1} point"
-		"fr"			"Tu as {1} point de file"
-		"ee"			"Sul on {1} järjekorra punkti"
-	}
-	
-	"points_have_been_reset_to_i"	// modified
-	{
-		"#format"		"{1:i}"		// Points player has after a reset
-		"en"			"Your queue points have been reset to {1}"
-		"de"			"Deine Punkte wurden zu {1} zurückgesetzt"
-		"it"			"I tuoi punti di coda sono stati azzerati a {1}"
-		"tr"			"Senin puanların {1} sıfırlandı"
-		"da"			"Dine point er blevet nulstillet til {1}"
-		"fr"			"Tes points de file ont été réinitialisés à {1}"
-		"ee"			"Sinu järjekorrapunktid on lähtestatud {1} punktiks"
-	}
-	
-	"points_cannot_be_reset"	// modified
-	{
-		"en"			"Sorry, your queue points can't be reset because they are a negative value"
-		"de"			"Entschuldigung, deine Punkte können nicht zurückgesetzt werden, da Sie ein negativer Wert sind"
-		"it"			"Scusa, i tuoi punti di coda non possono essere azzerati perché sono un valore negativo"
-		"tr"			"Üzgünüm, senin puanların sıfırlanamaz çünkü o negatif bir değer"
-		"da"			"Beklager, dine point kan ikke blive nulstillet, da du er i negative point"
-		"fr"			"Désolé, tes points de files ne peuvent être réinitialisés car ils ont une valeur négative"
-		"ee"			"Sorri, sinu järjekorrapunkte ei saa lähtesdada kuna praegune järjekorrapunktide arv on negatiivses väärtuses"
-	}
-		
-	"opted_out_activator"	// modified
+	"opted_out_activator"
 	{
 		"en"			"You've opted out of becoming an activator"
 		"da"			"Du har bedt om aldrig at blive aktivator"
@@ -136,7 +94,7 @@
 		"ee"			"Sa oled loobunud aktivaatori olemisest"
 	}
 	
-	"opted_in_activator"	// modified
+	"opted_in_activator"
 	{
 		"en"			"You've opted in to becoming an activator"
 		"da"			"Du har bedt om at blive aktivator"
@@ -145,7 +103,7 @@
 		"ee"			"Sa võid olla aktivaator nüüd"
 	}
 	
-	"you_are_an_activator"	// modified
+	"you_are_an_activator"
 	{
 		"en"			"You've been made an activator"
 		"da"			"Du er blevet valgt som aktivator"
@@ -185,17 +143,6 @@
 		"ee"			"Sind tappis ära CD5C5C{1} {2}" 
 	}
 	
-	"wrong_usage_of_award_command"
-	{
-		"en"			"You're doing it wrong. /draward <name> <points>"
-		"de"			"Du machst es falsch. /draward <name> <punkte>"
-		"it"			"lo stai facendo male. /draward <name> <points>"
-		"tr"			"Sen yanlış yapıyorsun. /draward <isim> <puanlar>"
-		"da"			"Du gør det forkert. /draward <navn> <point>"
-		"fr"			"Tu le faits mal. /draward <navn> <point>"
-		"ee"			"Sa teed seda valesti. /draward <name> <points>" 
-	}
-	
 	"next_activators"
 	{
 		"en"			"Next activators: "
@@ -207,7 +154,7 @@
 		"ee"			"Järgmised aktivaatorid: " 
 	}
 	
-	"next_activator"	// modified
+	"next_activator"
 	{
 		"en"			"Next activator: "
 		"da"			"Næste aktivator: "
@@ -343,17 +290,7 @@
 		"ee"			"Eelistused"
 	}
 	
-	"menu_item_reset"
-	{
-		"en"			"Reset my queue points"
-		"it"			"Reimposta i miei punti di coda"
-		"tr"			"Sıra puanlarımı sıfırla"
-		"da"			"Nulstil mine kø point"
-		"fr"			"Réinitialiser mes points de file"
-		"ee"			"Lähtesta mu järjekorrapunktid"
-	}
-	
-	"menu_item_queue"	// modified
+	"menu_item_queue"
 	{
 		"en"			"Activator queue"
 		"it"			"Coda di attivazione"
@@ -363,7 +300,7 @@
 		"ee"			"Aktivaatorite järjekord"
 	}
 	
-	"menu_item_help"	// modified
+	"menu_item_help"
 	{
 		"en"			"Help"
 		"de"			"Hilfe"
@@ -375,7 +312,7 @@
 	
 	"menu_item_admin"
 	{
-		"en"			"Admin"		// modified
+		"en"			"Admin"
 		"it"			"Admin"
 		"tr"			"Yönetim Eğlenceli Şeyler"
 		"da"			"Admin"
@@ -388,7 +325,7 @@
  * Preferences Menu
  */
 	
-	"menu_item_be_activator"	// modified
+	"menu_item_be_activator"
 	{
 		"en"			"Become an activator"
 		"da"			"Bliv en aktivator"
@@ -407,7 +344,7 @@
 		"ee"			"Ära ole aktivaator"
 	}
 	
-	"menu item toggle english language"		// modified
+	"menu item toggle english language"
 	{
 		"en"			"English SourceMod messages\n \n"
 		"it"			"Inglese Sourcemod messaggi\n \n"
@@ -419,24 +356,18 @@
 	
 	
 /**
- * Reset Points Menu
- */
-	 
-	"menu_reset_question"
-	{
-		"en"			"Are you sure you want to\nreset your queue points?"
-		"it"			"Sei sicura di volerlo\nazzerare i punti di coda?"
-		"tr"			"Sıra puanlarını sıfırlamak\nistediğinden emin misin?"
-		"da"			"Er du sikker på at du vil\nnulstille dine point?"
-		"fr"			"Es-tu sûre de vouloir\nréinitialiser tes points de queue?"
-		"ee"			"Kas te olete kindel et te tahate\nlähtestada oma järjekorrapunkte?"
-	}
-	
-	
-	
-/**
  * Admin Menu
  */
+ 
+	"menu_item_admin_bonus_points"
+	{
+		"en"			"Bonus queue points"
+	}
+	
+	"menu_item_admin_activator_ban"
+	{
+		"en"			"Activator ban"
+	}
 	
 	"menu_item_admin_scale_activator_health"
 	{
@@ -458,7 +389,7 @@
 		"ee"			"Jetpacki mäng"
 	}
 	
-	"menu_item_admin_periodic_slap"	// modified
+	"menu_item_admin_periodic_slap"	// modified - needs tr
 	{
 		"en"			"Periodic Slap"
 		"da"			"Periodisk Slap"
@@ -500,7 +431,7 @@
  * ----------------------------------------------------------------------------------------------------
  */
 
-	"activator_no_escape"	// modified
+	"activator_no_escape"
 	{
 		"en"			"Sorry, you can't suicide as an activator or switch teams"
 		"de"			"Entschuldigung, Du kannst als Aktivierer kein suizid begehen oder das Team ändern"
@@ -511,22 +442,6 @@
 		"ee"			"Sorri, sa ei või teha enesetappu ning sa ei või vahetada tiimi aktivaatorina"
 	}
 	
-	
-	
-/**
- * HUD Elements
- * ----------------------------------------------------------------------------------------------------
- */
-
-	"hud_activators"	// modified
-	{
-		"en"			"Activators"
-		"da"			"Aktivatorer"
-		"it"			"Attivatori"
-		"fr"			"Activateurs"
-		"ee"			"Aktivaatorid"
-	}
-		
 	
 	
 /**

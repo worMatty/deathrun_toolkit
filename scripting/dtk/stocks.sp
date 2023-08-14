@@ -1,16 +1,31 @@
 
-#define MAX_CHAT_MESSAGE		255
 
-// Life States
-//enum {
-	//LifeState_Alive,		// alive
-	//LifeState_Dying,		// playing death animation or still falling off of a ledge waiting to hit ground
-	//LifeState_Dead,			// dead. lying still.
-	//LifeState_Respawnable,
-	//LifeState_DiscardBody,
-//}
+// Life states
+enum {
+	LifeState_Alive,		// alive
+	LifeState_Dying,		// playing death animation or still falling off of a ledge waiting to hit ground
+	LifeState_Dead,			// dead. lying still.
+	LifeState_Respawnable,
+	LifeState_DiscardBody,
+}
 
-// Default Class Run Speeds
+// TF2 / Open Fortress / TF2 Classic classes
+enum {
+	Class_Unknown,
+	Class_Scout,
+	Class_Sniper,
+	Class_Soldier,
+	Class_DemoMan,
+	Class_Medic,
+	Class_Heavy,
+	Class_Pyro,
+	Class_Spy,
+	Class_Engineer,
+	Class_Merc = 10,
+	Class_Civ = 10
+}
+
+// Default TF2 class max run speeds
 enum {
 	RunSpeed_NoClass = 0,
 	RunSpeed_Scout = 400,
@@ -26,7 +41,7 @@ enum {
 	RunSpeed_Civ = 280
 }
 
-// Default Class Health
+// Default TF2 class health
 enum {
 	Health_NoClass = 50,
 	Health_Scout = 125,
@@ -42,45 +57,115 @@ enum {
 	Health_Civ = 200
 }
 
+static bool g_bIsGameTF2;
+static bool g_bIsGameOpenFortress;
+static bool g_bIsGameTF2Classic;
+static bool g_bIsGameUnknown;
+static bool g_bIsGameDetermined;
+
+/**
+ * Determine the game.
+ * Called whenever a game check is made.
+ * First time this runs it determines the game.
+ *
+ * @noreturn
+ */
+stock void DetermineGame()
+{
+	if (!g_bIsGameDetermined)
+	{
+		char game_folder[32];
+		GetGameFolderName(game_folder, sizeof(game_folder));
+
+		if (StrEqual(game_folder, "tf"))
+		{
+			g_bIsGameTF2 = true;
+		}
+
+		else if (StrEqual(game_folder, "open_fortress"))
+		{
+			g_bIsGameOpenFortress = true;
+		}
+
+		else if (StrEqual(game_folder, "tf2classic"))
+		{
+			g_bIsGameTF2Classic = true;
+		}
+
+		else
+		{
+			g_bIsGameUnknown = true;
+		}
+
+		g_bIsGameDetermined = true;
+	}
+}
+
+stock bool IsGameTF2()
+{
+	DetermineGame();
+	return g_bIsGameTF2;
+}
+
+stock bool IsGameOpenFortress()
+{
+	DetermineGame();
+	return g_bIsGameOpenFortress;
+}
+
+stock bool IsGameTF2Classic()
+{
+	DetermineGame();
+	return g_bIsGameTF2Classic;
+}
+
+stock bool IsGameKnown()
+{
+	DetermineGame();
+	return !g_bIsGameUnknown;
+}
+
 
 /**
  * TF2 Stuff
  * ----------------------------------------------------------------------------------------------------
  */
 
+/**
+ * Attach methods to the TFTeam type
+ */
 methodmap TFTeam
 {
 	public int Count()
 	{
 		return GetTeamClientCount(view_as<int>(this));
 	}
-	
-	public int Alive()
+
+	public int AliveCount()
 	{
 		int count;
-		
+
 		for (int i = 1; i <= MaxClients; i++)
 		{
 			if (IsClientInGame(i) && TF2_GetClientTeam(i) == this && GetEntProp(i, Prop_Send, "m_lifeState") == LifeState_Alive)
+			{
 				count++;
+			}
 		}
-		
+
 		return count;
 	}
 }
 // TFTeam(TFTeam_Red).Alive()
-// TFTeam_Red.Alive()
+// TFTeam_Red.AliveCount()
 // TF2_GetClientTeam(client).Alive()
 // player.Team.Alive()?
 
-
-
-
 /**
  * Take a TF class name and return its number.
- * 
- * @param		char	Class name string
- * @return		int		Class number
+ *
+ * @param	string		Class name string
+ * @return	Class number
  */
 stock int ProcessClassString(const char[] string)
 {
@@ -98,9 +183,13 @@ stock int ProcessClassString(const char[] string)
 	return 0; // Class not recognised
 }
 
-
-
-stock int GetTFClassRunSpeed(TFClassType class)
+/**
+ * Get a TF2 classs max run speed
+ *
+ * @param	class		TF2 class
+ * @return	Max run speed
+ */
+stock int TF2_GetTFClassRunSpeed(TFClassType class)
 {
 	int runspeeds[] =
 	{
@@ -116,18 +205,23 @@ stock int GetTFClassRunSpeed(TFClassType class)
 		RunSpeed_Engineer,
 		RunSpeed_Merc
 	};
-	
-	char folder[32];
-	GetGameFolderName(folder, sizeof(folder));
-	if (StrEqual(folder, "tf2classic")) runspeeds[10] = RunSpeed_Civ;
-	
+
+	if (IsGameTF2Classic())
+	{
+		runspeeds[10] = RunSpeed_Civ;
+	}
+
 	return runspeeds[view_as<int>(class)];
-	
+
 }
 
-
-
-stock int GetTFClassHealth(TFClassType class)
+/**
+ * Get a TF2 class's default max health
+ *
+ * @param	class		TF2 class
+ * @return	Class health
+ */
+stock int TF2_GetTFClassHealth(TFClassType class)
 {
 	int health[] =
 	{
@@ -143,54 +237,43 @@ stock int GetTFClassHealth(TFClassType class)
 		Health_Engineer,
 		Health_Merc
 	};
-	
-	char folder[32];
-	GetGameFolderName(folder, sizeof(folder));
-	if (StrEqual(folder, "tf2classic")) health[10] = Health_Civ;
-	
-	return health[view_as<int>(class)];
-	
-}
 
-
-
-
-/**
- * Players & Teams
- * ----------------------------------------------------------------------------------------------------
- */
-
-/**
- * Pick a random player from a team.
- * 
- * @param	int		Team number
- * @return	int		Client index
- */
-stock int PickRandomTeamMember(int team)
-{
-	int[] table = new int[MaxClients];
-	int index;
-	
-	for (int i = 1; i <= MaxClients; i++)
+	if (IsGameTF2Classic())
 	{
-		if (IsClientInGame(i) && GetClientTeam(i) == team)
-		{
-			table[index] = i;
-			index += 1;
-		}
+		health[10] = Health_Civ;
 	}
-	
-	int result = table[GetRandomInt(0, index - 1)];
-	return result;
+
+	return health[view_as<int>(class)];
 }
 
+/**
+ * Run some VScript on an entity
+ *
+ * @param		entity		Entity index to send the input to
+ * @param		format		String of text including format specifiers
+ * @param		...			Formatting arguments
+ * @return		True if entity input was accepted and game is TF2
+ */
+stock bool RunScriptCode(int entity, const char[] format, any ...)
+{
+	if (IsGameTF2())
+	{
+		int len = strlen(format) + 256;
+		char[] parameter = new char[len];
+		VFormat(parameter, len, format, 3);
 
+		SetVariantString(parameter);
+		return AcceptEntityInput(entity, "RunScriptCode");
+	}
 
+	return false;
+}
 
 /**
  * Respawn all players using a game_forcerespawn
- * 
- * @noreturn
+ *
+ * @param	team		Team number
+ * @return	True if the entity was created and input accepted
  */
 stock bool RespawnTeamsUsingEntity(int team = 0)
 {
@@ -211,28 +294,77 @@ stock bool RespawnTeamsUsingEntity(int team = 0)
 
 		AcceptEntityInput(ent, "Kill");
 	}
-	
+
 	return result;
 }
 
 
-
 /**
- * Utilities
+ * Players & Teams
  * ----------------------------------------------------------------------------------------------------
  */
 
 /**
- * Remove special characters from a parsed string.
- * 
- * @param		char	String
+ * Get the number of clients in-game and on a playable team
+ * i.e. Not unassigned and not on the spectator team
+ *
+ * @return		Number of clients playing
+ */
+stock int GetActiveClientCount()
+{
+	int count;
+
+	for (int i = 1; i < MaxClients; i++)
+	{
+		if (IsClientInGame(i) && GetClientTeam(i) > 1)
+		count++;
+	}
+
+	return count;
+}
+
+/**
+ * Pick a random player from the specified team
+ *
+ * @param	team		Team number
+ * @return	Client index
+ */
+stock int PickRandomTeamMember(int team)
+{
+	int[] table = new int[MaxClients];
+	int len = MaxClients;
+	int index;
+
+	for (int i = 1; i <= len; i++)
+	{
+		if (IsClientInGame(i) && GetClientTeam(i) == team)
+		{
+			table[index] = i;
+			index += 1;
+		}
+	}
+
+	int result = table[GetRandomInt(0, index - 1)];
+	return result;
+}
+
+
+/**
+ * Strings
+ * ----------------------------------------------------------------------------------------------------
+ */
+
+/**
+ * Remove special characters from a parsed string
+ *
+ * @param	buffer		String
  * @noreturn
  */
 stock void CleanString(char[] buffer)
 {
 	// Get the length of the string
 	int len = strlen(buffer);
-	
+
 	// For every character, if it's a special character replace it with whitespace
 	for (int i = 0; i < len; i++)
 	{
@@ -248,19 +380,43 @@ stock void CleanString(char[] buffer)
 	TrimString(buffer);
 }
 
+/**
+ * Checks if a string is numeric.
+ * # is not classed as a number!
+ *
+ * @param	string		String to check
+ * @return	True if string is numeric, false if at least one character is alphabetical
+ */
+stock bool IsStringNumeric(const char[] string)
+{
+	bool alpha;
+	int i;
+	int len = strlen(string);
 
+	while (!alpha && i <= len)
+	{
+		if (string[i] == '#' || IsCharAlpha(string[i]))
+		{
+			alpha = true;
+			break;
+		}
+		i++;
+	}
+
+	return !alpha;
+}
 
 
 /**
- * Entity Work
+ * Entities
  * ----------------------------------------------------------------------------------------------------
  */
 
 /**
- * Check if an entity is a client
+ * Check if an entity's index falls within the client range
  *
- * @param	entity	Entity index
- * @return	True if entity is a client, false otherwise
+ * @param	entity		Entity index
+ * @return	True if entity index is in the client range, false otherwise
  */
 stock bool IsClient(int entity)
 {
@@ -272,60 +428,40 @@ stock bool IsClient(int entity)
 /**
  * Get the distance between two entities
  *
- * @param		int		Entity 1
- * @param		int		Entity 2
- * @return		float	Distance
+ * @param	ent1		Entity 1
+ * @param	ent2		Entity 2
+ * @return	Distance in units
  */
 stock float GetDistance(int ent1, int ent2)
 {
 	float pos1[3], pos2[3];
-	
-	if (IsClient(ent1))
-		GetClientAbsOrigin(ent1, pos1);
-	else
-		GetEntPropVector(ent1, Prop_Data, "m_vecOrigin", pos1);
-	
-	if (IsClient(ent2))
-		GetClientAbsOrigin(ent2, pos2);
-	else
-		GetEntPropVector(ent2, Prop_Data, "m_vecOrigin", pos2);
-	
+
+	(IsClient(ent1)) ? GetClientAbsOrigin(ent1, pos1) : GetEntPropVector(ent1, Prop_Data, "m_vecOrigin", pos1);
+	(IsClient(ent2)) ? GetClientAbsOrigin(ent2, pos2) : GetEntPropVector(ent2, Prop_Data, "m_vecOrigin", pos2);
+
 	return GetVectorDistance(pos1, pos2);
 }
 
-
-
-
 /**
- * Check if two entities are in LOS
+ * Check if two entities are in line of sight of one another
  *
- * @param		int		Entity 1
- * @param		int		Entity 2
- * @param		int		Contents flags used for solidity and visibility
- * @return		bool	Entities are within LOS
- * @error		Invalid entity, client not in game, property not found or valid, etc.
+ * @param	ent1		Entity 1
+ * @param	ent2		Entity 2
+ * @param	flags		Contents flags used for solidity and visibility
+ * @return	True if entities are within line of sight
+ * @error	Invalid entity, client not in game, property not found or valid, etc.
  */
 stock bool AreEntsInLOS(int ent1, int ent2, int flags = CONTENTS_SOLID)
 {
 	float pos1[3], pos2[3];
-	
-	// Get coords
-	if (IsClient(ent1))
-		GetClientEyePosition(ent1, pos1);
-	else
-		GetEntPropVector(ent1, Prop_Data, "m_vecOrigin", pos1);
-	
-	if (IsClient(ent2))
-		GetClientEyePosition(ent2, pos2);
-	else
-		GetEntPropVector(ent2, Prop_Data, "m_vecOrigin", pos2);
-	
-	// Check if ents are in LOS
+
+	(IsClient(ent1)) ? GetClientEyePosition(ent1, pos1) : GetEntPropVector(ent1, Prop_Data, "m_vecOrigin", pos1);
+	(IsClient(ent2)) ? GetClientEyePosition(ent2, pos2) : GetEntPropVector(ent2, Prop_Data, "m_vecOrigin", pos2);
+
 	Handle hTrace = TR_TraceRayFilterEx(pos1, pos2, flags, RayType_EndPoint, Trace_AreEntsInLOS, ent1);
-	
 	bool los = (TR_GetEntityIndex(hTrace) == ent2);
-	
 	delete(hTrace);
+
 	return los;
 }
 
@@ -337,154 +473,11 @@ stock bool Trace_AreEntsInLOS(int entity, int contentsMask, int ent1)
 		If the entity should be ignored, return true.
 		The ray collides with the player it originates from so you need to filter them out.
 	*/
-	
+
 	// True to allow the current entity to be hit, otherwise false.
 	return (entity != ent1);
 	// This filters out the originating entity
 }
-
-
-
-
-/**
- * Add Attribute
- * Apply an attribute to an entity.
- *
- * @param 	int 	Entity index
- * @param 	char 	Attribute name
- * @param 	float 	Value. Default 1.0
- *
- * @return	bool	True if successful, false if there was a problem
- */
-stock bool AddAttribute(int entity, char[] attribute, float value = 1.0)
-{
-	// Return false if game is not TF2 as only TF2 supports attributes
-	char folder[8];
-	GetGameFolderName(folder, sizeof(folder));
-	if (!StrEqual(folder, "tf"))
-		return false;
-	
-	// TF2 Attributes plugin is now required
-	if (g_bTF2Attributes)
-		return TF2Attrib_SetByName(entity, attribute, value);
-	else
-		return false;
-}
-
-
-
-/**
- * Remove Attribute
- * Remove an attribute from an entity.
- *
- * @param 	int 	Entity index
- * @param 	char 	Attribute
- *
- * @return	bool	True if successful, false if there was a problem
- */
-stock bool RemoveAttribute(int entity, char[] attribute)
-{
-	if (g_bTF2Attributes)
-		return TF2Attrib_RemoveByName(entity, attribute);
-	else
-		return false;
-}
-
-
-/**
- * Remove All Attributes
- * Remove all attributes from an entity.
- *
- * @param 	int 	Entity index
- *
- * @return	bool	True if successful, false if there was a problem
- */
-stock bool RemoveAllAttributes(int entity)
-{
-	if (g_bTF2Attributes)
-		return TF2Attrib_RemoveAll(entity);
-	else
-		return false;
-}
-
-
-
-/**
- * Add Attribute Trigger
- * Apply an attribute to an entity using the tf attribute trigger.
- *
- * @param 	int 	Entity index
- * @param 	char 	Attribute name
- * @param 	float 	Value. Default 1.0
- * @param 	float 	Optional duration, default infinite (until player death)
- *
- * @return	bool	True if successful, false if there was a problem
- */
-stock bool AddAttributeTrigger(int entity, char[] attribute, float value = 1.0, float duration = -1.0, bool remove = false)
-{
-	if (!DRGame.IsGame(Mod_TF))
-		return false;
-	
-	else if (entity > 0 && entity <= MaxClients)	// Attribute trigger only works on players
-	{
-		// Create Trigger
-		int trigger;
-		if ((trigger = CreateEntityByName("trigger_add_or_remove_tf_player_attributes")) == -1)
-		{
-			LogError("Couldn't create attribute trigger");
-			return false;
-		}
-		
-		// Provide keyvalues
-		DispatchKeyValue(trigger, "add_or_remove", (remove) ? "1" : "0");
-		DispatchKeyValue(trigger, "spawnflags", "1");	// 1 = clients, 64 = everything except physics debris
-		DispatchKeyValue(trigger, "attribute_name", attribute);
-		if (!remove) DispatchKeyValueFloat(trigger, "duration", duration);
-		if (!remove) DispatchKeyValueFloat(trigger, "value", value);
-		
-		// Spawn
-		if (!DispatchSpawn(trigger))
-		{
-			LogError("Couldn't spawn attribute trigger");
-			RemoveEntity(trigger);
-			return false;
-		}
-		
-		// Fire Input
-		if (!AcceptEntityInput(trigger, "StartTouch", entity, entity))	// not supplying a caller seemed to cause a crash
-		{
-			LogError("Couldn't send input to attribute trigger");
-			RemoveEntity(trigger);
-			return false;
-		}
-		
-		RemoveEntity(trigger);
-		return true;
-	}
-	else
-	{
-		LogError("Unable to apply attributes using TF2 trigger to non-player entities (ent: %d)", entity);
-		return false;
-	}
-}
-
-
-
-/**
- * Remove Attribute Trigger
- * Remove an attribute from an entity using the tf attribute trigger.
- *
- * @param 	int 	Entity index
- * @param 	char 	Attribute
- *
- * @return	bool	True if successful, false if there was a problem
- */
-stock bool RemoveAttributeTrigger(int client, char[] attribute)
-{
-	return AddAttributeTrigger(client, attribute, _, _, true);
-}
-
-
 
 
 /**
@@ -506,14 +499,16 @@ stock bool RemoveAttributeTrigger(int client, char[] attribute)
 stock bool ShowAnnotation(int client, int entity, const char[] sound = "", const char[] format, any...)
 {
 	Event annotation = CreateEvent("show_annotation");
-	
+
 	if (!annotation)
+	{
 		return false;
-	
+	}
+
 	char buffer[256];
 	SetGlobalTransTarget(client);
 	VFormat(buffer, sizeof(buffer), format, 4);
-	
+
 	annotation.SetBool("show_effect", false);
 	annotation.SetInt("follow_entindex", entity);
 	annotation.SetFloat("lifetime", 5.0);
@@ -521,12 +516,9 @@ stock bool ShowAnnotation(int client, int entity, const char[] sound = "", const
 	annotation.SetString("text", buffer);
 	annotation.FireToClient(client);
 	annotation.Cancel();
-	
+
 	return true;
 }
-
-
-
 
 /**
  * Sends a SayText2 User Message to a client which team-colours text when \x02 or \x03 are used in the string.
@@ -545,15 +537,15 @@ stock void TF2_PrintToChat(int client, int colorClient = 0, const char[] format,
 	char buffer[254];
 	SetGlobalTransTarget(client);
 	VFormat(buffer, sizeof(buffer), format, 4);
-	
+
 	BfWrite message = UserMessageToBfWrite(StartMessageOne("SayText2", client, USERMSG_RELIABLE|USERMSG_BLOCKHOOKS));
-	
+
 	if (message != null)
 	{
 		message.WriteByte(colorClient);
 		message.WriteByte(true);		// bChat?
 		message.WriteString(buffer);
-		
+
 		EndMessage();
 	}
 	else
@@ -561,8 +553,6 @@ stock void TF2_PrintToChat(int client, int colorClient = 0, const char[] format,
 		PrintToChat(client, buffer);
 	}
 }
-
-
 
 /**
  * Sends a SayText2 User Message to a client which team-colours text when \x02 or \x03 are used in the string.
@@ -582,39 +572,36 @@ stock void TF2_PrintToChat(int client, int colorClient = 0, const char[] format,
 stock void TF2_PrintToChatEx(int client, int colorClient = 0, const char[] translation1 = "", const char[] translation2 = "", const char[] format, any ...)
 {
 	BfWrite message = UserMessageToBfWrite(StartMessageOne("SayText2", client, USERMSG_RELIABLE|USERMSG_BLOCKHOOKS));
-	
+
 	if (message != null)
 	{
 		SetGlobalTransTarget(client);
 		char buffer[254];
 		VFormat(buffer, sizeof(buffer), format, 6);
-		
+
 		message.WriteByte(colorClient);
 		message.WriteByte(true);
-		message.WriteString(buffer)
+		message.WriteString(buffer);
 
 		message.WriteString("");
 		message.WriteString("");
 		message.WriteString(translation1);
 		message.WriteString(translation2);
-		
+
 		/*
 			This works like a format function.
 			We supply a format string first, and any formatting parameters afterwards.
 			String parameters three and four are translated.
 		*/
-		
+
 		EndMessage();
 	}
 }
 
-
-
-
 /**
  * Sends a SayText2 User Message to a client which team-colours text when \x02 or \x03 are used in the string.
  * If the command was issued from the console, the reply is sent there.
- * 
+ *
  * @param	client			Recipient client index
  * @param	colorClient		Team-coloured text will use this client's team, or light green if left blank
  * @param	format			Formatting rules
@@ -637,13 +624,13 @@ stock void TF2_ReplyToCommand(int client, int colorClient = 0, const char[] form
 	}
 
 	BfWrite message = UserMessageToBfWrite(StartMessageOne("SayText2", client, USERMSG_RELIABLE|USERMSG_BLOCKHOOKS));
-	
+
 	if (message != null)
 	{
 		message.WriteByte(colorClient);
 		message.WriteByte(true);		// bChat?
 		message.WriteString(buffer);
-		
+
 		EndMessage();
 	}
 	else
@@ -652,12 +639,9 @@ stock void TF2_ReplyToCommand(int client, int colorClient = 0, const char[] form
 	}
 }
 
-
-
-
 /**
- * Sends a SayText2 User Message to all client which team-colours text when \x02 or \x03 are used in the string.
- * 
+ * Sends a SayText2 User Message to all clients, which team-colours text when \x02 or \x03 are used in the string.
+ *
  * @param	colorClient		Team-coloured text will use this client's team, or light green if left blank
  * @param	format			Formatting rules
  * @param	any				Variable number of formatting parameters
@@ -665,22 +649,22 @@ stock void TF2_ReplyToCommand(int client, int colorClient = 0, const char[] form
 stock void TF2_PrintToChatAll(int colorClient = 0, const char[] format, any ...)
 {
 	char buffer[254];
-	
+
 	for (int client = 1; client <= MaxClients; client++)
 	{
 		if (IsClientInGame(client))
 		{
 			SetGlobalTransTarget(client);
 			VFormat(buffer, sizeof(buffer), format, 3);
-			
+
 			BfWrite message = UserMessageToBfWrite(StartMessageOne("SayText2", client, USERMSG_RELIABLE|USERMSG_BLOCKHOOKS));
-			
+
 			if (message != null)
 			{
 				message.WriteByte(colorClient);
 				message.WriteByte(true);
 				message.WriteString(buffer);
-				
+
 				EndMessage();
 			}
 			else
@@ -692,16 +676,6 @@ stock void TF2_PrintToChatAll(int colorClient = 0, const char[] format, any ...)
 }
 
 
-
-
-/**
- * Sounds
- * ----------------------------------------------------------------------------------------------------
- */
-
-
-
-
 /**
  * Maths
  * ----------------------------------------------------------------------------------------------------
@@ -711,26 +685,28 @@ stock void TF2_PrintToChatAll(int colorClient = 0, const char[] format, any ...)
  * Clamp an integer between two ranges
  * Min must be lower than max and vice versa
  *
- * @param		int		By-reference variable to clamp
- * @param		int		Minimum clamp boundary
- * @param		int		Maximum clamp boundary
+ * @param	value		By-reference variable to clamp
+ * @param	min			Minimum clamp boundary
+ * @param	max			Maximum clamp boundary
  * @noreturn
  */
 stock void ClampInt(int &value, int min, int max)
 {
 	if (value <= min)
+	{
 		value = min;
+	}
 	else if (value >= max)
+	{
 		value = max;
+	}
 }
-
-
 
 /**
  * Clamp an integer to a minimum value
  *
- * @param		int		By-reference variable to clamp
- * @param		int		Minimum clamp boundary
+ * @param	value		By-reference variable to clamp
+ * @param	min			Minimum clamp boundary
  * @noreturn
  */
 stock void ClampIntMin(int &value, int min)
@@ -738,13 +714,11 @@ stock void ClampIntMin(int &value, int min)
 	value = ((value < min) ? min : value);
 }
 
-
-
 /**
  * Clamp an integer to a maximum value
  *
- * @param		int		By-reference variable to clamp
- * @param		int		Maximum clamp boundary
+ * @param	value		By-reference variable to clamp
+ * @param	max			Maximum clamp boundary
  * @noreturn
  */
 stock void ClampIntMax(int &value, int max)
@@ -752,25 +726,25 @@ stock void ClampIntMax(int &value, int max)
 	value = ((value > max) ? max : value);
 }
 
-
-
 /**
  * Clamp a float
  *
- * @param		float		By-reference variable to clamp
- * @param		float		Minimum clamp boundary
- * @param		float		Maximum clamp boundary
+ * @param	value		By-reference variable to clamp
+ * @param	min			Minimum clamp boundary
+ * @param	max			Maximum clamp boundary
  * @noreturn
  */
 stock void ClampFloat(float &value, float min, float max)
 {
 	if (value < min)
+	{
 		value = min;
+	}
 	else if (value > max)
+	{
 		value = max;
+	}
 }
-
-
 
 
 /**
@@ -781,22 +755,24 @@ stock void ClampFloat(float &value, float min, float max)
 /**
  * Get the coordinates of the point in the world your crosshair is resting
  *
- * @param		int		Client index
- * @param		vec		Coordinates vector (by reference)
+ * @param	client		Client index
+ * @param	pos			Vector to store the coordinates in
  * @noreturn
  */
 stock void GetClientAimPos(int client, float pos[3])
 {
 	float vEyePos[3], vEyeAngles[3];
-	
+
 	GetClientEyePosition(client, vEyePos);
 	GetClientEyeAngles(client, vEyeAngles);
-	
+
 	Handle hTrace = TR_TraceRayFilterEx(vEyePos, vEyeAngles, MASK_PLAYERSOLID, RayType_Infinite, Trace_GetClientAimPos);
-	
+
 	if (TR_DidHit(hTrace))
+	{
 		TR_GetEndPosition(pos, hTrace);
-	
+	}
+
 	CloseHandle(hTrace);
 }
 
@@ -806,8 +782,6 @@ bool Trace_GetClientAimPos(int entity, int contentsMask)
 	// Filter out players hit by the ray
 	return (entity > MaxClients);
 }
-
-
 
 
 /**
@@ -831,12 +805,16 @@ stock void PrecacheAssets(StringMap stringmap)
 	{
 		snapshot.GetKey(i, key, sizeof(key));
 		stringmap.GetString(key, asset, sizeof(asset));
-		
+
 		if ((StrContains(asset, ".wav", false) != -1 || StrContains(asset, ".mp3", false) != -1) && !PrecacheSound(asset, true))
+		{
 			LogError("Failed to precache sound %s", asset);
-		
+		}
+
 		if (StrContains(asset, ".mdl", false) != -1 && !PrecacheModel(asset, true))
+		{
 			LogError("Failed to precache model %s", asset);
+		}
 	}
 
 	delete snapshot;

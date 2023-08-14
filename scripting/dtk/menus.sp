@@ -1,3 +1,6 @@
+#pragma semicolon 1
+
+
 /**
  * New menu command handler
  */
@@ -22,7 +25,7 @@ stock void MenuFunction(int client, const char[] selection)
 	
 	
 	/**
-	 * Main
+	 * Main Menu
 	 */
 	if (StrEqual(selection, "menu_main"))
 	{
@@ -38,7 +41,7 @@ stock void MenuFunction(int client, const char[] selection)
 	
 	
 	/**
-	 * Preferences
+	 * Preferences Menu
 	 */
 	if (StrEqual(selection, "menu_prefs"))
 	{
@@ -46,8 +49,7 @@ stock void MenuFunction(int client, const char[] selection)
 		
 		menu.ExitBackButton = true;
 		
-		menu.AddItem("prefs_activator", (Player(client).HasFlag(PF_PrefActivator)) ? "menu_item_dont_be_activator" : "menu_item_be_activator");
-		menu.AddItem("menu_reset", "menu_item_reset");
+		menu.AddItem("prefs_activator", (DRPlayer(client).PrefersActivator) ? "menu_item_dont_be_activator" : "menu_item_be_activator");
 		menu.AddItem("prefs_english", "menu item toggle english language");
 		
 		/**
@@ -64,48 +66,81 @@ stock void MenuFunction(int client, const char[] selection)
 	
 	
 	/**
-	 * Reset Points
-	 */
-	if (StrEqual(selection, "menu_reset"))
-	{
-		Format(title, sizeof(title), "%s%T\n \n", title, "menu_reset_question", client);
-		menu.AddItem("reset_yes", "menu_item_yes");
-		menu.AddItem("reset_no", "menu_item_no");
-	}
-	
-	
-	/**
-	 * Activator Queue
+	 * Activator Queue Menu
 	 */
 	if (StrEqual(selection, "menu_queue"))
 	{
 		menu.ExitBackButton = true;
-		
-		int len = DRGame.ActivatorPool;
-		int[] list = new int[len];
-		CreateActivatorList(list);
-
+		PlayerList activators = CreateActivatorPool();
 		char sItem[40];
 		
-		for (int i = 0; i < len; i++)
+		for (int i = 0; i < activators.Length; i++)
 		{
-			Player player = Player(list[i]);
+			DRPlayer player = DRPlayer(activators.Get(i));
 			Format(sItem, sizeof(sItem), "%16N", player.Index);
-			menu.AddItem("points_item", sItem, ITEMDRAW_DISABLED);
+			menu.AddItem("raw_points", sItem, ITEMDRAW_DISABLED);
 		}
 	}
 	
 	
 	/**
-	 * Admin
+	 * Admin Menu
 	 */
 	if (StrEqual(selection, "menu_admin"))
 	{
 		menu.ExitBackButton = true;
 	
+		menu.AddItem("menu_admin_more_qp", "menu_item_admin_bonus_points");
+		menu.AddItem("menu_admin_activator_ban", "menu_item_admin_activator_ban");
 		menu.AddItem("admin_scalehealth", "menu_item_admin_scale_activator_health");
 		menu.AddItem("admin_jetpackgame", "menu_item_admin_jetpack_game");
 		menu.AddItem("admin_periodicslap", "menu_item_admin_periodic_slap");
+	}
+	
+	
+	/**
+	 * More Queue Points Menu
+	 */
+	if (StrEqual(selection, "menu_admin_more_qp"))
+	{
+		menu.ExitBackButton = true;
+		char sItem[64], display[64];
+		
+		for (int i = 1; i <= MaxClients; i++)
+		{
+			DRPlayer player = DRPlayer(i);
+			
+			if (player.InGame)
+			{
+				bool bonus_points = player.ReceivesMoreQP;
+				Format(sItem, sizeof(sItem), "raw_more_qp %d %s", player.UserID, bonus_points ? "off" : "on");
+				Format(display, sizeof(display), "%N - %t", player.Index, bonus_points ? "Yes" : "No");
+				menu.AddItem(sItem, display);
+			}
+		}
+	}
+	
+	
+	/**
+	 * Activator Ban Menu
+	 */
+	if (StrEqual(selection, "menu_admin_activator_ban"))
+	{
+		menu.ExitBackButton = true;
+		char sItem[64], display[64];
+		
+		for (int i = 1; i <= MaxClients; i++)
+		{
+			DRPlayer player = DRPlayer(i);
+			
+			if (player.InGame)
+			{
+				bool activator_banned = player.ActivatorBanned;
+				Format(sItem, sizeof(sItem), "raw_activator_ban %d %s", player.UserID, activator_banned ? "off" : "on");
+				Format(display, sizeof(display), "%N - %t", player.Index, activator_banned ? "Yes" : "No");
+				menu.AddItem(sItem, display);
+			}
+		}
 	}
 	
 	menu.SetTitle(title);
@@ -125,7 +160,7 @@ public int MenuHandler(Menu menu, MenuAction action, int param1, int param2)
 {
 	if (action == MenuAction_Select)
 	{
-		char selection[32];
+		char selection[64];
 		menu.GetItem(param2, selection, sizeof(selection));
 		
 		// Menus
@@ -144,17 +179,6 @@ public int MenuHandler(Menu menu, MenuAction action, int param1, int param2)
 			else if (StrEqual(selection, "prefs_english"))
 			{
 				ToggleEnglish(param1);
-			}
-			
-			MenuFunction(param1, "menu_prefs");
-		}
-		
-		// Reset
-		else if (StrContains(selection, "reset_") == 0)
-		{
-			if (StrEqual(selection, "reset_yes"))
-			{
-				Command_ResetPoints(param1, 0);
 			}
 			
 			MenuFunction(param1, "menu_prefs");
@@ -185,6 +209,80 @@ public int MenuHandler(Menu menu, MenuAction action, int param1, int param2)
 			MenuFunction(param1, "menu_admin");
 		}
 		
+		// Receives bonus queue points
+		else if (StrContains(selection, "raw_more_qp") == 0)
+		{
+			char item[32], arg1[32], arg2[4];
+			
+			int len = BreakString(selection, item, sizeof(item));
+			len += BreakString(selection[len], arg1, sizeof(arg1));
+			BreakString(selection[len], arg2, sizeof(arg2));
+			
+			int userid = StringToInt(arg1);
+			int client = GetClientOfUserId(userid);
+			
+			if (client == 0)
+			{
+				ReplyToCommand(param1, "%t", "Player no longer available");
+			}
+			else
+			{
+				DRPlayer player = DRPlayer(client);
+				
+				if (StrEqual(arg2, "on"))
+				{
+					player.ReceivesMoreQP = true;
+					player.SaveData();
+					ReplyToCommand(param1, "%N will now receive more queue points", player.Index);
+				}
+				else
+				{
+					player.ReceivesMoreQP = false;
+					player.SaveData();
+					ReplyToCommand(param1, "%N will no longer receive more queue points", player.Index);
+				}
+			}
+			
+			MenuFunction(param1, "menu_admin_more_qp");
+		}
+		
+		// Activator ban
+		else if (StrContains(selection, "raw_activator_ban") == 0)
+		{
+			char item[32], arg1[32], arg2[4];
+			
+			int len = BreakString(selection, item, sizeof(item));
+			len += BreakString(selection[len], arg1, sizeof(arg1));
+			BreakString(selection[len], arg2, sizeof(arg2));
+			
+			int userid = StringToInt(arg1);
+			int client = GetClientOfUserId(userid);
+			
+			if (client == 0)
+			{
+				ReplyToCommand(param1, "%t", "Player no longer available");
+			}
+			else
+			{
+				DRPlayer player = DRPlayer(client);
+				
+				if (StrEqual(arg2, "on"))
+				{
+					player.ActivatorBanned = true;
+					player.SaveData();
+					ReplyToCommand(param1, "%N is now activator banned", player.Index);
+				}
+				else
+				{
+					player.ActivatorBanned = false;
+					player.SaveData();
+					ReplyToCommand(param1, "%N is no longer activator banned", player.Index);
+				}
+			}
+			
+			MenuFunction(param1, "menu_admin_activator_ban");
+		}
+		
 		else MenuFunction(param1, "menu_main");
 	}
 	
@@ -204,7 +302,7 @@ public int MenuHandler(Menu menu, MenuAction action, int param1, int param2)
 		char selection[32];
 		menu.GetItem(param2, selection, sizeof(selection), _, display, sizeof(display));
 
-		if (display[0] != '\0' && !StrEqual(selection, "points_item"))
+		if (display[0] != '\0' && StrContains(selection, "raw_") != 0)
 		{
 			char buffer[256];
 			Format(buffer, sizeof(buffer), "%T", display, param1);

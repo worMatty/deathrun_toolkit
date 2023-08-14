@@ -1,46 +1,11 @@
-
-// Life States
-enum {
-	LifeState_Alive,		// alive
-	LifeState_Dying,		// playing death animation or still falling off of a ledge waiting to hit ground
-	LifeState_Dead,			// dead. lying still.
-	LifeState_Respawnable,
-	LifeState_DiscardBody,
-}
-
-// Classes
-enum {
-	Class_Unknown,
-	Class_Scout,
-	Class_Sniper,
-	Class_Soldier,
-	Class_DemoMan,
-	Class_Medic,
-	Class_Heavy,
-	Class_Pyro,
-	Class_Spy,
-	Class_Engineer,
-	Class_Merc = 10,
-	Class_Civ = 10
-}
+#pragma semicolon 1
 
 // Teams
 enum {
 	Team_None,
 	Team_Spec,
-	Team_Red,
-	Team_Blue
-}
-
-// Weapon Slots
-enum {
-	Weapon_Primary,
-	Weapon_Secondary,
-	Weapon_Melee,
-	Weapon_Grenades,
-	Weapon_Building,
-	Weapon_PDA,
-	Weapon_ArrayMax
+	Team_Red,	// 2 - red
+	Team_Blue	// 3 - blue
 }
 
 // Ammo Types
@@ -61,25 +26,47 @@ enum {
 	Round_Win
 }
 
-char g_sRoundStates[][] = {
-	"ROUND WAITING",
-	"ROUND FREEZE",
-	"ROUND ACTIVE",
-	"ROUND WIN"
-};
+
 
 // Game Flags
 enum {
 	GF_LateLoad = 0x1,				// Plugin was loaded late/reloaded
-	GF_HPBarActive = 0x2,			// The boss bar is on-screen
-	GF_WatchMode = 0x4,				// We're in team watch mode during pre-round freeze time
-	GF_Restarting = 0x8				// Counting down to round restart (OF)
+	GF_WatchMode = 0x2,				// We're in team watch mode during pre-round freeze time
+	GF_Restarting = 0x4				// Counting down to round restart (OF)
 }
 
+// Player Flags
+enum {
+	// Stored in database
+	PF_PrefActivator = 0x1,			// Wants to be activator
+	PF_ReceivesMoreQP = 0x2,		// Receives more queue points
+	PF_PrefEnglish = 0x4,			// Wants English SourceMod
+	PF_ActivatorBanned = 0x8,		// Banned from being activator
 
+	// Stored for session
+	PF_Welcomed = 0x10000,			// Has been welcomed to the server
+	PF_Activator = 0x20000,			// Is an activator
+	PF_Runner = 0x40000,			// Is a runner
+}
 
+// Player Flag Masks
+#define MASK_NEW_PLAYER			( PF_PrefActivator )		// Used to assign default flags to a new player
+#define MASK_STORED_FLAGS		( 0x0000FFFF )				// Used to store only specific flags in the database
+#define MASK_SESSION_FLAGS		( 0xFFFF0000 )				// The session flag block of the player's bit field
 
+enum struct PlayerData {
+	int Index;
+	int UserID;
+	int Points;
+	int Flags;
+	int ActivatorLast;
+}
 
+int g_RoundState;
+
+PlayerData g_Players[MAXPLAYERS];
+
+// ----------------------------------------------------------------------------------------------------
 
 methodmap Player
 {
@@ -87,597 +74,518 @@ methodmap Player
 	{
 		return view_as<Player>(client);
 	}
-	
-	property int Index
-	{
-		public get()
-		{
+
+	property int Index {
+		public get() {
 			return view_as<int>(this);
 		}
 	}
-	
-	property int UserID
-	{
-		public get()
-		{
+
+	property int UserID {
+		public get() {
 			return GetClientUserId(view_as<int>(this));
 		}
 	}
-	
-	property int Serial
-	{
-		public get()
-		{
-			return GetClientSerial(view_as<int>(this));
-		}
-	}
-	
-	property int SteamID
-	{
-		public get()
-		{
+
+	property int SteamAccountId {
+		public get() {
 			return GetSteamAccountID(view_as<int>(this));
 		}
 	}
-	
-	property bool IsValid
-	{
-		public get()
-		{
+
+	property bool IsValid {
+		public get() {
 			return (view_as<int>(this) > 0 && view_as<int>(this) <= MaxClients);
 		}
 	}
-	
-	property bool IsConnected
-	{
-		public get()
-		{
+
+	property bool IsConnected {
+		public get() {
 			return IsClientConnected(view_as<int>(this));
 		}
 	}
-	
-	property bool InGame
-	{
-		public get()
-		{
+
+	property bool InGame {
+		public get() {
 			return IsClientInGame(view_as<int>(this));
 		}
 	}
 
-	property bool IsObserver
-	{
-		public get()
-		{
+	property bool IsObserver {
+		public get() {
 			return IsClientObserver(view_as<int>(this));
 		}
 	}
-	
-	property bool IsBot
-	{
-		public get()
-		{
+
+	property bool IsBot {
+		public get() {
 			return IsFakeClient(view_as<int>(this));
 		}
 	}
-	
-	property bool IsAlive
-	{
-		public get()
-		{
+
+	property bool IsAlive {
+		public get() {
 			return (GetEntProp(view_as<int>(this), Prop_Send, "m_lifeState") == LifeState_Alive);
 		}
-		public set(bool alive)
-		{
+		public set(bool alive) {
 			SetEntProp(view_as<int>(this), Prop_Send, "m_lifeState", (alive) ? LifeState_Alive : LifeState_Dead);
 		}
 	}
-	
-	property bool IsAdmin
-	{
-		public get()
-		{
+
+	property bool IsAdmin {
+		public get() {
 			return (view_as<int>(this) == 0) || (GetUserAdmin(view_as<int>(this)) != INVALID_ADMIN_ID);
 		}
 	}
-	
-	property int Team
-	{
-		public get()
-		{
+
+	property int Team {
+		public get() {
 			return GetClientTeam(view_as<int>(this));
 		}
 	}
-	
-	property int Class
-	{
-		public get()
-		{
+
+	property int Class {
+		public get() {
 			return GetEntProp(view_as<int>(this), Prop_Send, "m_iClass");
 		}
 	}
-	
-	property bool IsParticipating
-	{
-		public get()
-		{
-			return (GetClientTeam(view_as<int>(this)) == Team_Red || GetClientTeam(view_as<int>(this)) == Team_Blue);
+
+	property bool IsParticipating {
+		public get() {
+			return (GetClientTeam(view_as<int>(this)) > Team_Spec);
 		}
 	}
-	
-	property int Health
-	{
-		public get()
-		{
+
+	property int Health {
+		public get() {
 			return GetClientHealth(view_as<int>(this));
 		}
-		public set(int health)
-		{
+		public set(int health) {
 			SetEntProp(view_as<int>(this), Prop_Send, "m_iHealth", health, 4);
 		}
 	}
-	
-	property int MaxHealth
-	{
-		public get()
-		{
-			int iPlayerResource = GetPlayerResourceEntity();
-			
-			if (iPlayerResource != -1)
-				return GetEntProp(iPlayerResource, Prop_Send, "m_iMaxHealth", _, view_as<int>(this));
-			else
-				return 0;
+
+	property int MaxHealth {
+		public get() {
+			return (GetPlayerResourceEntity() != -1) ? GetEntProp(GetPlayerResourceEntity(), Prop_Send, "m_iMaxHealth", _, view_as<int>(this)) : 0;
 		}
-		// Can't set max health this way in TF2
 	}
-	
-	property bool Glow
-	{
-		public get()
-		{
+
+	property bool Glow {
+		public get() {
 			return !!(GetEntProp(view_as<int>(this), Prop_Send, "m_bGlowEnabled"));
 		}
-		public set(bool glow)
-		{
+		public set(bool glow) {
 			SetEntProp(view_as<int>(this), Prop_Send, "m_bGlowEnabled", glow, 1);
 		}
 	}
-	
-	
+
+
+	// public int GetPlayerWeaponSlot(int slot) {
+	// 	return GetPlayerWeaponSlot(this.Index, slot);
+	// }
+
 	/**
-	 * Functions
-	 * --------------------------------------------------
+	 * Move a player to another team
+	 * @param	team		Team number
+	 * @param	respawn		Respawn the player after moving them
 	 */
-	
-	/*
-		Move a player to another team
-		@param	team		Team number
-		@param	respawn		Respawn the player after moving them
-		@noreturn
-	*/
 	public void SetTeam(int team, bool respawn = false)
 	{
 		if (GetFeatureStatus(FeatureType_Native, "TF2_RespawnPlayer") != FeatureStatus_Available)
+		{
 			respawn = false;
-		
-		SetEntProp(view_as<int>(this), Prop_Send, "m_lifeState", LifeState_Dead);
+		}
+
+		// SetEntProp(view_as<int>(this), Prop_Send, "m_lifeState", LifeState_Dead);
+		this.IsAlive = false;
 		ChangeClientTeam(view_as<int>(this), team);
-		Debug("%.3f %N.SetTeam -- ChangeClientTeam(%d)", GetGameTime(), view_as<int>(this), team);
-		
+
 		// BUG Testing if we really need to respawn players or if the game will do that for us
 		respawn = false;
-		
+		// TODO find out where I'm doing this in code and correct that instead of changing the function
+
 		if (respawn && this.Class != Class_Unknown)
 		{
-			SetEntProp(view_as<int>(this), Prop_Send, "m_lifeState", LifeState_Alive);
-			Debug("%.3f %N.SetTeam -- SetEntProp m_lifeState = %d", GetGameTime(), view_as<int>(this), LifeState_Alive);
+			// SetEntProp(view_as<int>(this), Prop_Send, "m_lifeState", LifeState_Alive);
+			this.IsAlive = true;
 			RequestFrame(RespawnPlayer, view_as<int>(this));
-			//TF2_RespawnPlayer(view_as<int>(this));
 		}
 	}
-	
+
 	public bool SetClass(int class, bool regenerate = true, bool persistent = false)
 	{
-		// This native is a wrapper for a player property change
 		TF2_SetPlayerClass(view_as<int>(this), view_as<TFClassType>(class), _, persistent);
-		
+
 		// Don't regenerate a dead player because they'll go to Limbo
-		if (regenerate && this.IsAlive && (GetFeatureStatus(FeatureType_Native, "TF2_RegeneratePlayer") == FeatureStatus_Available))
+		if (regenerate && this.IsAlive
+			&& (GetFeatureStatus(FeatureType_Native, "TF2_RegeneratePlayer") == FeatureStatus_Available))
+		{
 			TF2_RegeneratePlayer(view_as<int>(this));
+		}
 	}
-	
-	
-	// BUG Use with RequestFrame after spawning or it might return -1
-	public int GetWeapon(int slot = Weapon_Primary)
+
+	/**
+	 * Switch the player's active slot
+	 * Removes taunting condition to ensure the change happens
+	 *
+	 * @param	slot		Weapon slot
+	 */
+	public void SetSlot(int slot)
 	{
-		return GetPlayerWeaponSlot(view_as<int>(this), slot);
-	}
-	
-	public void SetSlot(int slot = Weapon_Primary)
-	{
-		int iWeapon;
-		
-		if ((iWeapon = GetPlayerWeaponSlot(view_as<int>(this), slot)) == -1)
+		int weapon = GetPlayerWeaponSlot(view_as<int>(this), slot);
+
+		if (slot == -1)
 		{
 			LogError("Tried to get %N's weapon in slot %d but got -1. Can't switch to that slot", this, slot);
 			return;
 		}
-		
+
 		if (GetFeatureStatus(FeatureType_Native, "TF2_RemoveCondition") == FeatureStatus_Available)
+		{
 			TF2_RemoveCondition(view_as<int>(this), TFCond_Taunting);
-		
-		char sClassname[64];
-		GetEntityClassname(iWeapon, sClassname, sizeof(sClassname));
-		FakeClientCommandEx(view_as<int>(this), "use %s", sClassname);
-		//FakeClientCommand(view_as<int>(this), "use %s", sClassname); // TODO Try this?
-		SetEntProp(view_as<int>(this), Prop_Send, "m_hActiveWeapon", iWeapon);
-	}
-	
-	public void MeleeOnly(bool apply = true, bool remove_others = false)
-	{
-		bool bConds = (GetFeatureStatus(FeatureType_Native, "TF2_AddCondition") == FeatureStatus_Available);
-		
-		if (apply)
-		{
-			if (bConds)
-			{
-				TF2_AddCondition(view_as<int>(this), TFCond_RestrictToMelee, TFCondDuration_Infinite);
-				remove_others = true;
-			}
-			
-			this.SetSlot(TFWeaponSlot_Melee);
-			
-			if (remove_others)
-			{
-				TF2_RemoveWeaponSlot(view_as<int>(this), TFWeaponSlot_Primary);
-				TF2_RemoveWeaponSlot(view_as<int>(this), TFWeaponSlot_Secondary);
-			}
-		}
-		else
-		{
-			if (GetFeatureStatus(FeatureType_Native, "TF2_RegeneratePlayer") == FeatureStatus_Available &&
-				(GetPlayerWeaponSlot(view_as<int>(this), TFWeaponSlot_Primary) == -1 ||
-				GetPlayerWeaponSlot(view_as<int>(this), TFWeaponSlot_Secondary) == -1))
-			{
-				int iHealth = this.Health;
-				TF2_RegeneratePlayer(view_as<int>(this));
-				this.Health = iHealth;
-			}
-			
-			if (GetFeatureStatus(FeatureType_Native, "TF2_RemoveCondition") == FeatureStatus_Available)
-				TF2_RemoveCondition(view_as<int>(this), TFCond_RestrictToMelee);
-			
-			this.SetSlot();
-		}
-	}
-	
-	public void StripAmmo(int slot)
-	{
-		int iWeapon = this.GetWeapon(slot);
-		if (iWeapon != -1)
-		{
-			if (GetEntProp(iWeapon, Prop_Data, "m_iClip1") != -1)
-			{
-				Debug("StrimpAmmo -- %L weapon in slot %d had %d ammo", view_as<int>(this), slot, GetEntProp(iWeapon, Prop_Data, "m_iClip1"));
-				SetEntProp(iWeapon, Prop_Send, "m_iClip1", 0);
-			}
-			
-			if (GetEntProp(iWeapon, Prop_Data, "m_iClip2") != -1)
-			{
-				Debug("StrimpAmmo -- %L weapon in slot %d had %d ammo", view_as<int>(this), slot, GetEntProp(iWeapon, Prop_Data, "m_iClip2"));
-				SetEntProp(iWeapon, Prop_Send, "m_iClip2", 0);
-			}
-			
-			// Weapon's ammo type
-			int iAmmoType = GetEntProp(iWeapon, Prop_Send, "m_iPrimaryAmmoType", 1);
-			
-			// Player ammo table offset
-			int iAmmoTable = FindSendPropInfo("CTFPlayer", "m_iAmmo");
-			
-			// Set quantity of that ammo type in table to 0
-			SetEntData(view_as<int>(this), iAmmoTable + (iAmmoType * 4), 0, 4, true);
 		}
 
-		/*
-			Get the weapon index
-			Get its ammo type
-			Set its clip values
-			Set the client's ammo?
-		*/
+		char classname[64];
+		GetEntityClassname(weapon, classname, sizeof(classname));
+		FakeClientCommandEx(view_as<int>(this), "use %s", classname);
+		//FakeClientCommand(view_as<int>(this), "use %s", classname); // TODO Try this?
+		SetEntProp(view_as<int>(this), Prop_Send, "m_hActiveWeapon", weapon);	// TODO Do I need to use SetEntPropEnt?
 	}
-	
-	public int SetMaxHealth(int max)
+
+	/**
+	 * Switches the player to their melee slot and deletes all their other weapons.
+	 * Upon disabling, regenerates the player to respawn their weapons,
+	 * then switches them to their primary weapon.
+	 *
+	 * @param	melee_only		True to set, false to restore
+	 */
+	public void MeleeOnly(bool melee_only = true)
 	{
-		int resent = GetPlayerResourceEntity();
-		
-		if (resent != -1)
+		if (melee_only)
 		{
-			AddAttribute(view_as<int>(this), "max health additive bonus", float(max - GetTFClassHealth(view_as<TFClassType>(this.Class))));
-			return max;
+			this.SetSlot(TFWeaponSlot_Melee);
+
+			for (int i; i <= 7; i++)
+			{
+				if (i == TFWeaponSlot_Melee)
+				{
+					continue;
+				}
+				else
+				{
+					TF2_RemoveWeaponSlot(view_as<int>(this), i);
+				}
+			}
 		}
 		else
 		{
-			return 0;
+			if (GetFeatureStatus(FeatureType_Native, "TF2_RegeneratePlayer") == FeatureStatus_Available)
+			{
+				int health = this.Health;
+				TF2_RegeneratePlayer(view_as<int>(this));
+				this.Health = health;
+			}
+
+			this.SetSlot(TFWeaponSlot_Primary);
 		}
 	}
-	
+
+	public int SetMaxHealth(int max)
+	{
+		float new_max = float( max - TF2_GetTFClassHealth( view_as<TFClassType>( this.Class ) ) );
+
+		// if (GetPlayerResourceEntity() != -1)	// TODO why was I doing this?
+		if (AddAttribute(view_as<int>(this), "max health additive bonus", new_max))
+		{
+			return max;
+		}
+
+		return 0;
+	}
+
 	public void SetSpeed(int speed = 0)
 	{
 		if (speed)
 		{
-			AddAttribute(view_as<int>(this), "CARD: move speed bonus", speed / float(GetTFClassRunSpeed(TF2_GetPlayerClass(this.Index))));
+			float new_speed = speed / float( TF2_GetTFClassRunSpeed( TF2_GetPlayerClass( this.Index ) ) );
+			AddAttribute(view_as<int>(this), "CARD: move speed bonus", new_speed);
 		}
 		else
 		{
 			RemoveAttribute(view_as<int>(this), "CARD: move speed bonus");
 		}
 	}
+}
 
-	
-	/**
-	 * Plugin Properties
-	 * --------------------------------------------------
-	 */
-	
-	property int Points
+
+methodmap DRPlayer < Player
+{
+	public DRPlayer(int client)
 	{
-		public get()
-		{
-			return g_iPlayers[this.Index][Player_Points];
+		return view_as<DRPlayer>(client);
+	}
+
+	property int Points {
+		public get() {
+			return g_Players[this.Index].Points;
 		}
-		public set(int points)
-		{
-			g_iPlayers[this.Index][Player_Points] = points;
+		public set(int points) {
+			g_Players[this.Index].Points = points;
 		}
 	}
-	
-	property int Flags
-	{
-		public get()
-		{
-			return g_iPlayers[this.Index][Player_Flags];
+
+	property int Flags {
+		public get() {
+			return g_Players[this.Index].Flags;
 		}
-		public set(int flags)
-		{
-			g_iPlayers[this.Index][Player_Flags] = flags;
+		public set(int flags) {
+			g_Players[this.Index].Flags = flags;
 		}
 	}
-	
-	property bool IsRunner
-	{
-		public get()
-		{
-			if (g_iPlayers[this.Index][Player_Flags] & PF_Runner)
-				return true;
-			else
-				return false;
+
+	property bool IsRunner {
+		public get() {
+			return !!(g_Players[this.Index].Flags & PF_Runner);
 		}
 	}
-	
-	property bool IsActivator
-	{
-		public get()
-		{
-			return !!(g_iPlayers[this.Index][Player_Flags] & PF_Activator);
+
+	property bool IsActivator {
+		public get() {
+			return !!(g_Players[this.Index].Flags & PF_Activator);
 		}
 	}
-	
+
 	// User ID from Player Array
-	property int ArrayUserID
-	{
-		public get()
-		{
-			return g_iPlayers[this.Index][Player_UserID];
+	property int ArrayUserID {
+		public get() {
+			return g_Players[this.Index].UserID;
 		}
-		public set(int userid)
-		{
-			g_iPlayers[this.Index][Player_UserID] = userid;
+		public set(int userid) {
+			g_Players[this.Index].UserID = userid;
 		}
 	}
-	
+
 	// Last time player was activator
-	property int ActivatorLast
-	{
-		public get()
-		{
-			return g_iPlayers[this.Index][Player_ActivatorLast];
+	property int ActivatorLast {
+		public get() {
+			return g_Players[this.Index].ActivatorLast;
 		}
-		public set(int time)
-		{
-			g_iPlayers[this.Index][Player_ActivatorLast] = time;
+		public set(int time) {
+			g_Players[this.Index].ActivatorLast = time;
 		}
 	}
-	
-	
+
+	property bool PrefersActivator {
+		public get() {
+			return !!(this.Flags & PF_PrefActivator);
+		}
+		public set(bool prefers)
+		{
+			if (prefers) this.Flags |= PF_PrefActivator;
+			else this.Flags &= ~PF_PrefActivator;
+		}
+	}
+
+	property bool ReceivesMoreQP {
+		public get() {
+			return !!(this.Flags & PF_ReceivesMoreQP);
+		}
+		public set(bool receive_more)
+		{
+			if (receive_more) this.Flags |= PF_ReceivesMoreQP;
+			else this.Flags &= ~PF_ReceivesMoreQP;
+		}
+	}
+
+	property bool PrefersEnglish {
+		public get() {
+			return !!(this.Flags & PF_PrefEnglish);
+		}
+		public set(bool set)
+		{
+			if (set) this.Flags |= PF_PrefEnglish;
+			else this.Flags &= ~PF_PrefEnglish;
+		}
+	}
+
+	property bool ActivatorBanned {
+		public get() {
+			return !!(this.Flags & PF_ActivatorBanned);
+		}
+		public set(bool banned)
+		{
+			if (banned) this.Flags |= PF_ActivatorBanned;
+			else this.Flags &= ~PF_ActivatorBanned;
+		}
+	}
+
+	property bool Welcomed {
+		public get() {
+			return !!(this.Flags & PF_Welcomed);
+		}
+		public set(bool set)
+		{
+			if (set) this.Flags |= PF_Welcomed;
+			else this.Flags &= ~PF_Welcomed;
+		}
+	}
+
+	property bool Activator {
+		public get() {
+			return !!(this.Flags & PF_Activator);
+		}
+		public set(bool set)
+		{
+			if (set) this.Flags |= PF_Activator;
+			else this.Flags &= ~PF_Activator;
+		}
+	}
+
+	property bool Runner {
+		public get() {
+			return !!(this.Flags & PF_Runner);
+		}
+		public set(bool set)
+		{
+			if (set) this.Flags |= PF_Runner;
+			else this.Flags &= ~PF_Runner;
+		}
+	}
+
+
 	/**
 	 * Plugin Functions
 	 * --------------------------------------------------
 	 */
-	
+
 	// Initialise a New Player's Data in the Array
 	public void NewPlayer()
 	{
-		g_iPlayers[this.Index][Player_UserID] = this.UserID;
-		g_iPlayers[this.Index][Player_Points] = QP_Start;
-		g_iPlayers[this.Index][Player_Flags] = MASK_NEW_PLAYER;
+		g_Players[this.Index].UserID = this.UserID;
+		g_Players[this.Index].Flags = MASK_NEW_PLAYER;
 		this.ActivatorLast = GetTime();
 	}
-	
-	// Add Queue Points
-	public void AddPoints(int points)
-	{
-		g_iPlayers[this.Index][Player_Points] += points;
+
+	public bool HasFlag(int flag) {
+		return !!(g_Players[this.Index].Flags & flag);
+		// https://forums.alliedmods.net/showthread.php?t=319928
 	}
-	
-	// Set Queue Points
-	public void SetPoints(int points)
-	{
-		g_iPlayers[this.Index][Player_Points] = points;
+
+	public void AddFlag(int flag) {
+		g_Players[this.Index].Flags |= flag;
 	}
-	
-	public bool HasFlag(int flag)
-	{
-		return !!(g_iPlayers[this.Index][Player_Flags] & flag);
-		// I don't understand it but it worked. https://forums.alliedmods.net/showthread.php?t=319928
+
+	public void RemoveFlag(int flag) {
+		g_Players[this.Index].Flags &= ~flag;
 	}
-	
-	public void AddFlag(int flag)
-	{
-		g_iPlayers[this.Index][Player_Flags] |= flag;
-	}
-	
-	public void RemoveFlag(int flag)
-	{
-		g_iPlayers[this.Index][Player_Flags] &= ~flag;
-	}
-	
-	public void SetFlags(int flags)
-	{
-		g_iPlayers[this.Index][Player_Flags] = flags;
-	}
-	
+
 	public void MakeActivator()
 	{
-		// Give the player the Activator flag
 		this.AddFlag(PF_Activator);
-		Debug("%N given the ACTIVATOR flag", this.Index);
-		
-		// Add them to the Activators dynamic array (for health bar)
-		int index = g_Activators.Push(this);
-		
-		// Store the player's health and max health in that array
-		g_Activators.Set(index, this.Health, AL_Health);
-		g_Activators.Set(index, this.MaxHealth, AL_MaxHealth);
+		g_Activators.Push(this);
 	}
-	
+
 	public void UnmakeActivator()
 	{
-		// Remove the Activator flag from the player
 		this.RemoveFlag(PF_Activator);
-		Debug("%N removed the ACTIVATOR flag", this.Index);
-		
-		// Remove the player from the Activators dynamic array (health bar)
 		int index = g_Activators.FindValue(this);
 		if (index != -1) g_Activators.Erase(index);
 	}
-	
+
 	public void MakeNextActivator()
 	{
-		int[] activators = new int[MaxClients];
-		CreateActivatorList(activators);
-		
-		int nextact = activators[0];
-		
-		if (this.Index != nextact)
-		{
-			this.Points = Player(nextact).Points + 1000;
-			Debug("Player.MakeNextActivator --> %N.Points == %d  %N.Points == %d", this.Index, this.Points, Player(nextact).Index, Player(nextact).Points);
-		}
-		else
-		{
-			Debug("Player.MakeNextActivator --> %N is already next activator", this.Index);
-		}
+		PlayerList pool = CreateActivatorPool();
+		int next_activator = pool.Get(0);
+		this.Points = DRPlayer(next_activator).Points + 1000;
 	}
-	
+
 	// Retrieve Player Data from the Database
 	public bool RetrieveData()
 	{
-		if (g_db != null)
+		if (this.SteamAccountId == 0)
 		{
-			// Attempt to get the player's database values
-			char query[255];
-			Format(query, sizeof(query), "SELECT points, flags from %s WHERE steamid=%d", SQLITE_TABLE, this.SteamID);
-			DBResultSet result = SQL_Query(g_db, query);
-			
-			if (result == null)
-			{
-				LogError("Database query failed for user %L", this.Index);
-				CloseHandle(result);
-				return false;
-			}
-			else
-			{
-				if (SQL_FetchRow(result))	// If record found
-				{
-					// Store stuff in the array
-					g_iPlayers[this.Index][Player_UserID] = this.UserID;
-					int field;
-					result.FieldNameToNum("points", field);
-					this.SetPoints(result.FetchInt(field));
-					result.FieldNameToNum("flags", field);
-					this.Flags = (this.Flags & MASK_SESSION_FLAGS) | (result.FetchInt(field) & MASK_STORED_FLAGS);
-						// Keep only the session flags and OR in the stored flags
-					//Debug("Retrieved stored data for %N: Points %d, flags: %06b", this.Index, this.Points, (this.Flags & MASK_STORED_FLAGS));
-					CloseHandle(result);
-					return true;
-				}
-				else
-				{
-					//Debug("%N doesn't have a database record", this.Index);
-					return false;
-				}
-			}
-		}
-		else
-		{
-			LogMessage("Database connection not established. Unable to fetch record for %N", this.Index);
 			return false;
 		}
-	}
-	
-	// Store Player Data in the Database
-	public void SaveData()
-	{
-		char query[255];
-		int iLastSeen = GetTime();
-		Format(query, sizeof(query), "UPDATE %s SET points=%d, flags=%d, last_seen=%d WHERE steamid=%d", SQLITE_TABLE, this.Points, (this.Flags & MASK_STORED_FLAGS), iLastSeen, this.SteamID);
-		if (!SQL_FastQuery(g_db, query, strlen(query)))
+
+		bool record_exists;
+		int points, flags, last_seen;
+		DBResultSet result_set = DBQueryForRecord(this.SteamAccountId);
+
+		if (result_set != null)
 		{
-			char error[255];
-			SQL_GetError(g_db, error, sizeof(error));
-			LogError("Failed to update database record for %L. Error: %s", this.Index, error);
-		}
-	}
-	
-	// Create New Database Record
-	public void CreateRecord()
-	{
-		char query[255];
-		Format(query, sizeof(query), "INSERT INTO %s (steamid, points, flags, last_seen) \
-		VALUES (%d, %d, %d, %d)", SQLITE_TABLE, this.SteamID, this.Points, (this.Flags & MASK_STORED_FLAGS), GetTime());
-		if (!SQL_FastQuery(g_db, query))
-		{
-			char error[255];
-			SQL_GetError(g_db, error, sizeof(error));
-			LogError("Unable to create record for %L. Error: %s", this.Index, error);
-		}
-	}
-	
-	// Delete Player Database Record
-	public void DeleteRecord(int client)
-	{
-		char query[255];
-		Format(query, sizeof(query), "DELETE from %s WHERE steamid=%d", SQLITE_TABLE, this.SteamID);
-		if (SQL_FastQuery(g_db, query))
-		{
-			ShowActivity(client, "Deleted %N from the database", this.Index);
-			LogMessage("%L deleted %L from the database", client, this.Index);
+			record_exists = DBGetRecordFromResult(result_set, points, flags, last_seen);
+
+			if (record_exists)
+			{
+				this.Points = points;
+				this.Flags = (this.Flags & MASK_SESSION_FLAGS) | (flags & MASK_STORED_FLAGS);
+			}
+
+			delete result_set;
 		}
 		else
 		{
-			char error[255];
-			SQL_GetError(g_db, error, sizeof(error));
-			ShowActivity(client, "Failed to delete %N from the database", this.Index);
-			LogError("%L failed to delete %L from the database. Error: %s", client, this.Index, error);
+			LogError("Database query failed for user %L", this.Index);
 		}
+
+		return record_exists;
 	}
-	
+
+	// Store Player Data in the Database
+	public bool SaveData()
+	{
+		if (this.SteamAccountId == 0)
+		{
+			return false;
+		}
+
+		bool succeeded = DBSaveData(this.SteamAccountId, this.Points, (this.Flags & MASK_STORED_FLAGS), GetTime());
+
+		if (!succeeded)
+		{
+			LogError("Failed to update database record for %L", this.Index);
+		}
+
+		return succeeded;
+	}
+
+	// Create New Database Record
+	public bool CreateRecord()
+	{
+		if (this.SteamAccountId == 0)
+		{
+			return false;
+		}
+
+		bool succeeded = DBCreateRecord(this.SteamAccountId, this.Points, this.Flags & MASK_STORED_FLAGS, GetTime());
+
+		if (!succeeded)
+		{
+			LogError("Unable to create record for %L", this.Index);
+		}
+
+		return succeeded;
+	}
+
+	// Delete Player Database Record
+	public bool DeleteRecord(int client)
+	{
+		if (this.SteamAccountId == 0)
+		{
+			return false;
+		}
+
+		return DBDeleteRecord(this.SteamAccountId);
+	}
+
 	// Check Player
-	public void CheckPlayer()
+	public void CheckNewPlayer()
 	{
 		if (this.UserID != this.ArrayUserID)	// If this is a new player
 		{
 			this.NewPlayer();					// Give them default array values
-			
+
 			if (!this.IsBot)					// If they are not a bot
 			{
 				if (!this.RetrieveData())		// If database record exists retrieve it
@@ -686,10 +594,366 @@ methodmap Player
 				}
 			}
 		}
-		
+
 		// Set client's language to English
-		if (this.HasFlag(PF_PrefEnglish))
+		if (this.PrefersEnglish)
+		{
 			SetClientLanguage(this.Index, 0);
+		}
+	}
+}
+
+
+/**
+ * Respawn a player
+ *
+ * @param	client		Client index
+ * @error	Invalid client index; client not in game; no mod support
+ * @noreturn
+ */
+void RespawnPlayer(int client)
+{
+	TF2_RespawnPlayer(client);
+}
+
+
+/**
+ * Apply the necessary attributes to a player after they spawn.
+ *
+ * @noreturn
+ */
+void ApplyPlayerAttributes(int client)
+{
+	if (!IsGameTF2())
+	{
+		return;
+	}
+
+	DRPlayer player = DRPlayer(client);
+
+	// Reset player attributes TODO Probably best practice to do this separately
+	RemoveAllAttributes(client);
+
+	// Blue Speed
+	if (player.Team == Team_Blue)
+	{
+		if (g_ConVars[P_BlueSpeed].FloatValue != 0.0)
+		{
+			player.SetSpeed(g_ConVars[P_BlueSpeed].IntValue);
+		}
+	}
+
+	// Red
+	if (player.Team == Team_Red)
+	{
+		// Red Speed
+		if (g_ConVars[P_RedSpeed].FloatValue != 0.0)
+		{
+			player.SetSpeed(g_ConVars[P_RedSpeed].IntValue);
+		}
+
+		// Red Scout Speed
+		else if (g_ConVars[P_RedScoutSpeed].FloatValue != 0.0 && player.Class == Class_Scout)
+		{
+			player.SetSpeed(g_ConVars[P_RedScoutSpeed].IntValue);
+		}
+
+		// Double Jump
+		if (!g_ConVars[P_RedAirDash].BoolValue && player.Class == Class_Scout)
+		{
+			AddAttribute(client, "no double jump", 1.0);
+		}
+
+		// Spy Cloak
+		// if (player.Class == Class_Spy)
+		// {
+		// 	AddAttribute(client, "mult cloak meter consume rate", 8.0);
+		// 	AddAttribute(client, "mult cloak meter regen rate", 0.25);
+		// }
+
+		// Demo Charging
+		if (player.Class == Class_DemoMan)
+		{
+			switch (g_ConVars[P_EnhancedMobility].IntValue)
+			{
+				case 0:
+				{
+					AddAttribute(client, "charge time decreased", -1000.0);
+					AddAttribute(client, "charge recharge rate increased", 0.0);
+				}
+				case 1:
+				{
+					AddAttribute(client, "charge time decreased", -0.95);
+					AddAttribute(client, "charge recharge rate increased", 0.2);
+				}
+			}
+		}
+	}
+}
+
+
+/**
+ * Toggle a player's SourceMod translations to English
+ *
+ * @param	client		Client index
+ * @noreturn
+ */
+void ToggleEnglish(int client)
+{
+	if (DRPlayer(client).PrefersEnglish)
+	{
+		DRPlayer(client).PrefersEnglish = false;
+		char language[32];
+
+		if (GetClientInfo(client, "cl_language", language, sizeof(language)))
+		{
+			int iLanguage = GetLanguageByName(language);
+			if (iLanguage == -1)
+			{
+				TF2_PrintToChat(client, _, "When you next connect, your client language will be used");
+				EmitMessageSoundToClient(client);
+			}
+			else
+			{
+				SetClientLanguage(client, iLanguage);
+				TF2_PrintToChat(client, _, "\x01Your client language of \x05%s\x01 will now be used", language);
+				EmitMessageSoundToClient(client);
+			}
+		}
+	}
+	else
+	{
+		DRPlayer(client).PrefersEnglish = true;
+		TF2_PrintToChat(client, _, "\x01Your language has been set to \x05English");
+		EmitMessageSoundToClient(client);
+		SetClientLanguage(client, 0);
+	}
+}
+
+/**
+ * Ban a player from becoming activator
+ *
+ * @param	steam_account		The Steam account ID of the player
+ * @return	Ban succeeded
+ */
+bool ActivatorBan(int steam_account)
+{
+	int client = GetClientFromSteamAccount(steam_account);
+
+	if (client != 0)
+	{
+		DRPlayer(client).ActivatorBanned = true;
+		return DRPlayer(client).SaveData();
+	}
+	else
+	{
+		DBResultSet results = DBQueryForRecord(steam_account);
+
+		if (results == null)
+		{
+			return false;
+		}
+		else
+		{
+			int points, flags, last_seen;
+			bool found = DBGetRecordFromResult(results, points, flags, last_seen);
+			delete results;
+
+			if (found)
+			{
+				flags |= PF_ActivatorBanned;
+				bool saved = DBSaveData(steam_account, points, flags, last_seen);
+
+				return saved;
+			}
+			else
+			{
+				flags |= (MASK_NEW_PLAYER | PF_ActivatorBanned);
+				bool created = DBCreateRecord(steam_account, points, flags, last_seen);
+
+				return created;
+			}
+		}
+	}
+}
+
+
+/**
+ * Remove an activator ban from a player
+ *
+ * @param	steam_account		Steam account ID of the player
+ * @return	Unban succeeded
+ */
+bool RemoveActivatorBan(int steam_account)
+{
+	int client = GetClientFromSteamAccount(steam_account);
+
+	if (client != 0)
+	{
+		DRPlayer(client).ActivatorBanned = false;
+		return DRPlayer(client).SaveData();
+	}
+	else
+	{
+		DBResultSet results = DBQueryForRecord(steam_account);
+
+		if (results == null)
+		{
+			return false;
+		}
+		else
+		{
+			int points, flags, last_seen;
+			bool found = DBGetRecordFromResult(results, points, flags, last_seen);
+			delete results;
+
+			if (found)
+			{
+				flags &= ~PF_ActivatorBanned;
+				bool saved = DBSaveData(steam_account, points, flags, last_seen);
+
+				return saved;
+			}
+			else
+			{
+				return true;	// player doesn't have a record so there's no point in making one
+			}
+		}
+	}
+}
+
+
+/**
+ * Is a player banned from being activator?
+ *
+ * @param	steam_account		Steam account ID of the player
+ * @return	Player is banned
+ */
+bool IsActivatorBanned(int steam_account)
+{
+	int client = GetClientFromSteamAccount(steam_account);
+
+	if (client != 0)
+	{
+		return !!(DRPlayer(client).ActivatorBanned);
+	}
+	else
+	{
+		DBResultSet results = DBQueryForRecord(steam_account);
+
+		if (results == null)
+		{
+			return false;
+		}
+		else
+		{
+			int points, flags, last_seen;
+			bool found = DBGetRecordFromResult(results, points, flags, last_seen);
+			delete results;
+
+			if (found)
+			{
+				return !!(flags & PF_ActivatorBanned);
+			}
+			else
+			{
+				return false;
+			}
+		}
+	}
+}
+
+
+methodmap EntityList < ArrayList
+{
+	public EntityList(int blocksize = 1) {
+		return view_as<EntityList>(new ArrayList(blocksize));
+	}
+
+	property bool IsEmpty {
+		public get()
+		{
+			this.Validate();
+			return !this.Length;
+		}
+	}
+
+	public void Validate() {
+		for (int i; i < this.Length;)
+		{
+			if (IsValidEntity(this.Get(i))) i++;
+			else this.Erase(i);
+		}
+	}
+}
+
+
+
+methodmap PlayerList < EntityList
+{
+	public PlayerList(int blocksize = 1) {
+		return view_as<PlayerList>(new EntityList(blocksize));
+	}
+
+	property int CountAlive {
+		public get()
+		{
+			this.Validate();
+			int count;
+			for (int i; i < this.Length; i++)
+			{
+				DRPlayer player = DRPlayer(this.Get(i));
+				if (player.IsAlive) count++;
+			}
+			return count;
+		}
+	}
+
+	public void GetHealthFigures(int &health, int &maxhealth)
+	{
+		this.Validate();
+
+		for (int i; i < this.Length; i++)
+		{
+			DRPlayer player = DRPlayer(this.Get(i));
+			health += player.Health;
+			maxhealth += player.MaxHealth;
+		}
+	}
+
+	public int ScaleHealth(int enemies)
+	{
+		this.Validate();
+
+		int alive_activators = this.CountAlive;
+
+		if (alive_activators >= enemies || !alive_activators)
+		{
+			return 0;
+		}
+
+		int health_total;
+
+		for (int i; i < this.Length; i++)
+		{
+			DRPlayer player = DRPlayer(this.Get(i));
+
+			if (player.InGame && player.IsAlive)
+			{
+				float health = float(TF2_GetTFClassHealth(TF2_GetPlayerClass(player.Index)));
+
+				health = (((enemies * 2) * health) - health);
+				health /= enemies;
+
+				AddAttribute(player.Index, "health from packs decreased", TF2_GetTFClassHealth(TF2_GetPlayerClass(player.Index)) / health);
+				player.SetMaxHealth(RoundToNearest(health));
+				player.Health = RoundToNearest(health);
+
+				health_total += RoundToNearest(health);
+			}
+		}
+
+		return health_total;
 	}
 }
 
@@ -699,173 +963,70 @@ methodmap Player
  * Game
  * ----------------------------------------------------------------------------------------------------
  */
+
+// enum struct Game {
+// 	int flags;
+// 	int roundstate;
+// 	bool lateload;
+// 	bool watchmode;
+// 	bool of_restarting;
+// }
+
+// Game game;
+
 methodmap DRGameType
 {
-	public DRGameType()
-	{
-	}
-	
-	public bool HasFlag(int flag)
-	{
-		return !!(g_iGameState & flag);
-	}
-	
-	public void AddFlag(int flag)
-	{
-		g_iGameState |= flag;
-	}
-	
-	public void RemoveFlag(int flag)
-	{
-		g_iGameState &= ~flag;
-	}
-	
-	public void SetFlags(int flags)
-	{
-		g_iGameState = flags;
-	}
-	
-	public void SetGame(int flag)
-	{
-		g_iGame = flag;
-	}
-	
-	public bool IsGame(int flag)
-	{
-		return !!(g_iGame & flag);
-	}
-	
-	property bool IsBossBarActive
-	{
-		public get()
-		{
-			return this.HasFlag(GF_HPBarActive);
+	property int flags {
+		public get() {
+			return this.flags;
 		}
-		public set(bool set)
-		{
-			if (set)
-			{
-				this.AddFlag(GF_HPBarActive);
-			}
-			else
-			{
-				this.RemoveFlag(GF_HPBarActive);
-			}
-		}
-	}
-	
-	property int RoundState
-	{
-		public get()
-		{
-			return g_iRoundState;
-		}
-		public set(int state)
-		{
-			g_iRoundState = state;
-			Debug("Round state set to %s", g_sRoundStates[state]);
-		}
-	}
-	
-	property bool InWatchMode
-	{
-		public get()
-		{
-			Debug("DRGame.InWatchMode = %s", this.HasFlag(GF_WatchMode) ? "true" : "false");
-			return this.HasFlag(GF_WatchMode);
-		}
-		public set(bool set)
-		{
-			if (set)
-			{
-				this.AddFlag(GF_WatchMode);
-				Debug("Entered watch mode");
-			}
-			else
-			{
-				this.RemoveFlag(GF_WatchMode);
-				Debug("Exited watch mode");
-			}
+		public set(int flags) {
+			this.flags;
 		}
 	}
 
-	// Players on an active team
-	property int Participants
-	{
-		public get()
-		{
-			return (GetTeamClientCount(Team_Blue) + GetTeamClientCount(Team_Red));
+	public bool HasFlag(int flag) {
+		return !!(g_GameState & flag);
+	}
+
+	public void AddFlag(int flag) {
+		g_GameState |= flag;
+	}
+
+	public void RemoveFlag(int flag) {
+		g_GameState &= ~flag;
+	}
+
+	property bool LateLoaded {
+		public get() {
+			return this.HasFlag(GF_LateLoad);
+		}
+		public set(bool late_loaded) {
+			late_loaded ? this.AddFlag(GF_LateLoad) : this.RemoveFlag(GF_LateLoad);
 		}
 	}
-	
-	// Players who prefer to be activator
-	property int WillingActivators
-	{
-		public get()
-		{
-			int willing;
-			
-			for (int i = 1; i <= MaxClients; i++)
-			{
-				if (IsClientInGame(i) && (GetClientTeam(i) == Team_Red || GetClientTeam(i) == Team_Blue) && g_iPlayers[i][Player_Flags] & (PF_PrefActivator))
-				{
-					willing += 1;
-				}
-			}
-			
-			return willing;
+
+	property int RoundState {
+		public get() {
+			return g_RoundState;
+		}
+		public set(int state) {
+			g_RoundState = state;
 		}
 	}
-	
-	// Activator pool size
-	property int ActivatorPool
-	{
-		public get()
-		{
-			return (this.WillingActivators < MINIMUM_WILLING) ? this.Participants : this.WillingActivators;
+
+	property bool InWatchMode {
+		public get() {
+			return this.HasFlag(GF_WatchMode);
+		}
+		public set(bool watch_mode) {
+			watch_mode ? this.AddFlag(GF_WatchMode) : this.RemoveFlag(GF_WatchMode);
 		}
 	}
-	
-	// Number of activators in ADT array
-	property int Activators
-	{
-		public get()
-		{
-			Debug("DRGame.Activators -- g_Activators length = %d", g_Activators.Length);
-			if (g_ConVars[P_Debug].BoolValue)
-			{
-				int len = g_Activators.Length;
-				for (int i = 0; i < len; i++)
-				{
-					Debug("DRGame.Activators -- g_Activators index %d: %L", i, g_Activators.Get(0));
-				}
-			}
-			return g_Activators.Length;
-		}
-	}
-	
-	// Live Activators
-	property int AliveActivators
-	{
-		public get()
-		{
-			int len = g_Activators.Length;
-			int count;
-			
-			for (int i = 0; i < len; i++)
-			{
-				Player player = Player(g_Activators.Get(i));
-				
-				if (player.IsAlive)
-					count++;
-			}
-			
-			return count;
+
+	property bool AttributesSupported {
+		public get() {
+			return IsGameTF2();
 		}
 	}
 }
-
-DRGameType DRGame;							// Game logic
-
-
-
