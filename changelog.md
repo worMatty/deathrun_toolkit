@@ -1,6 +1,10 @@
 # Deathrun Toolkit
 ## Changelog
 
+## Version 0.4.7.1
+Bug fixes:
+* Replacement weapons were not being equipped
+
 ### Version 0.4.7
 New features:
 * Activator ban using Steam ID via console commands or admin menu

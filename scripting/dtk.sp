@@ -13,7 +13,7 @@
 
 // ----------------------------------------------------------------------------------------------------
 
-#define PLUGIN_VERSION 				"0.4.7"
+#define PLUGIN_VERSION 				"0.4.7.1"
 #define PLUGIN_NAME					"[DTK] Deathrun Toolkit"
 #define PLUGIN_SHORTNAME 			"Deathrun Toolkit"
 

@@ -1,4 +1,4 @@
-
+// Matty's stocks v1
 
 // Life states
 enum {
@@ -247,6 +247,36 @@ stock int TF2_GetTFClassHealth(TFClassType class)
 }
 
 /**
+ * Gets the team number from a text string.
+ *
+ * @param	string			Text string
+ * @return	int				Team number, or -1 if no match found;
+  */
+stock int StringToTeam(const char[] string)
+{
+	int team = -1;
+
+	if (StrContains(string, "u", false) == 0)
+	{
+		team = 0;
+	}
+	else if (StrContains(string, "sp", false) == 0)
+	{
+		team = 1;
+	}
+	else if (StrContains(string, "r", false) == 0)
+	{
+		team = 2;
+	}
+	else if (StrContains(string, "b", false) == 0)
+	{
+		team = 3;
+	}
+
+	return team;
+}
+
+/**
  * Run some VScript on an entity
  *
  * @param		entity		Entity index to send the input to
@@ -423,7 +453,51 @@ stock bool IsClient(int entity)
 	return (0 < entity <= MaxClients);
 }
 
+/**
+ * Get an entity's targetname
+ *
+ * @param	entity			Entity index
+ * @param	targetname		Destination string buffer
+ * @param	maxlength		Maximum length of output string buffer
+ * @return					Number of non-null bytes written
+ * @error					Invalid entity, offset out of reasonable bounds, or property is not a valid string
+ */
+stock int GetEntityTargetname(int entity, char[] targetname, int maxlength)
+{
+	int num_written = GetEntPropString(entity, Prop_Data, "m_iName", targetname, maxlength);
+	return num_written;
+}
 
+
+/**
+ * Set an entity's targetname
+ *
+ * @param	entity			Entity index
+ * @param	targetname		String to set
+ * @return					Number of non-null bytes written
+ * @error					Invalid entity, offset out of reasonable bounds, or property is not a valid string
+ */
+stock int SetEntityTargetname(int entity, char[] targetname)
+{
+	int num_written = SetEntPropString(entity, Prop_Data, "m_iName", targetname);
+	return num_written;
+}
+
+/**
+ * Kill an entity by giving it an output to kill itself with an optional delay
+ *
+ * @param	entity			Entity index
+ * @param	delay			Time delay to add to the output
+ * @noreturn
+ */
+stock void KillViaIO(int entity, float delay)
+{
+	char global_variant[32];
+	Format(global_variant, sizeof(global_variant), "OnUser1 !self,Kill,,%.2f,1", delay);
+	SetVariantString(global_variant);
+	AcceptEntityInput(entity, "AddOutput");
+	AcceptEntityInput(entity, "FireUser1");
+}
 
 /**
  * Get the distance between two entities
