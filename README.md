@@ -33,6 +33,7 @@ If you use [Source Chat Relay](https://forums.alliedmods.net/showthread.php?p=26
 * **dtk_sacrifice** - Allows a runner to sacrifice themselves for a dead team mate
 * **dtk_trains** - Disable user control of trains so players can't +use control them (anti-exploit)
 * **dtk_damage_filter** - Filters damage types from one team to the other (anti-exploit)
+* **dtk_outlines** - Enables the server operator to display glowing outlines on players
 
 ## Design
 ### Current state and limitations
