@@ -71,7 +71,7 @@ stock void MenuFunction(int client, const char[] selection)
 	if (StrEqual(selection, "menu_queue"))
 	{
 		menu.ExitBackButton = true;
-		PlayerList activators = CreateActivatorPool();
+		ArrayList activators = CreateActivatorPool();
 		char sItem[40];
 		
 		for (int i = 0; i < activators.Length; i++)
@@ -92,9 +92,6 @@ stock void MenuFunction(int client, const char[] selection)
 	
 		menu.AddItem("menu_admin_more_qp", "menu_item_admin_bonus_points");
 		menu.AddItem("menu_admin_activator_ban", "menu_item_admin_activator_ban");
-		menu.AddItem("admin_scalehealth", "menu_item_admin_scale_activator_health");
-		menu.AddItem("admin_jetpackgame", "menu_item_admin_jetpack_game");
-		menu.AddItem("admin_periodicslap", "menu_item_admin_periodic_slap");
 	}
 	
 	
@@ -188,25 +185,6 @@ public int MenuHandler(Menu menu, MenuAction action, int param1, int param2)
 		else if (StrEqual(selection, "item_help"))
 		{
 			Command_Help(param1, 0);
-		}
-		
-		// Admin
-		else if (StrContains(selection, "admin_") == 0)
-		{
-			if (StrEqual(selection, "admin_scalehealth"))
-			{
-				FunStuff_ScaleHealth(param1);
-			}
-			else if (StrEqual(selection, "admin_jetpackgame"))
-			{
-				FunStuff_JetpackGame();
-			}
-			else if (StrEqual(selection, "admin_periodicslap"))
-			{
-				FunStuff_PeriodicSlap();
-			}
-			
-			MenuFunction(param1, "menu_admin");
 		}
 		
 		// Receives bonus queue points

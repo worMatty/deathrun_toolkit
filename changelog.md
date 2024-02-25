@@ -1,6 +1,38 @@
 # Deathrun Toolkit
 ## Changelog
 
+## Version 0.5
+This version has some breaking changes to the restriction system. You will need to replace or reformat your restrictions config file.
+
+Weapon restriction system changes:
+* Restriction config now accepts classnames in addition to item definition indexes. e.g. `tf_weapon_rocketlauncher`
+* Restriction config now accepts `goto` keys to direct the plugin to use the settings of another config entry. Inheritance is not supported
+* The structure of attributes in the restrictions config has changed. Name and value are now one keyvalue pair instead of being children of a numbered set
+* WIP support for removing wearable weapons like shields and the parachute
+* Removed hard-coded self-damage negation, which was a catch-all for blast-jumping, and the associated convar `dtk_wip_extra_mobility`
+* `dtk_wip_restrict_items` convar, which toggles the item restriction system, has been changed to `dtk_restrictions`
+* All rocket launchers and sticky bomb launchers have blast pushing disabled in the restrictions config, but will still deal self-damage
+
+Major changes:
+* Removed code supporting Open Fortress and TF2 Classic as no-one plays Deathrun on those mods and a lot of maps don't function properly on those mods
+
+Minor changes:
+* Removed reliance on TF2 Attributes for setting attributes on players and weapons, in favour of native TF2 VScript
+* Removed the 'Fun Stuff' admin menu
+* Default server description changed from 'Deathrun Toolkit' to 'TF2 Deathrun' because that's more helpful for browsers than a plugin advertisement
+* Player pushaway is disabled as standard and the plugin convar to change it has been removed
+* `cfg/config_deathrun.cfg` is now executed after the plugin has made its required changes to server convars
+* Self-damage is no longer negated by the plugin, so it will not interfere with VScript scripts which do this
+* Activator self-damage is still restricted but only when it comes from a valid weapon, which should not cause issues with VScripts
+
+New features:
+* `sm_regenall` admin command to regenerate all live players. Useful for testing changes to the restrictions config after using `dtk_reload_configs`
+* `sm_printitems` will print your weapons and wearables to console so you can grab their classnames and item definition indexes
+* `dtk_bot_activator_on_low` convar will cause bots to always be activator when there are three or fewer active players
+
+Bug fixes:
+* Replacement weapons were not being given the attributes specified in the restriction system
+
 ## Version 0.4.7.1
 Bug fixes:
 * Replacement weapons were not being equipped

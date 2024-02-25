@@ -4,8 +4,8 @@
 enum {
 	Team_None,
 	Team_Spec,
-	Team_Red,	// 2 - red
-	Team_Blue	// 3 - blue
+	Team_Red,
+	Team_Blue
 }
 
 // Ammo Types
@@ -18,21 +18,10 @@ enum {
 	Ammo_Grenades2
 }
 
-// Round State
-enum {
-	Round_Waiting,
-	Round_Freeze,
-	Round_Active,
-	Round_Win
-}
-
-
-
 // Game Flags
 enum {
-	GF_LateLoad = 0x1,				// Plugin was loaded late/reloaded
-	GF_WatchMode = 0x2,				// We're in team watch mode during pre-round freeze time
-	GF_Restarting = 0x4				// Counting down to round restart (OF)
+	GF_WatchMode = 0x1,				// We're in team watch mode during pre-round freeze time
+	GF_Restarting = 0x2				// Counting down to round restart (OF)
 }
 
 // Player Flags
@@ -61,8 +50,6 @@ enum struct PlayerData {
 	int Flags;
 	int ActivatorLast;
 }
-
-int g_RoundState;
 
 PlayerData g_Players[MAXPLAYERS];
 
@@ -181,10 +168,6 @@ methodmap Player
 	}
 
 
-	// public int GetPlayerWeaponSlot(int slot) {
-	// 	return GetPlayerWeaponSlot(this.Index, slot);
-	// }
-
 	/**
 	 * Move a player to another team
 	 * @param	team		Team number
@@ -197,7 +180,6 @@ methodmap Player
 			respawn = false;
 		}
 
-		// SetEntProp(view_as<int>(this), Prop_Send, "m_lifeState", LifeState_Dead);
 		this.IsAlive = false;
 		ChangeClientTeam(view_as<int>(this), team);
 
@@ -207,7 +189,6 @@ methodmap Player
 
 		if (respawn && this.Class != Class_Unknown)
 		{
-			// SetEntProp(view_as<int>(this), Prop_Send, "m_lifeState", LifeState_Alive);
 			this.IsAlive = true;
 			RequestFrame(RespawnPlayer, view_as<int>(this));
 		}
@@ -218,8 +199,7 @@ methodmap Player
 		TF2_SetPlayerClass(view_as<int>(this), view_as<TFClassType>(class), _, persistent);
 
 		// Don't regenerate a dead player because they'll go to Limbo
-		if (regenerate && this.IsAlive
-			&& (GetFeatureStatus(FeatureType_Native, "TF2_RegeneratePlayer") == FeatureStatus_Available))
+		if (regenerate && this.IsAlive && (GetFeatureStatus(FeatureType_Native, "TF2_RegeneratePlayer") == FeatureStatus_Available))
 		{
 			TF2_RegeneratePlayer(view_as<int>(this));
 		}
@@ -228,7 +208,6 @@ methodmap Player
 	/**
 	 * Switch the player's active slot
 	 * Removes taunting condition to ensure the change happens
-	 *
 	 * @param	slot		Weapon slot
 	 */
 	public void SetSlot(int slot)
@@ -237,7 +216,6 @@ methodmap Player
 
 		if (slot == -1)
 		{
-			LogError("Tried to get %N's weapon in slot %d but got -1. Can't switch to that slot", this, slot);
 			return;
 		}
 
@@ -257,7 +235,6 @@ methodmap Player
 	 * Switches the player to their melee slot and deletes all their other weapons.
 	 * Upon disabling, regenerates the player to respawn their weapons,
 	 * then switches them to their primary weapon.
-	 *
 	 * @param	melee_only		True to set, false to restore
 	 */
 	public void MeleeOnly(bool melee_only = true)
@@ -295,7 +272,6 @@ methodmap Player
 	{
 		float new_max = float( max - TF2_GetTFClassHealth( view_as<TFClassType>( this.Class ) ) );
 
-		// if (GetPlayerResourceEntity() != -1)	// TODO why was I doing this?
 		if (AddAttribute(view_as<int>(this), "max health additive bonus", new_max))
 		{
 			return max;
@@ -484,6 +460,9 @@ methodmap DRPlayer < Player
 	{
 		this.AddFlag(PF_Activator);
 		g_Activators.Push(this);
+		if (GetFeatureStatus(FeatureType_Native, "SDKHook") == FeatureStatus_Available) {
+			SDKHook(this.Index, SDKHook_OnTakeDamageAlive, Hook_OnTakeDamage);
+		}
 	}
 
 	public void UnmakeActivator()
@@ -491,11 +470,14 @@ methodmap DRPlayer < Player
 		this.RemoveFlag(PF_Activator);
 		int index = g_Activators.FindValue(this);
 		if (index != -1) g_Activators.Erase(index);
+		if (GetFeatureStatus(FeatureType_Native, "SDKHook") == FeatureStatus_Available) {
+			SDKUnhook(this.Index, SDKHook_OnTakeDamageAlive, Hook_OnTakeDamage);
+		}
 	}
 
 	public void MakeNextActivator()
 	{
-		PlayerList pool = CreateActivatorPool();
+		ArrayList pool = CreateActivatorPool();
 		int next_activator = pool.Get(0);
 		this.Points = DRPlayer(next_activator).Points + 1000;
 	}
@@ -624,15 +606,7 @@ void RespawnPlayer(int client)
  */
 void ApplyPlayerAttributes(int client)
 {
-	if (!IsGameTF2())
-	{
-		return;
-	}
-
 	DRPlayer player = DRPlayer(client);
-
-	// Reset player attributes TODO Probably best practice to do this separately
-	RemoveAllAttributes(client);
 
 	// Blue Speed
 	if (player.Team == Team_Blue)
@@ -662,31 +636,6 @@ void ApplyPlayerAttributes(int client)
 		if (!g_ConVars[P_RedAirDash].BoolValue && player.Class == Class_Scout)
 		{
 			AddAttribute(client, "no double jump", 1.0);
-		}
-
-		// Spy Cloak
-		// if (player.Class == Class_Spy)
-		// {
-		// 	AddAttribute(client, "mult cloak meter consume rate", 8.0);
-		// 	AddAttribute(client, "mult cloak meter regen rate", 0.25);
-		// }
-
-		// Demo Charging
-		if (player.Class == Class_DemoMan)
-		{
-			switch (g_ConVars[P_EnhancedMobility].IntValue)
-			{
-				case 0:
-				{
-					AddAttribute(client, "charge time decreased", -1000.0);
-					AddAttribute(client, "charge recharge rate increased", 0.0);
-				}
-				case 1:
-				{
-					AddAttribute(client, "charge time decreased", -0.95);
-					AddAttribute(client, "charge recharge rate increased", 0.2);
-				}
-			}
 		}
 	}
 }
@@ -864,101 +813,6 @@ bool IsActivatorBanned(int steam_account)
 }
 
 
-methodmap EntityList < ArrayList
-{
-	public EntityList(int blocksize = 1) {
-		return view_as<EntityList>(new ArrayList(blocksize));
-	}
-
-	property bool IsEmpty {
-		public get()
-		{
-			this.Validate();
-			return !this.Length;
-		}
-	}
-
-	public void Validate() {
-		for (int i; i < this.Length;)
-		{
-			if (IsValidEntity(this.Get(i))) i++;
-			else this.Erase(i);
-		}
-	}
-}
-
-
-
-methodmap PlayerList < EntityList
-{
-	public PlayerList(int blocksize = 1) {
-		return view_as<PlayerList>(new EntityList(blocksize));
-	}
-
-	property int CountAlive {
-		public get()
-		{
-			this.Validate();
-			int count;
-			for (int i; i < this.Length; i++)
-			{
-				DRPlayer player = DRPlayer(this.Get(i));
-				if (player.IsAlive) count++;
-			}
-			return count;
-		}
-	}
-
-	public void GetHealthFigures(int &health, int &maxhealth)
-	{
-		this.Validate();
-
-		for (int i; i < this.Length; i++)
-		{
-			DRPlayer player = DRPlayer(this.Get(i));
-			health += player.Health;
-			maxhealth += player.MaxHealth;
-		}
-	}
-
-	public int ScaleHealth(int enemies)
-	{
-		this.Validate();
-
-		int alive_activators = this.CountAlive;
-
-		if (alive_activators >= enemies || !alive_activators)
-		{
-			return 0;
-		}
-
-		int health_total;
-
-		for (int i; i < this.Length; i++)
-		{
-			DRPlayer player = DRPlayer(this.Get(i));
-
-			if (player.InGame && player.IsAlive)
-			{
-				float health = float(TF2_GetTFClassHealth(TF2_GetPlayerClass(player.Index)));
-
-				health = (((enemies * 2) * health) - health);
-				health /= enemies;
-
-				AddAttribute(player.Index, "health from packs decreased", TF2_GetTFClassHealth(TF2_GetPlayerClass(player.Index)) / health);
-				player.SetMaxHealth(RoundToNearest(health));
-				player.Health = RoundToNearest(health);
-
-				health_total += RoundToNearest(health);
-			}
-		}
-
-		return health_total;
-	}
-}
-
-
-
 /**
  * Game
  * ----------------------------------------------------------------------------------------------------
@@ -997,36 +851,12 @@ methodmap DRGameType
 		g_GameState &= ~flag;
 	}
 
-	property bool LateLoaded {
-		public get() {
-			return this.HasFlag(GF_LateLoad);
-		}
-		public set(bool late_loaded) {
-			late_loaded ? this.AddFlag(GF_LateLoad) : this.RemoveFlag(GF_LateLoad);
-		}
-	}
-
-	property int RoundState {
-		public get() {
-			return g_RoundState;
-		}
-		public set(int state) {
-			g_RoundState = state;
-		}
-	}
-
 	property bool InWatchMode {
 		public get() {
 			return this.HasFlag(GF_WatchMode);
 		}
 		public set(bool watch_mode) {
 			watch_mode ? this.AddFlag(GF_WatchMode) : this.RemoveFlag(GF_WatchMode);
-		}
-	}
-
-	property bool AttributesSupported {
-		public get() {
-			return IsGameTF2();
 		}
 	}
 }

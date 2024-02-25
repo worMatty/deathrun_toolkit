@@ -553,6 +553,34 @@ stock bool Trace_AreEntsInLOS(int entity, int contentsMask, int ent1)
 	// This filters out the originating entity
 }
 
+/**
+ * Get an entity's children
+ * @param	entity		Entity index
+ * @param	arr			ArrayList to put child entity indexes in
+ * @return				Number of children found
+ */
+stock int GetEntityChildren(int entity, ArrayList arr)
+{
+    int count = 0;
+    int child = GetEntPropEnt(entity, Prop_Data, "m_hMoveChild");
+    while (IsValidEntity(child))
+    {
+        arr.Push(child);
+        count++;
+        child = GetEntPropEnt(child, Prop_Data, "m_hMovePeer");
+    }
+    return count;
+}
+
+/**
+ * Get the parent of an entity
+ * @return	Entity index of parent, or -1 if none found or entity not valid
+ */
+stock int GetEntityParent(int entity)
+{
+    return GetEntPropEnt(entity, Prop_Data, "m_pParent");
+}
+
 
 /**
  * Messages

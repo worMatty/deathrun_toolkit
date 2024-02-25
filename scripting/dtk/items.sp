@@ -9,7 +9,6 @@ void	  Items_Init()
 
 /**
  * Load the restriction system config files
- *
  * @noreturn
  */
 void LoadConfigs()
@@ -26,11 +25,16 @@ void LoadConfigs()
 	}
 }
 
+/*
+get the player's weapons and cosmetics
+check each of them
+pull up any entries and combine attributes
+if this, then that
+*/
+
 /**
  * Check all of the player's equipped items by iterating across their weapon slots
- *
  * @param	client		Client index
- * @noreturn
  */
 void CheckItems(int client)
 {
@@ -38,120 +42,181 @@ void CheckItems(int client)
 		return;
 	}
 
+	// check weapon slots
 	for (int slot; slot < 7; slot++) {	  // highest weapon slot used
 		int item = GetPlayerWeaponSlot(client, slot);
-
 		if (item != -1) {
 			CheckItem(client, item, slot);
 		}
 	}
+
+	// check wearables
+	ArrayList wearables = GetWearables(client);
+	for (int i = wearables.Length - 1; i >= 0; i--) {
+		CheckItem(client, wearables.Get(i));
+	}
 }
 
 /**
- * Check and item to see if it's restricted and modify, replace or remove it
+ * Check an item to see if it's restricted and modify, replace or remove it
  *
  * @param	client		Client index
  * @param	item		Entity index of the item
  * @param	slot		Weapon slot the item occupies on the client
- * @noreturn
  */
-void CheckItem(int client, int item, int slot)
+void CheckItem(int client, int item, int slot = -1)
 {
-	char key[16];
+	KeyValues kv = GetItemRestrictions(item);
 
-	int	 definition_index = GetEntProp(item, Prop_Send, "m_iItemDefinitionIndex");
-	IntToString(definition_index, key, sizeof(key));
-
-	/**
-	 * Check if the restrictions config is loaded
-	 */
-	if (!g_Restrictions.JumpToKey(key)) {
-		return;	   // item not found in config
+	// no restrictions found
+	if (!kv.GotoFirstSubKey(false)) {
+		delete kv;
+		return;
 	}
 
-	/**
-	 * Check if the plugin can apply attributes, and if the item has an attributes field
-	 * in the restrictions config. If either are false, the code will naturally fall through to
-	 * replacement or removal, if they are specified.
-	 */
-	if (DRGame.AttributesSupported && g_Restrictions.JumpToKey("attributes")) {
-		if (g_Restrictions.GotoFirstSubKey()) {
-			do {
-				char  attribute[128];
-				float value = g_Restrictions.GetFloat("value");
+	kv.GoBack();
 
-				g_Restrictions.GetString("name", attribute, sizeof(attribute));
+	/*
+		Wearables have m_hWeaponAssociatedWith
+		Can't find a way to tell what slot wearable weapons replace
+	*/
 
-				if (attribute[0] != '\0') {
-					AddAttribute(item, attribute, value);
-					PrintToConsole(client, "Gave your weapon in slot %d the attribute \"%s\" with value %.2f", slot, attribute, value);
-				}
-				else {	  // attribute key not found
-					char section[16];
-					g_Restrictions.GetSectionName(section, sizeof(section));
-					LogError("Weapon restrictions > %d > attributes > %s > Attribute name key not found", definition_index, section);
-				}
-			}
-			while (g_Restrictions.GotoNextKey());
+	// remove
+	if (kv.JumpToKey("remove")) {
+		if (slot != -1) {
+			TF2_RemoveWeaponSlot(client, slot);
 		}
-		else {	  // no attributes specified
-			LogError("Weapon restrictions > %d > attributes > No attribute sections found", definition_index);
+		else {
+			TF2_RemoveWearable(client, item);
+			// AcceptEntityInput(item, "Kill");
 		}
 	}
 
-	/**
-	 * Replace the item
-	 */
-	else if (g_Restrictions.JumpToKey("replace")) {	   // should the item be replaced
-		Player player = Player(client);
-		IntToString(player.Class, key, sizeof(key));
+	// replace
+	else if (kv.JumpToKey("replace")) {
+		int	 idi;
+		char classname[64];
+		GetEdictClassname(item, classname, sizeof(classname));
 
-		if (g_Replacements.JumpToKey(key)) {	// jump to class
-			IntToString(slot, key, sizeof(key));
+		if (!StrEqual(classname, "dtk_weapon") && GetReplacementItem(TF2_GetPlayerClass(client), slot, idi, classname, sizeof(classname))) {
+			int replacement = ReplaceWeapon(client, idi, classname, slot);
 
-			if (g_Replacements.JumpToKey(key)) {	// jump to slot
-				char id[16], classname[128];
-				g_Replacements.GetString("id", id, sizeof(id));
-				g_Replacements.GetString("classname", classname, sizeof(classname));
-
-				if (id[0] == '\0') {
-					LogError("Weapon replacements > %d > %d > id key or value not found", player.Class, slot);
-				}
-				else if (classname[0] == '\0') {
-					LogError("Weapon replacements > %d > %d > classname key or value not found", player.Class, slot);
-				}
-				else if (ReplaceWeapon(client, item, g_Replacements.GetNum("id"), classname)) {
-					PrintToConsole(client, "Replaced your weapon in slot %d with a %s (type %d)", slot, classname, g_Replacements.GetNum("id"));
-				}
-			}
-			else {	  // slot not found
-				LogError("Weapon replacements > %d > Weapon slot %d not found", player.Class, slot);
+			if (replacement != -1) {
+				CheckItem(client, replacement, slot);
 			}
 		}
-		else {	  // class not found
-			LogError("Weapon replacements > Class %d not found", player.Class);
+	}
+
+	// attributes
+	else if (kv.JumpToKey("attributes")) {
+		char  name[128];
+		float value;
+
+		kv.GotoFirstSubKey(false);
+		do {
+			kv.GetSectionName(name, sizeof(name));
+			value = kv.GetFloat(name);
+			AddAttribute(item, name, value);
+		}
+		while (kv.GotoNextKey(false))
+	}
+
+	delete kv;
+}
+
+/**
+ * Get a client's wearables
+ * @param	client		Client index
+ * @return				ArrayList containing wearable edict indexes
+ */
+stock ArrayList GetWearables(int client)
+{
+	ArrayList wearables = new ArrayList();
+	char	  classname[64];
+	int		  ent = GetEntPropEnt(client, Prop_Data, "m_hMoveChild");
+
+	while (IsValidEntity(ent)) {
+		GetEdictClassname(ent, classname, sizeof(classname));
+		if (StrContains(classname, "tf_wearable") == 0 && GetEntProp(ent, Prop_Send, "m_iItemDefinitionIndex") != 65535) {
+			wearables.Push(ent);
+		}
+		ent = GetEntPropEnt(ent, Prop_Data, "m_hMovePeer");
+	}
+
+	return wearables;
+}
+
+/**
+ * Given the edict index of an item, scan the restrictions keyvalue structure for entries
+ * for its item definition index or classname and return the found entry as a KV structure.
+ * It will continue to follow goto instructions until they stop, or a maximum of five times.
+ * @param	item		Edict index of item
+ * @return				KeyValues structure containing the restriction keyvalues for the item
+ */
+KeyValues GetItemRestrictions(int item)
+{
+	KeyValues kv  = new KeyValues("restrictions");
+
+	int		  idi = GetEntProp(item, Prop_Send, "m_iItemDefinitionIndex");
+	int		  goto_count;
+	char	  sidi[8], classname[64];
+
+	IntToString(idi, sidi, sizeof(sidi));
+	GetEdictClassname(item, classname, sizeof(classname));
+
+	if (g_Restrictions.JumpToKey(sidi) || g_Restrictions.JumpToKey(classname)) {
+		char next_section[64];
+		g_Restrictions.GetString("goto", next_section, sizeof(next_section));
+
+		// loop through gotos
+		while (next_section[0] != '\0' && goto_count <= 5) {
+			goto_count++;
+			g_Restrictions.Rewind();
+			g_Restrictions.JumpToKey(next_section);
+			g_Restrictions.GetString("goto", next_section, sizeof(next_section));
 		}
 
-		g_Replacements.Rewind();
+		if (KvNodesInStack(g_Restrictions) > 0) {
+			KvCopySubkeys(g_Restrictions, kv);
+		}
+
+		g_Restrictions.Rewind();
 	}
 
-	/**
-	 * Remove the item
-	 */
-	else if (g_Restrictions.JumpToKey("remove")) {	// Remove Weapon
-		if (AcceptEntityInput(item, "Kill")) {
-			PrintToConsole(client, "Removed your weapon in slot %d", slot);
+	return kv;
+}
+
+/**
+ * Given a TF2 class number and weapon slot number, find a replacement weapon to suit the class's
+ * slot from the replacements KeyValues structure.
+ * @param	class		TF2 class
+ * @param	slot		Weapon slot
+ * @param	idi			Variable to store the item definition index of the replacement weapon
+ * @param	classname	String to store the classname of the replacement weapon
+ * @param	maxlen		The max length of the classname string
+ * @return				True if a replacement was found, false if not
+ */
+bool GetReplacementItem(TFClassType class, int slot, int &idi, char[] classname, int maxlen)
+{
+	bool success;
+	char sclass[2], sslot[2];
+
+	IntToString(view_as<int>(class), sclass, sizeof(sclass));
+	IntToString(slot, sslot, sizeof(sslot));
+
+	if (g_Replacements.JumpToKey(sclass)) {
+		if (g_Replacements.JumpToKey(sslot)) {
+			idi = g_Replacements.GetNum("id", -1);
+			g_Replacements.GetString("classname", classname, maxlen);
+
+			if (idi != -1 && classname[0] != '\0') {
+				success = true;
+			}
 		}
 	}
 
-	/**
-	 * The item is found in the restriction config but has no valid action
-	 */
-	else {
-		LogError("Weapon restrictions > %d > No valid actions found", definition_index);
-	}
-
-	g_Restrictions.Rewind();
+	g_Replacements.Rewind();
+	return success;
 }
 
 /**
@@ -161,62 +226,64 @@ void CheckItem(int client, int item, int slot)
  * @param	oldweapon		Current weapon
  * @param	itemDefIndex	New weapon item definition index
  * @param	classname		New weapon classname
- * @return	Entity index of new weapon. -1 if failed to create
+ * @param	slot			Weapon slot
+ * @return					Entity index of new weapon. -1 if failed to create
  */
-int ReplaceWeapon(int client, int oldweapon, int itemDefIndex, char[] classname)
+int ReplaceWeapon(int client, int itemDefIndex, char[] classname, int slot)
 {
-	int weapon = CreateWeapon(itemDefIndex, classname);
+	int entindex = CreateWeapon(client, itemDefIndex, classname);
 
-	if (weapon != -1) {
-		int team = GetClientTeam(client);
-		SetEntProp(weapon, Prop_Send, "m_iTeamNum", team);
-		SetEntPropEnt(weapon, Prop_Send, "m_hOwnerEntity", client);
-		EquipPlayerWeapon(client, weapon);
-
-		int len	   = GetEntPropArraySize(client, Prop_Send, "m_hMyWeapons");	// number of slots in this array
-		int offset = FindSendPropInfo("CTFPlayer", "m_hMyWeapons");
-
-		// iterate the weapons array using offset * 4 bytes
-		for (int i; i < len; i++) {
-			int entity = GetEntDataEnt2(client, offset + (i * 4));
-			if (entity == oldweapon) {
-				SetEntDataEnt2(client, offset + (i * 4), weapon, true);
-				break;
-			}
-		}
-
-		RemoveEntity(oldweapon);
-	}
-	else {
-		LogError("Failed to create a new weapon for %N", client);
+	if (entindex != -1) {
+		TF2_RemoveWeaponSlot(client, slot);
+		EquipPlayerWeapon(client, entindex);
 	}
 
-	return weapon;
+	return entindex;
 }
 
 /**
- * Create a new weapon
- *
+ * Create a new weapon entity
+ * @param	client			Client index the weapon is meant for
  * @param	itemDefIndex	New weapon item definition index
  * @param	classname		New weapon classname
- * @return	New weapon entity index
+ * @return					New weapon entity index or -1 if failed to create
  */
-int CreateWeapon(int itemDefIndex, char[] classname)
+int CreateWeapon(int client, int itemDefIndex, char[] classname)
 {
-	int weapon = CreateEntityByName(classname);
+	int entindex;
 
-	if (weapon != -1) {
-		SetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex", itemDefIndex);
-		SetEntProp(weapon, Prop_Send, "m_bInitialized", true);
-		SetEntProp(weapon, Prop_Send, "m_bValidatedAttachedEntity", true);
-		SetEntProp(weapon, Prop_Send, "m_iEntityLevel", 0);
-		SetEntProp(weapon, Prop_Send, "m_iEntityQuality", 0);
+	if (g_bTF2Items) {
+		Handle weapon = TF2Items_CreateItem(OVERRIDE_ALL | FORCE_GENERATION);
+		TF2Items_SetClassname(weapon, classname);
+		TF2Items_SetItemIndex(weapon, itemDefIndex);
+		TF2Items_SetLevel(weapon, 0);
+		TF2Items_SetQuality(weapon, 0);
+		TF2Items_SetNumAttributes(weapon, 0);
+		entindex = TF2Items_GiveNamedItem(client, weapon);
+		delete weapon;
+	}
+	else {
+		int weapon = CreateEntityByName(classname);
 
-		if (!DispatchSpawn(weapon)) {
-			RemoveEntity(weapon);
-			weapon = -1;
+		if (weapon != -1) {
+			int team = GetClientTeam(client);
+			entindex = weapon;
+
+			SetEntProp(weapon, Prop_Send, "m_iTeamNum", team);
+			SetEntProp(weapon, Prop_Send, "m_bInitialized", 1);
+			SetEntProp(weapon, Prop_Send, "m_bValidatedAttachedEntity", 1);
+			SetEntProp(weapon, Prop_Send, "m_iEntityLevel", 0);
+			SetEntProp(weapon, Prop_Send, "m_iEntityQuality", 0);
+			SetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex", itemDefIndex);
+			SetEntPropEnt(weapon, Prop_Send, "m_hOwnerEntity", client);
+			SetEntityTargetname(weapon, "dtk_weapon");
+
+			if (!DispatchSpawn(weapon)) {
+				RemoveEntity(weapon);
+				entindex = -1;
+			}
 		}
 	}
 
-	return weapon;
+	return entindex;
 }

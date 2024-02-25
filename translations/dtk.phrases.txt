@@ -1,11 +1,11 @@
 /*
 	Phrases in need of translation:
-	
+
 	"menu_item_admin_bonus_points"
 	{
 		"en"			"Bonus queue points"
 	}
-	
+
 	"menu_item_admin_activator_ban"
 	{
 		"en"			"Activator ban"
@@ -19,13 +19,13 @@
 /*
 	About Translations
 	------------------
-	
+
 	Phrases which have been modified since they were translated will have 'modified' in a comment after them.
-	
+
 
 	Coloured Text Guidelines
 	------------------------
-	
+
 	Radio and chat strings can have control characters embedded to set colors.
 	For the control characters to be used, one must be at the start of the string.
 	The control characters can be copied and pasted in notepad or typed on the numerical keypad
@@ -38,14 +38,14 @@
 	 = 0x04 (EOT) - Use location color from this point forward (bright green)
 	 = 0x05 (ENQ) - Use achievement color from this point forward (olive)
 	 = 0x01 (SOH) - Use normal color from this point forward
-	
-	
+
+
 	I recommend only colouring player names, items and achievements.
 	All other text should ideally be the default colour for readability.
 	Note that team colour codes will default to light green if the plugin doesn't implement support for them.
-	
+
 	In TF2 it's possible to use RGB and alpha values for colours and transparency.
-	
+
 	 = 0x07 (BEL) - Suffix with a six character hex RGB value
 	  = 0x08 (BS)  - Suffix with an eight character hex RGBA value
 */
@@ -56,7 +56,7 @@
  * Public Notices
  * ----------------------------------------------------------------------------------------------------
  */
- 
+
 	"name_has_been_made_activator"
 	{
 		"#format"		"{1:s}"
@@ -66,7 +66,7 @@
 		"fr"			"{1} est devenu l'activateur"
 		"ee"			"{1} on muudetud aktivaatoriks"
 	}
-	
+
 	"restarting_round_seconds"
 	{
 		"#format"		"{1:d}"
@@ -74,7 +74,7 @@
 		"da"			"Genstarter runden om {1} sekunder"
 		"it"			"Riavviare il round in {1} secondi"
 		"fr" 			"Redémarrage du tour dans {1} seconde"
-		"ee"			"Taaskäivitan mängu {1} sekundi pärast" 
+		"ee"			"Taaskäivitan mängu {1} sekundi pärast"
 	}
 
 
@@ -84,7 +84,7 @@
  * Messages to Individual Clients
  * ----------------------------------------------------------------------------------------------------
  */
-	
+
 	"opted_out_activator"
 	{
 		"en"			"You've opted out of becoming an activator"
@@ -93,7 +93,7 @@
 		"it"			"Hai scelto di non diventare un attivatore"
 		"ee"			"Sa oled loobunud aktivaatori olemisest"
 	}
-	
+
 	"opted_in_activator"
 	{
 		"en"			"You've opted in to becoming an activator"
@@ -102,7 +102,7 @@
 		"it"			"Hai scelto di diventare un attivatore"
 		"ee"			"Sa võid olla aktivaator nüüd"
 	}
-	
+
 	"you_are_an_activator"
 	{
 		"en"			"You've been made an activator"
@@ -111,7 +111,7 @@
 		"it"			"Sei diventato un attivatore"
 		"ee"			"Sa oled tehtud aktivaatoriks"
 	}
-	
+
 	"welcome_player_to_deathrun_toolkit"
 	{
 		"#format"		"{1:s}"		// Player name
@@ -123,14 +123,14 @@
 		"fr"			"Bienvenue, {1}. Ce serveur utilise Deathrun Toolkit.\n  Ecrit /dr pour ouvrir le menu et changer tes paramètres"
 		"ee"			"Tere, {1}. See server kasutab Deathrun Toolkiti.\n  Kirjuta /dr menüü jaoks et muuta oma eelistusi."
 	}
-	
-	
-	
+
+
+
 /**
  * Information
  * ----------------------------------------------------------------------------------------------------
  */
-	
+
 	"killed_by_entity_classname"
 	{
 		"#format"		"{1:s},{2:s}"	// 1. killing entity classname, 2. targetname (if it exists)
@@ -140,9 +140,9 @@
 		"tr"			"Sen bir CD5C5C{1} {2} tarafından öldürüldün"
 		"da"			"Du blev dræbt af en CD5C5C{1} {2}"
 		"fr"			"Tu as été tué par un CD5C5C{1} {2}"
-		"ee"			"Sind tappis ära CD5C5C{1} {2}" 
+		"ee"			"Sind tappis ära CD5C5C{1} {2}"
 	}
-	
+
 	"next_activators"
 	{
 		"en"			"Next activators: "
@@ -151,9 +151,9 @@
 		"tr"			"Sonraki aktivatörler: "
 		"da"			"Næste aktivatorer: "
 		"fr"			"Prochains activateurs: "
-		"ee"			"Järgmised aktivaatorid: " 
+		"ee"			"Järgmised aktivaatorid: "
 	}
-	
+
 	"next_activator"
 	{
 		"en"			"Next activator: "
@@ -162,14 +162,14 @@
 		"it"			"Prossimo attivatore: "
 		"ee"			"Järgmine aktivaator: "
 	}
-	
+
 
 /**
  * Round Start
  * ----------------------------------------------------------------------------------------------------
  * Phrase keys must have consecutive numbers. Gaps will break the cycle.
  */
-	
+
 	"round_has_begun_1"
 	{
 		"en"			"The round has begun. Tread carefully!"
@@ -180,7 +180,7 @@
 		"fr"			"Le tour a commencé. Avance avec prudence!"
 		"ee"			"Matš on alanud. Ole ettevaatlik!"
 	}
-	
+
 	"round_has_begun_2"
 	{
 		"en"			"It's dangerous to go alone... take <insert object>"
@@ -191,7 +191,7 @@
 		"fr"			"C'est dangereux d'y aller seul... prend <inserez objet>"
 		"ee"			"On ohtlik olla üksi... võta <sisesta objekt>"
 	}
-	
+
 	"round_has_begun_3"
 	{
 		"en"			"I declare this round officially open! Woooo!"
@@ -202,7 +202,7 @@
 		"fr"			"Je déclare ce tour officiellement overt! Woooo!"
 		"ee"			"Ma kuulutan matši alustunuks! Woooo!"
 	}
-	
+
 	"round_has_begun_4"
 	{
 		"en"			"I wasn't always a round start announcer, you know"
@@ -213,7 +213,7 @@
 		"fr"			"Je n'ai pas toujours été un annonceur de début de tour, vous savez"
 		"ee"			"Ma polnud alati matši alustuse teadustaja, tead sa"
 	}
-	
+
 	"round_has_begun_5"
 	{
 		"en"			"I don't know about you, but I'd say it's a safe bet some people are gonna die"
@@ -224,7 +224,7 @@
 		"fr"			"Je sais pas ce que t'en penses, mais je parie qu'il y aura beacoup de morts"
 		"ee"			"Ma ei tea mis sina arvad, aga mina arvan et on päris kindel et mõned inimesed surevad ära"
 	}
-	
+
 	"round_has_begun_6"
 	{
 		"en"			"Beep boop beep! Round has begun, maggots!"
@@ -235,7 +235,7 @@
 		"fr"			"Bip boop bip! Le tour a commencé, vermines!"
 		"ee"			"Piiks puuks piiks! Matš on alanud, tõugad!"
 	}
-		
+
 	"round_has_begun_7"
 	{
 		"en"			"FYI the round has started. You should probably move"
@@ -246,7 +246,7 @@
 		"fr"			"Pour ton information le tour a commencé, tu devrais probablement bouger"
 		"ee"			"Sinu teadmiseks, matš on alanud. Sa võiksid hakata liikuma"
 	}
-	
+
 	"round_has_begun_8"
 	{
 		"en"			"Take your 'I want to be alive' attitude outside, no one wants to hear that in here"
@@ -257,7 +257,7 @@
 		"fr"			"Prends ton 'Je veux vivre' attitude dehors, personne veux entendre ça ici"
 		"ee"			"Vii oma 'Ma tahan elada' suhtumine õue, keegi siin ei taha seda kuulata"
 	}
-	
+
 	"round_has_begun_9"
 	{
 		"en"			"Hello. How may I assist you with your death?"
@@ -289,7 +289,7 @@
 		"fr"			"Paramètres"
 		"ee"			"Eelistused"
 	}
-	
+
 	"menu_item_queue"
 	{
 		"en"			"Activator queue"
@@ -299,7 +299,7 @@
 		"fr"			"File d'activateur"
 		"ee"			"Aktivaatorite järjekord"
 	}
-	
+
 	"menu_item_help"
 	{
 		"en"			"Help"
@@ -309,7 +309,7 @@
 		"fr"			"Aide"
 		"ee"			"Abi"
 	}
-	
+
 	"menu_item_admin"
 	{
 		"en"			"Admin"
@@ -319,12 +319,12 @@
 		"fr"			"Admin"
 		"ee"			"Administraator"
 	}
-		
-	
+
+
 /**
  * Preferences Menu
  */
-	
+
 	"menu_item_be_activator"
 	{
 		"en"			"Become an activator"
@@ -333,7 +333,7 @@
 		"fr"			"Devenir l'activateur"
 		"ee"			"Ole aktivaator"
 	}
-	
+
 	"menu_item_dont_be_activator"
 	{
 		"en"			"Don't become an activator"
@@ -343,7 +343,7 @@
 		"fr"			"Ne pas devenir l'activateur"
 		"ee"			"Ära ole aktivaator"
 	}
-	
+
 	"menu item toggle english language"
 	{
 		"en"			"English SourceMod messages\n \n"
@@ -353,56 +353,56 @@
 		"fr"			"Messages SourceMod en Anglais\n \n"
 		"ee"			"Inglise keel SourceMod messages\n \n"
 	}
-	
-	
+
+
 /**
  * Admin Menu
  */
- 
+
 	"menu_item_admin_bonus_points"
 	{
 		"en"			"Bonus queue points"
 	}
-	
+
 	"menu_item_admin_activator_ban"
 	{
 		"en"			"Activator ban"
 	}
-	
-	"menu_item_admin_scale_activator_health"
-	{
-		"en"			"Scale the activator's health"
-		"it"			"Scala la vita dell'attivatore"
-		"tr"			"Aktivatör'ün canını ölçekle"
-		"da"			"Skaler aktivatorens liv"
-		"fr"			"Multiplier la vie de l'activateur"
-		"ee"			"Kaalu aktivaatori tervist"
-	}
-	
-	"menu_item_admin_jetpack_game"
-	{
-		"en"			"Jetpack Game"
-		"it"			"Gioco Jetpack"
-		"tr"			"Jet çantası Oyunu"
-		"da"			"Jetpack Spil"
-		"fr"			"Jeu Jetpack"
-		"ee"			"Jetpacki mäng"
-	}
-	
-	"menu_item_admin_periodic_slap"	// modified - needs tr
-	{
-		"en"			"Periodic Slap"
-		"da"			"Periodisk Slap"
-		"fr"			"Frappe Périodique"
-		"it"			"Slap periodico"
-		"ee"			"Perioodiline peks"
-	}
 
-	
+	// "menu_item_admin_scale_activator_health"
+	// {
+	// 	"en"			"Scale the activator's health"
+	// 	"it"			"Scala la vita dell'attivatore"
+	// 	"tr"			"Aktivatör'ün canını ölçekle"
+	// 	"da"			"Skaler aktivatorens liv"
+	// 	"fr"			"Multiplier la vie de l'activateur"
+	// 	"ee"			"Kaalu aktivaatori tervist"
+	// }
+
+	// "menu_item_admin_jetpack_game"
+	// {
+	// 	"en"			"Jetpack Game"
+	// 	"it"			"Gioco Jetpack"
+	// 	"tr"			"Jet çantası Oyunu"
+	// 	"da"			"Jetpack Spil"
+	// 	"fr"			"Jeu Jetpack"
+	// 	"ee"			"Jetpacki mäng"
+	// }
+
+	// "menu_item_admin_periodic_slap"	// modified - needs tr
+	// {
+	// 	"en"			"Periodic Slap"
+	// 	"da"			"Periodisk Slap"
+	// 	"fr"			"Frappe Périodique"
+	// 	"it"			"Slap periodico"
+	// 	"ee"			"Perioodiline peks"
+	// }
+
+
 /**
  * Common Items
  */
-	 
+
 	"menu_item_yes"
 	{
 		"en"			"Yes"
@@ -413,7 +413,7 @@
 		"fr"			"Oui"
 		"ee"			"Jah"
 	}
-	
+
 	"menu_item_no"
 	{
 		"en"			"No"
@@ -424,7 +424,7 @@
 		"fr"			"Non"
 		"ee"			"Ei"
 	}
-	
+
 
 /**
  * Warnings
@@ -441,13 +441,13 @@
 		"fr"			"Désolé, tu ne peut pas de suicider en temps qu'activateur ou changer d'équipe"
 		"ee"			"Sorri, sa ei või teha enesetappu ning sa ei või vahetada tiimi aktivaatorina"
 	}
-	
-	
-	
+
+
+
 /**
  * Credits
  * ----------------------------------------------------------------------------------------------------
- * 
+ *
  * German (de):		Izotope
  * Turkish (tr):	Berke
  * Danish (da):		ks_goescoding
