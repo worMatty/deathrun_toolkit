@@ -15,7 +15,7 @@ Upload these two files to your server's SourceMod installation
 * `addons/sourcemod/translations/dtk.phrases.txt`
 
 That's all you need to do to get started. The plugin will enable itself when it detects a map with a `dr_` prefix and disable itself on map end.
-#### Mele Weapon restrictions
+#### Melee Weapon Restrictions
 Most modern deathrun maps can function perfectly fine with primary and secondary weapons allowed and only require a small number of sensible restrictions such as disabling blast-jumping. The plugin comes with a ready-made restrictions config file to do this for you. Read the next installation section for information.
 
 It is an outdated practice to restrict all players to melee weapons. However if you need to do this for some reason, you can set the console variables `dtk_red_melee` and `dtk_blue_melee` to `1`.
