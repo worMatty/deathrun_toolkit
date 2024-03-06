@@ -615,6 +615,12 @@ void ApplyPlayerAttributes(int client)
 		{
 			player.SetSpeed(g_ConVars[P_BlueSpeed].IntValue);
 		}
+
+		// Double Jump
+		if (!g_ConVars[P_BlueAirDash].BoolValue && player.Class == Class_Scout)
+		{
+			AddAttribute(client, "no double jump", 1.0);
+		}
 	}
 
 	// Red

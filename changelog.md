@@ -1,6 +1,10 @@
 # Deathrun Toolkit
 ## Changelog
 
+### Version 0.5.2
+Minor addition:
+* New ConVar `dtk_blue_air_dash` to control blue scouts air dash. Default is on
+
 ### Version 0.5.1
 Fixed:
 * The restriction system was not actually using attribute values, and was defaulting to 0.0

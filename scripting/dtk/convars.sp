@@ -21,6 +21,7 @@ enum
 	P_RedSpeed,
 	P_RedScoutSpeed,
 	P_RedAirDash,
+	P_BlueAirDash,
 	P_RedMelee,
 	P_BlueSpeed,
 	P_BlueMelee,
@@ -60,7 +61,8 @@ void
 	g_ConVars[P_RedSpeed]		   = CreateConVar("dtk_red_speed", "0", "Apply a flat run speed in u/s to all red players");
 	g_ConVars[P_RedScoutSpeed]	   = CreateConVar("dtk_red_speed_scout", "0", "Adjust the run speed in u/s of red scouts");
 	g_ConVars[P_BlueSpeed]		   = CreateConVar("dtk_blue_speed", "0", "Apply a flat run speed in u/s to all blue players");
-	g_ConVars[P_RedAirDash]		   = CreateConVar("dtk_red_air_dash", "0", "Allow red scout air dash");
+	g_ConVars[P_RedAirDash]		   = CreateConVar("dtk_red_air_dash", "0", "Allow red scouts air dash");
+	g_ConVars[P_BlueAirDash]		   = CreateConVar("dtk_blue_air_dash", "1", "Allow blue scouts air dash");
 	g_ConVars[P_RedMelee]		   = CreateConVar("dtk_red_melee", "0", "Restrict red players to melee weapons");
 	g_ConVars[P_BlueMelee]		   = CreateConVar("dtk_blue_melee", "0", "Restrict blue players to melee weapons");
 	g_ConVars[P_Buildings]		   = CreateConVar("dtk_buildings", "12", "Restrict engineer buildings. Add up these values to make the ConVar value: Sentry = 1, Dispenser = 2, Tele Entrance = 4, Tele Exit = 8");
