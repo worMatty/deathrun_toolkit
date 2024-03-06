@@ -38,7 +38,8 @@ enum
 	ConVars_Max
 }
 
-void ConVars_Init()
+void
+	ConVars_Init()
 {
 	// Plugin ConVars
 	CreateConVar("dtk_version", PLUGIN_VERSION, _, FCVAR_NOTIFY);
@@ -53,25 +54,25 @@ void ConVars_Init()
 	g_ConVars[P_ActivatorsMax]	   = CreateConVar("dtk_activators_max", "1", "Maximum number of activators. -1 = no maximum. There will always be one player on each team");
 	g_ConVars[P_ActivatorRatio]	   = CreateConVar("dtk_activator_ratio", "0.2", "Activator ratio. Decimal fraction of the number of participants who will be chosen as activators. e.g. 0.2 means one fifth of participants will become an activator");
 	g_ConVars[P_LockActivator]	   = CreateConVar("dtk_lock_activator", "1", "Prevent activators from suiciding or switching teams. 1 = during round, 2 = also during pre-round");
-	g_ConVars[P_BotActivatorOnLow]	= CreateConVar("dtk_bot_activator_on_low", "1", "Make a bot the Activator on low players");
+	g_ConVars[P_BotActivatorOnLow] = CreateConVar("dtk_bot_activator_on_low", "1", "Make a bot the Activator on low players");
 
 	// Player Attributes
-	g_ConVars[P_RedSpeed]	   = CreateConVar("dtk_red_speed", "0", "Apply a flat run speed in u/s to all red players");
-	g_ConVars[P_RedScoutSpeed] = CreateConVar("dtk_red_speed_scout", "0", "Adjust the run speed in u/s of red scouts");
-	g_ConVars[P_BlueSpeed]	   = CreateConVar("dtk_blue_speed", "0", "Apply a flat run speed in u/s to all blue players");
-	g_ConVars[P_RedAirDash]	   = CreateConVar("dtk_red_air_dash", "0", "Allow red scout air dash");
-	g_ConVars[P_RedMelee]	 = CreateConVar("dtk_red_melee", "0", "Restrict red players to melee weapons");
-	g_ConVars[P_BlueMelee]	 = CreateConVar("dtk_blue_melee", "0", "Restrict blue players to melee weapons");
-	g_ConVars[P_Buildings]	 = CreateConVar("dtk_buildings", "12", "Restrict engineer buildings. Add up these values to make the ConVar value: Sentry = 1, Dispenser = 2, Tele Entrance = 4, Tele Exit = 8");
+	g_ConVars[P_RedSpeed]		   = CreateConVar("dtk_red_speed", "0", "Apply a flat run speed in u/s to all red players");
+	g_ConVars[P_RedScoutSpeed]	   = CreateConVar("dtk_red_speed_scout", "0", "Adjust the run speed in u/s of red scouts");
+	g_ConVars[P_BlueSpeed]		   = CreateConVar("dtk_blue_speed", "0", "Apply a flat run speed in u/s to all blue players");
+	g_ConVars[P_RedAirDash]		   = CreateConVar("dtk_red_air_dash", "0", "Allow red scout air dash");
+	g_ConVars[P_RedMelee]		   = CreateConVar("dtk_red_melee", "0", "Restrict red players to melee weapons");
+	g_ConVars[P_BlueMelee]		   = CreateConVar("dtk_blue_melee", "0", "Restrict blue players to melee weapons");
+	g_ConVars[P_Buildings]		   = CreateConVar("dtk_buildings", "12", "Restrict engineer buildings. Add up these values to make the ConVar value: Sentry = 1, Dispenser = 2, Tele Entrance = 4, Tele Exit = 8");
 	g_ConVars[P_RestrictItems]	   = CreateConVar("dtk_restrictions", "1", "Item restrictions");
 
 	// Server ConVars
-	g_ConVars[S_Unbalance]	 = FindConVar("mp_teams_unbalance_limit");
-	g_ConVars[S_AutoBalance] = FindConVar("mp_autoteambalance");
-	g_ConVars[S_Scramble]	 = FindConVar("mp_scrambleteams_auto");
-	g_ConVars[S_Pushaway]	 = FindConVar("tf_avoidteammates_pushaway");
-	g_ConVars[S_Queue]		 = FindConVar("tf_arena_use_queue");
-	g_ConVars[S_FirstBlood]	 = FindConVar("tf_arena_first_blood");
+	g_ConVars[S_Unbalance]		   = FindConVar("mp_teams_unbalance_limit");
+	g_ConVars[S_AutoBalance]	   = FindConVar("mp_autoteambalance");
+	g_ConVars[S_Scramble]		   = FindConVar("mp_scrambleteams_auto");
+	g_ConVars[S_Pushaway]		   = FindConVar("tf_avoidteammates_pushaway");
+	g_ConVars[S_Queue]			   = FindConVar("tf_arena_use_queue");
+	g_ConVars[S_FirstBlood]		   = FindConVar("tf_arena_first_blood");
 
 	// Cycle through and hook each ConVar
 	for (int i = 0; i < ConVars_Max; i++) {

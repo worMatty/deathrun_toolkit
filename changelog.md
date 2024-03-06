@@ -1,7 +1,11 @@
 # Deathrun Toolkit
 ## Changelog
 
-## Version 0.5
+### Version 0.5.1
+Fixed:
+* The restriction system was not actually using attribute values, and was defaulting to 0.0
+
+### Version 0.5
 This version has some breaking changes to the restriction system. You will need to replace or reformat your restrictions config file.
 
 Weapon restriction system changes:
@@ -33,7 +37,7 @@ New features:
 Bug fixes:
 * Replacement weapons were not being given the attributes specified in the restriction system
 
-## Version 0.4.7.1
+### Version 0.4.7.1
 Bug fixes:
 * Replacement weapons were not being equipped
 

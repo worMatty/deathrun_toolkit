@@ -115,7 +115,7 @@ void CheckItem(int client, int item, int slot = -1)
 		kv.GotoFirstSubKey(false);
 		do {
 			kv.GetSectionName(name, sizeof(name));
-			value = kv.GetFloat(name);
+			value = kv.GetFloat(NULL_STRING);
 			AddAttribute(item, name, value);
 		}
 		while (kv.GotoNextKey(false))
