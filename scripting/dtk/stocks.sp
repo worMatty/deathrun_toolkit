@@ -1,4 +1,11 @@
-// Matty's stocks v1
+// Matty's stocks v1.1
+
+/**
+ * Changelog
+ * 1.1 - GetEntityParent; GetEntityAbsOrigin;
+ */
+
+#include <tf2_stocks>
 
 // Life states
 enum {
@@ -466,6 +473,16 @@ stock int GetEntityTargetname(int entity, char[] targetname, int maxlength)
 {
 	int num_written = GetEntPropString(entity, Prop_Data, "m_iName", targetname, maxlength);
 	return num_written;
+}
+
+/**
+ * Get an entity's origin
+ * @param	entity			Entity index or reference
+ * @prarm	origin			Three floats to store the X Y Z position
+ */
+stock void GetEntityAbsOrigin(int entity, float origin[3])
+{
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", origin);
 }
 
 

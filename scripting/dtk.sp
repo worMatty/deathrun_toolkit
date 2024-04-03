@@ -13,7 +13,7 @@
 
 // ----------------------------------------------------------------------------------------------------
 
-#define PLUGIN_VERSION			"0.5.2"
+#define PLUGIN_VERSION			"0.5.3"
 #define PLUGIN_NAME				"[DTK] Deathrun Toolkit"
 #define PLUGIN_SHORTNAME		"Deathrun Toolkit"
 
@@ -50,7 +50,7 @@ int		   g_GameState;
 
 ConVar	   g_ConVars[ConVars_Max];
 DRGameType DRGame;
-ArrayList  g_Activators;	// used by activators.sp, funstuff.sp, methodmaps.sp
+ArrayList  g_Activators;
 StringMap  g_Sounds;
 
 #include "dtk/activators.sp"
@@ -77,6 +77,13 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 {
 	MarkNativeAsOptional("SteamWorks_SetGameDescription");
 	MarkNativeAsOptional("SCR_SendEvent");
+	MarkNativeAsOptional("TF2Items_CreateItem");
+	MarkNativeAsOptional("TF2Items_SetClassname");
+	MarkNativeAsOptional("TF2Items_SetItemIndex");
+	MarkNativeAsOptional("TF2Items_SetLevel");
+	MarkNativeAsOptional("TF2Items_SetQuality");
+	MarkNativeAsOptional("TF2Items_SetNumAttributes");
+	MarkNativeAsOptional("TF2Items_GiveNamedItem");
 
 	return APLRes_Success;
 }
@@ -150,6 +157,7 @@ public void OnMapStart()
 {
 	DBCreateTable();
 	DBPrune();
+	g_Activators = new ArrayList();
 }
 
 public void OnMapEnd()
@@ -244,14 +252,11 @@ void   EnableGameMode(bool enabled)
 
 	if (enabled) {
 		g_TimerQP	 = CreateTimer(TIMER_GRANTPOINTS, Timer_GrantPoints, _, TIMER_REPEAT);
-		g_Activators = new ArrayList();
 	}
 	else {
 		if (g_TimerQP != null) {
 			delete g_TimerQP;
 		}
-
-		delete g_Activators;
 	}
 
 	// ConVars

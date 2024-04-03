@@ -1,6 +1,10 @@
 # Deathrun Toolkit
 ## Changelog
 
+### Version 0.5.3
+* TF2Items natives have been marked as optional. Sorry if this caused anyone inconvenience
+* Fixed an error related to the activators arraylist causing an exception after a map change
+
 ### Version 0.5.2
 Minor addition:
 * New ConVar `dtk_blue_air_dash` to control blue scouts air dash. Default is on
