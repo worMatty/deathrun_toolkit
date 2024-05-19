@@ -62,9 +62,10 @@
 		"#format"		"{1:s}"
 		"en"			"{1} has been made an activator"
 		"da"			"{1} er blevet valgt som aktivator"
-		"it"			"{1} è stato creato un attivatore"
-		"fr"			"{1} est devenu l'activateur"
 		"ee"			"{1} on muudetud aktivaatoriks"
+		"fr"			"{1} est devenu l'activateur"
+		"it"			"{1} è stato creato un attivatore"
+		"tr"			"{1} aktivatör yapıldı"
 	}
 
 	"restarting_round_seconds"
@@ -72,9 +73,10 @@
 		"#format"		"{1:d}"
 		"en"			"Restarting the round in {1} seconds"
 		"da"			"Genstarter runden om {1} sekunder"
-		"it"			"Riavviare il round in {1} secondi"
-		"fr" 			"Redémarrage du tour dans {1} seconde"
 		"ee"			"Taaskäivitan mängu {1} sekundi pärast"
+		"fr" 			"Redémarrage du tour dans {1} seconde"
+		"it"			"Riavviare il round in {1} secondi"
+		"tr"			"Tur {1} saniye içinde yeniden başlatılacak"
 	}
 
 
@@ -89,39 +91,42 @@
 	{
 		"en"			"You've opted out of becoming an activator"
 		"da"			"Du har bedt om aldrig at blive aktivator"
+		"ee"			"Sa oled loobunud aktivaatori olemisest"
 		"fr"			"Tu as décidé de ne plus être l'activateur"
 		"it"			"Hai scelto di non diventare un attivatore"
-		"ee"			"Sa oled loobunud aktivaatori olemisest"
+		"tr"			"Aktivatör olmayı devre dışı bıraktın"
 	}
 
 	"opted_in_activator"
 	{
 		"en"			"You've opted in to becoming an activator"
 		"da"			"Du har bedt om at blive aktivator"
+		"ee"			"Sa võid olla aktivaator nüüd"
 		"fr"			"Tu as décidé de devenir l'activateur"
 		"it"			"Hai scelto di diventare un attivatore"
-		"ee"			"Sa võid olla aktivaator nüüd"
+		"tr"			"Aktivatör olmayı etkinleştirdin"
 	}
 
 	"you_are_an_activator"
 	{
 		"en"			"You've been made an activator"
 		"da"			"Du er blevet valgt som aktivator"
+		"ee"			"Sa oled tehtud aktivaatoriks"
 		"fr"			"Tu es devenu l'activateur"
 		"it"			"Sei diventato un attivatore"
-		"ee"			"Sa oled tehtud aktivaatoriks"
+		"tr"			"Aktivatör yapıldın"
 	}
 
 	"welcome_player_to_deathrun_toolkit"
 	{
 		"#format"		"{1:s}"		// Player name
 		"en"			"Hello, {1}. This server is running Deathrun Toolkit.\n  Type /dr for the menu to change your preferences"
+		"da"			"Velkommen, {1}. Denne server kører med Deathrun Toolkit.\n  Skriv /dr i chatten for at ændre din præferencer"
 		"de"			"Willkommen zu Deathrun Toolkit, {1}. Öffne das Menü mit /dr"
+		"ee"			"Tere, {1}. See server kasutab Deathrun Toolkiti.\n  Kirjuta /dr menüü jaoks et muuta oma eelistusi."
+		"fr"			"Bienvenue, {1}. Ce serveur utilise Deathrun Toolkit.\n  Ecrit /dr pour ouvrir le menu et changer tes paramètres"
 		"it"			"Buongiorno, {1}. Questo server sta eseguendo Deathrun Toolkit.\n  Scrito /dr per il menu per cambiare le tue preferenze"
 		"tr"			"Merhaba, {1}. Bu sunucu Deathrun Toolkit çalıştırıyor.\n  Menü için /dr yazarak senin tercihlerini değiştir"
-		"da"			"Velkommen, {1}. Denne server kører med Deathrun Toolkit.\n  Skriv /dr i chatten for at ændre din præferencer"
-		"fr"			"Bienvenue, {1}. Ce serveur utilise Deathrun Toolkit.\n  Ecrit /dr pour ouvrir le menu et changer tes paramètres"
-		"ee"			"Tere, {1}. See server kasutab Deathrun Toolkiti.\n  Kirjuta /dr menüü jaoks et muuta oma eelistusi."
 	}
 
 
@@ -135,32 +140,33 @@
 	{
 		"#format"		"{1:s},{2:s}"	// 1. killing entity classname, 2. targetname (if it exists)
 		"en"			"You were killed by a CD5C5C{1} {2}"
-		"de"			"Du wurdest von CD5C5C{1} {2} getötet"
-		"it"			"Sei stato ucciso da un CD5C5C{1} {2}"
-		"tr"			"Sen bir CD5C5C{1} {2} tarafından öldürüldün"
 		"da"			"Du blev dræbt af en CD5C5C{1} {2}"
-		"fr"			"Tu as été tué par un CD5C5C{1} {2}"
+		"de"			"Du wurdest von CD5C5C{1} {2} getötet"
 		"ee"			"Sind tappis ära CD5C5C{1} {2}"
+		"fr"			"Tu as été tué par un CD5C5C{1} {2}"
+		"it"			"Sei stato ucciso da un CD5C5C{1} {2}"
+		"tr"			"Bir CD5C5C{1} {2} tarafından öldürüldün"
 	}
 
 	"next_activators"
 	{
 		"en"			"Next activators: "
+		"da"			"Næste aktivatorer: "
 		"de"			"Nächste Aktivierer: "
+		"ee"			"Järgmised aktivaatorid: "
+		"fr"			"Prochains activateurs: "
 		"it" 			"Prossimo attivatori: "
 		"tr"			"Sonraki aktivatörler: "
-		"da"			"Næste aktivatorer: "
-		"fr"			"Prochains activateurs: "
-		"ee"			"Järgmised aktivaatorid: "
 	}
 
 	"next_activator"
 	{
 		"en"			"Next activator: "
 		"da"			"Næste aktivator: "
+		"ee"			"Järgmine aktivaator: "
 		"fr"			"Prochain activateur: "
 		"it"			"Prossimo attivatore: "
-		"ee"			"Järgmine aktivaator: "
+		"tr"			"Sonraki aktivatör: "
 	}
 
 
@@ -173,100 +179,100 @@
 	"round_has_begun_1"
 	{
 		"en"			"The round has begun. Tread carefully!"
+		"da"			"Runden er begyndt. Træd forsigtigt!"
 		"de"			"Die Runde hat begonnen. Sei vorsichtig!"
+		"ee"			"Matš on alanud. Ole ettevaatlik!"
+		"fr"			"Le tour a commencé. Avance avec prudence!"
 		"it"			"Il giro è iniziato. Procedere con cautela!"
 		"tr"			"Tur başladı. Hareketlerine dikkat et!"
-		"da"			"Runden er begyndt. Træd forsigtigt!"
-		"fr"			"Le tour a commencé. Avance avec prudence!"
-		"ee"			"Matš on alanud. Ole ettevaatlik!"
 	}
 
 	"round_has_begun_2"
 	{
 		"en"			"It's dangerous to go alone... take <insert object>"
+		"da"			"Det er farligt at gå alene... tag <indsæt objekt>"
 		"de"			"Es ist gefährlich alleine zu gehen... nimm <objekt einfügen>"
+		"ee"			"On ohtlik olla üksi... võta <sisesta objekt>"
+		"fr"			"C'est dangereux d'y aller seul... prend <inserez objet>"
 		"it"			"È pericoloso andare da soli... prendere <inserire oggetto>"
 		"tr"			"Yalnız gitmek tehlikeli... yanına <obje ekle> al"
-		"da"			"Det er farligt at gå alene... tag <indsæt objekt>"
-		"fr"			"C'est dangereux d'y aller seul... prend <inserez objet>"
-		"ee"			"On ohtlik olla üksi... võta <sisesta objekt>"
 	}
 
 	"round_has_begun_3"
 	{
 		"en"			"I declare this round officially open! Woooo!"
-		"de"			"Hiermit erkläre ich diese Runde offiziell für eröffnet! Woooo!"
-		"it"			"Dichiaro questo round ufficialmente aperto! Woooo!"
-		"tr"			"Bu turun resmi olarak açık olduğunu ilan ediyorum! Woooo!"
 		"da"			"Jeg erklærer denne runde for officielt åben! Woooo!"
-		"fr"			"Je déclare ce tour officiellement overt! Woooo!"
+		"de"			"Hiermit erkläre ich diese Runde offiziell für eröffnet! Woooo!"
 		"ee"			"Ma kuulutan matši alustunuks! Woooo!"
+		"fr"			"Je déclare ce tour officiellement overt! Woooo!"
+		"it"			"Dichiaro questo round ufficialmente aperto! Woooo!"
+		"tr"			"Bu turun resmen açıldığını ilan ediyorum! Voooo!"
 	}
 
 	"round_has_begun_4"
 	{
 		"en"			"I wasn't always a round start announcer, you know"
-		"de"			"Weißt Du, ich war nicht immer ein Rundenstart Ansager"
-		"it"			"Non sono sempre stato un annunciatore, sai"
-		"tr"			"Bilirsin, ben her zaman bir tur başlayış spikeri değildim"
 		"da"			"Vidste du, at jeg ikke altid har annonceret runde start"
-		"fr"			"Je n'ai pas toujours été un annonceur de début de tour, vous savez"
+		"de"			"Weißt Du, ich war nicht immer ein Rundenstart Ansager"
 		"ee"			"Ma polnud alati matši alustuse teadustaja, tead sa"
+		"fr"			"Je n'ai pas toujours été un annonceur de début de tour, vous savez"
+		"it"			"Non sono sempre stato un annunciatore, sai"
+		"tr"			"Her zaman bir tur başlayış spikeri değildim, bilirsin"
 	}
 
 	"round_has_begun_5"
 	{
 		"en"			"I don't know about you, but I'd say it's a safe bet some people are gonna die"
-		"de"			"Ich weiß nicht wie es Dir geht, aber ich würde behaupten dass hier einige Leute sterben werden"
-		"it"			"Non so tu, ma io direi che è una scommessa sicura che alcune persone moriranno"
-		"tr"			"Seni bilmiyorum, ama ben derdim ki bazı insanların öleceği güvenli bir bahisdir"
 		"da"			"Jeg ved ikke med dig, men jeg vil sige det er sikkert at nogle folk dør"
-		"fr"			"Je sais pas ce que t'en penses, mais je parie qu'il y aura beacoup de morts"
+		"de"			"Ich weiß nicht wie es Dir geht, aber ich würde behaupten dass hier einige Leute sterben werden"
 		"ee"			"Ma ei tea mis sina arvad, aga mina arvan et on päris kindel et mõned inimesed surevad ära"
+		"fr"			"Je sais pas ce que t'en penses, mais je parie qu'il y aura beacoup de morts"
+		"it"			"Non so tu, ma io direi che è una scommessa sicura che alcune persone moriranno"
+		"tr"			"Seni bilmem ama ben derdim ki bazı insanların öleceği güvenli bir bahistir"
 	}
 
 	"round_has_begun_6"
 	{
 		"en"			"Beep boop beep! Round has begun, maggots!"
+		"da"			"Beep boop beep! Runden er begyndt, madiker!"
 		"de"			"Beep boop beep! Runde hat begonnen, Maden!"
+		"ee"			"Piiks puuks piiks! Matš on alanud, tõugad!"
+		"fr"			"Bip boop bip! Le tour a commencé, vermines!"
 		"it"			"Beep boop beep! Il giro è iniziato, vermi!"
 		"tr"			"Beep boop beep! Tur başladı, kurtçuklar!"
-		"da"			"Beep boop beep! Runden er begyndt, madiker!"
-		"fr"			"Bip boop bip! Le tour a commencé, vermines!"
-		"ee"			"Piiks puuks piiks! Matš on alanud, tõugad!"
 	}
 
 	"round_has_begun_7"
 	{
 		"en"			"FYI the round has started. You should probably move"
-		"de"			"Nur damit du es auch weißt: Die Runde hat begonnen. Vielleicht solltest du dich bewegen"
-		"it"			"per tua informazione il giro è iniziato. Probabilmente dovresti muoverti"
-		"tr"			"Bilginize, tur başladı. Muhtemelen hareket etmelisin"
 		"da"			"Til information er runden altså startet. Du burde bevæge dig"
-		"fr"			"Pour ton information le tour a commencé, tu devrais probablement bouger"
+		"de"			"Nur damit du es auch weißt: Die Runde hat begonnen. Vielleicht solltest du dich bewegen"
 		"ee"			"Sinu teadmiseks, matš on alanud. Sa võiksid hakata liikuma"
+		"fr"			"Pour ton information le tour a commencé, tu devrais probablement bouger"
+		"it"			"per tua informazione il giro è iniziato. Probabilmente dovresti muoverti"
+		"tr"			"Bilginize, tur başladı. Mühtemelen hareket etmelisin"
 	}
 
 	"round_has_begun_8"
 	{
 		"en"			"Take your 'I want to be alive' attitude outside, no one wants to hear that in here"
-		"de"			"Nimm deine 'Ich will nicht sterben' einstellung nach draußen, dass will hier keiner hören"
-		"it"			"Prendi il tuo atteggiamento 'voglio essere vivo' fuori, nessuno vuole sentire questo qui"
-		"tr"			"Senin o 'Ben yaşamak istiyorum' tavrını dışarı al, kimse onu burda duymak istemiyor"
 		"da"			"Tag din 'Jeg vil ikke leve' attitude med ud, ingen vil høre sådan noget herinde"
-		"fr"			"Prends ton 'Je veux vivre' attitude dehors, personne veux entendre ça ici"
+		"de"			"Nimm deine 'Ich will nicht sterben' einstellung nach draußen, dass will hier keiner hören"
 		"ee"			"Vii oma 'Ma tahan elada' suhtumine õue, keegi siin ei taha seda kuulata"
+		"fr"			"Prends ton 'Je veux vivre' attitude dehors, personne veux entendre ça ici"
+		"it"			"Prendi il tuo atteggiamento 'voglio essere vivo' fuori, nessuno vuole sentire questo qui"
+		"tr"			"O \"Ben yaşamak istiyorum!\" tavrını dışarı al, kimse onu burda duymak istemiyor"
 	}
 
 	"round_has_begun_9"
 	{
 		"en"			"Hello. How may I assist you with your death?"
-		"de"			"Guten Tag. Wie kann ich Ihnen mit ihrem Tod helfen?"
-		"it"			"Ciao. Come posso aiutarvi con la vostra morte?"
-		"tr"			"Merhaba. Ölümünde sana nasıl yardımcı olabilirim?"
 		"da"			"Hej. Hvordan kan jeg hjælpe dig med døden?"
-		"fr"			"Bonjour. Comment puis-je vous assister avec votre mort?"
+		"de"			"Guten Tag. Wie kann ich Ihnen mit ihrem Tod helfen?"
 		"ee"			"Tere. Kuidas ma saaksin teid aidata oma surmaga?"
+		"fr"			"Bonjour. Comment puis-je vous assister avec votre mort?"
+		"it"			"Ciao. Come posso aiutarvi con la vostra morte?"
+		"tr"			"Merhaba, ölümünde sana nasıl yardımcı olabilirim?"
 	}
 
 
@@ -283,41 +289,41 @@
 	"menu_item_preferences"
 	{
 		"en"			"Preferences"
+		"da"			"Præferencer"
+		"ee"			"Eelistused"
+		"fr"			"Paramètres"
 		"it"			"Preferenze"
 		"tr"			"Tercihler"
-		"da"			"Præferencer"
-		"fr"			"Paramètres"
-		"ee"			"Eelistused"
 	}
 
 	"menu_item_queue"
 	{
 		"en"			"Activator queue"
-		"it"			"Coda di attivazione"
-		"tr"			"Sıra puanlarını listele"
 		"da"			"Aktivatør kø"
-		"fr"			"File d'activateur"
 		"ee"			"Aktivaatorite järjekord"
+		"fr"			"File d'activateur"
+		"it"			"Coda di attivazione"
+		"tr"			"Aktivatör sırası"
 	}
 
 	"menu_item_help"
 	{
 		"en"			"Help"
 		"de"			"Hilfe"
+		"ee"			"Abi"
+		"fr"			"Aide"
 		"it"			"Aiuto"
 		"tr"			"Yardım"
-		"fr"			"Aide"
-		"ee"			"Abi"
 	}
 
 	"menu_item_admin"
 	{
 		"en"			"Admin"
-		"it"			"Admin"
-		"tr"			"Yönetim Eğlenceli Şeyler"
 		"da"			"Admin"
-		"fr"			"Admin"
 		"ee"			"Administraator"
+		"fr"			"Admin"
+		"it"			"Admin"
+		"tr"			"Yönetici"
 	}
 
 
@@ -329,29 +335,30 @@
 	{
 		"en"			"Become an activator"
 		"da"			"Bliv en aktivator"
-		"it"			"Diventare un attivatore"
-		"fr"			"Devenir l'activateur"
 		"ee"			"Ole aktivaator"
+		"fr"			"Devenir l'activateur"
+		"it"			"Diventare un attivatore"
+		"tr"			"Bir aktivatör ol"
 	}
 
 	"menu_item_dont_be_activator"
 	{
 		"en"			"Don't become an activator"
-		"it"			"Non diventare un attivatore"
-		"tr"			"Aktivatör olma"
 		"da"			"Bliv ikke en aktivator"
-		"fr"			"Ne pas devenir l'activateur"
 		"ee"			"Ära ole aktivaator"
+		"fr"			"Ne pas devenir l'activateur"
+		"it"			"Non diventare un attivatore"
+		"tr"			"Bir aktivatör olma"
 	}
 
 	"menu item toggle english language"
 	{
 		"en"			"English SourceMod messages\n \n"
-		"it"			"Inglese Sourcemod messaggi\n \n"
-		"tr"			"İngilizce SourceMod çevirilerini değiştir\n \n"
 		"da"			"Engelske SourceMod beskeder\n \n"
-		"fr"			"Messages SourceMod en Anglais\n \n"
 		"ee"			"Inglise keel SourceMod messages\n \n"
+		"fr"			"Messages SourceMod en Anglais\n \n"
+		"it"			"Inglese Sourcemod messaggi\n \n"
+		"tr"			"İngilizce SourceMod mesajları\n \n"
 	}
 
 
@@ -362,11 +369,13 @@
 	"menu_item_admin_bonus_points"
 	{
 		"en"			"Bonus queue points"
+		"tr"			"Bonus sıra puanı"
 	}
 
 	"menu_item_admin_activator_ban"
 	{
 		"en"			"Activator ban"
+		"tr"			"Aktivatör yasağı"
 	}
 
 	// "menu_item_admin_scale_activator_health"
@@ -406,23 +415,23 @@
 	"menu_item_yes"
 	{
 		"en"			"Yes"
+		"da"			"Ja"
+		"de"			"Ja"
+		"ee"			"Jah"
+		"fr"			"Oui"
 		"it"			"Sì"
 		"tr"			"Evet"
-		"de"			"Ja"
-		"da"			"Ja"
-		"fr"			"Oui"
-		"ee"			"Jah"
 	}
 
 	"menu_item_no"
 	{
 		"en"			"No"
-		"da"			"Nein"
+		"da"			"Nej"
+		"de"			"Nein"
+		"ee"			"Ei"
+		"fr"			"Non"
 		"it"			"No"
 		"tr"			"Hayır"
-		"da"			"Nej"
-		"fr"			"Non"
-		"ee"			"Ei"
 	}
 
 
@@ -434,12 +443,12 @@
 	"activator_no_escape"
 	{
 		"en"			"Sorry, you can't suicide as an activator or switch teams"
-		"de"			"Entschuldigung, Du kannst als Aktivierer kein suizid begehen oder das Team ändern"
-		"it"			"Scusa, non puoi suicidarti come attivatore o cambiare squadra"
-		"tr"			"Üzgünüm, aktivatör olarak intihar edemez yada takım değiştiremezsin"
 		"da"			"Beklager, du kan ikke begå selvmord eller skrifte hold når du er aktivator"
-		"fr"			"Désolé, tu ne peut pas de suicider en temps qu'activateur ou changer d'équipe"
+		"de"			"Entschuldigung, Du kannst als Aktivierer kein suizid begehen oder das Team ändern"
 		"ee"			"Sorri, sa ei või teha enesetappu ning sa ei või vahetada tiimi aktivaatorina"
+		"fr"			"Désolé, tu ne peut pas de suicider en temps qu'activateur ou changer d'équipe"
+		"it"			"Scusa, non puoi suicidarti come attivatore o cambiare squadra"
+		"tr"			"Üzgünüm, aktivatör olarak intihar edemez ya da takım değiştiremezsin"
 	}
 
 
@@ -448,11 +457,11 @@
  * Credits
  * ----------------------------------------------------------------------------------------------------
  *
- * German (de):		Izotope
- * Turkish (tr):	Berke
  * Danish (da):		ks_goescoding
- * Italian (it):	shockwave
- * French (fr):		LadyBug
+ * German (de):		Izotope
  * Estonian (ee):	henrio
+ * French (fr):		LadyBug
+ * Italian (it):	shockwave
+ * Turkish (tr):	Berke
  */
 }

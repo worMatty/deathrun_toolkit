@@ -1,6 +1,9 @@
 # Deathrun Toolkit
 ## Changelog
 
+### Version 0.5.4
+* Added convar hook for `dtk_game_description` to update it immediately on change
+
 ### Version 0.5.3
 * TF2Items natives have been marked as optional. Sorry if this caused anyone inconvenience
 * Fixed an error related to the activators arraylist causing an exception after a map change
