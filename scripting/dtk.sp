@@ -16,7 +16,7 @@
 
 // ----------------------------------------------------------------------------------------------------
 
-#define PLUGIN_VERSION			"0.5.4"
+#define PLUGIN_VERSION			"0.5.5"
 #define PLUGIN_NAME				"[DTK] Deathrun Toolkit"
 #define PLUGIN_SHORTNAME		"Deathrun Toolkit"
 
@@ -45,13 +45,13 @@ StringMap BuildSoundList() {
 
 #define MAX_CHAT_MESSAGE 255	// used by activators.sp, commands.sp, events.sp
 
-bool	   g_bSCR;			 // used by activators.sp, events.sp
-bool	   g_bSteamWorks;	 // SteamWorks found
-bool	   g_bTF2Items;		 // TF2Items found
+bool	   g_bSCR;			  // used by activators.sp, events.sp
+bool	   g_bSteamWorks;	  // SteamWorks found
+bool	   g_bTF2Items;		  // TF2Items found
+bool	   g_bInWatchMode;	  // watch mode checks team change events for team imbalances and rectifies
 int		   g_GameState;
 
 ConVar	   g_ConVars[ConVars_Max];
-DRGameType DRGame;
 ArrayList  g_Activators;
 StringMap  g_Sounds;
 

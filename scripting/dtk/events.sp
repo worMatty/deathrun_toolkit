@@ -2,84 +2,79 @@
 
 static bool restarting;
 
-void		Event_RoundRestart(Event event, const char[] name, bool dontBroadcast)
-{
-	PrintToServer("--- The deathrun round has restarted ---");
+void		Event_RoundRestart(Event event, const char[] name, bool dontBroadcast) {
+	   PrintToServer("--- The deathrun round has restarted ---");
 
-	/**
-	 * Double round restart protection
-	 *
-	 * In TF2 Arena there is a bit of a problem.
-	 * If a team is empty when the round restarts, the game will go into a waiting state.
-	 * Once a player joins the empty team, the round will immediately restart again.
-	 * This can cause the activator we selected to be replaced by another.
-	 */
+	   /**
+		* Double round restart protection
+		*
+		* In TF2 Arena there is a bit of a problem.
+		* If a team is empty when the round restarts, the game will go into a waiting state.
+		* Once a player joins the empty team, the round will immediately restart again.
+		* This can cause the activator we selected to be replaced by another.
+		*/
 
-	if (restarting) {
-		ShowActivity(0, "Double round restart detected");
-		return;
-	}
+	   if (restarting) {
+		   ShowActivity(0, "Double round restart detected");
+		   return;
+	   }
 
-	// Activator Selection
-	restarting = true;
+	   // Activator Selection
+	   restarting = true;
 
-	for (int i = 1; i <= MaxClients; i++) {
-		DRPlayer player = DRPlayer(i);
+	   for (int i = 1; i <= MaxClients; i++) {
+		   DRPlayer player = DRPlayer(i);
 
-		if (player.InGame) {
-			if (player.Team == Team_Blue) {
-				player.SetTeam(Team_Red, true);
-			}
-			else {
-				ApplyPlayerAttributes(i);
-			}
-		}
-	}
+		   if (player.InGame) {
+			   if (player.Team == Team_Blue) {
+				   player.SetTeam(Team_Red, true);
+			   } else {
+				   ApplyPlayerAttributes(i);
+			   }
+		   }
+	   }
 
-	SelectActivators();
-	CreateTimer(1.0, Timer_RoundRestarted);
+	   SelectActivators();
+	   CreateTimer(1.0, Timer_RoundRestarted);
 }
 
-Action Timer_RoundRestarted(Handle timer)
-{
+Action Timer_RoundRestarted(Handle timer) {
 	restarting = false;
 	return Plugin_Stop;
 }
 
 static Handle g_hNextActivator;
 
-void		  Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
-{
-	DRGame.InWatchMode = false;	   // No need to watch for team changes now
+void		  Event_RoundStart(Event event, const char[] name, bool dontBroadcast) {
+	 g_bInWatchMode = false;	// No need to watch for team changes now
 
-	// Round Start Message
-	if (g_ConVars[P_RoundStartMessage].BoolValue) {
-		static int phrase_number = 1;
-		char	   phrase[20];
-		Format(phrase, sizeof(phrase), "round_has_begun_%d", phrase_number);
+	 // Round Start Message
+	 if (g_ConVars[P_RoundStartMessage].BoolValue) {
+		 static int phrase_number = 1;
+		 char		phrase[20];
+		 Format(phrase, sizeof(phrase), "round_has_begun_%d", phrase_number);
 
-		if (!TranslationPhraseExists(phrase)) {
-			phrase_number = 1;
-			Format(phrase, sizeof(phrase), "round_has_begun_%d", phrase_number);
-		}
+		 if (!TranslationPhraseExists(phrase)) {
+			 phrase_number = 1;
+			 Format(phrase, sizeof(phrase), "round_has_begun_%d", phrase_number);
+		 }
 
-		TF2_PrintToChatAll(_, "%t", phrase);
-		phrase_number++;
-	}
+		 TF2_PrintToChatAll(_, "%t", phrase);
+		 phrase_number++;
+	 }
 
-	PrintToServer("--- The deathrun round is now active ---");
+	 PrintToServer("--- The deathrun round is now active ---");
 
-	if (g_bSCR && g_ConVars[P_SCR].BoolValue) {
-		SCR_SendEvent("Deathrun Round Active", "Activators: %d Runners: %d", TFTeam_Blue.AliveCount(), TFTeam_Red.AliveCount());
-	}
+	 if (g_bSCR && g_ConVars[P_SCR].BoolValue) {
+		 SCR_SendEvent("Deathrun Round Active", "Activators: %d Runners: %d", TFTeam_Blue.AliveCount(), TFTeam_Red.AliveCount());
+	 }
 
-	// Start next activator message timer
-	delete g_hNextActivator;
-	g_hNextActivator = CreateTimer(TIMER_NA_MESSAGE, Timer_NextActivator_Message, _, TIMER_REPEAT);
+	 // Start next activator message timer
+	 delete g_hNextActivator;
+	 g_hNextActivator = CreateTimer(TIMER_NA_MESSAGE, Timer_NextActivator_Message, _, TIMER_REPEAT);
 }
 
-Action Timer_NextActivator_Message(Handle timer, any data)
-{
+Action Timer_NextActivator_Message(Handle timer, any data) {
 	if (!IsDeathrunRoundActive()) {
 		g_hNextActivator = null;
 		return Plugin_Stop;
@@ -95,8 +90,7 @@ Action Timer_NextActivator_Message(Handle timer, any data)
 	return Plugin_Continue;
 }
 
-void Event_RoundEnd(Event event, const char[] name, bool dontBroadcast)
-{
+void Event_RoundEnd(Event event, const char[] name, bool dontBroadcast) {
 	char buffer[MAX_CHAT_MESSAGE];
 	int	 activators = GetNumActivatorsRequired();
 
@@ -112,16 +106,13 @@ void Event_RoundEnd(Event event, const char[] name, bool dontBroadcast)
 	char scr_message[64];
 
 	switch (winning_team) {
-		case Team_Blue:
-		{
+		case Team_Blue: {
 			Format(scr_message, sizeof(scr_message), "The runners lost!");
 		}
-		case Team_Red:
-		{
+		case Team_Red: {
 			Format(scr_message, sizeof(scr_message), "The runners won!");
 		}
-		default:
-		{
+		default: {
 			Format(scr_message, sizeof(scr_message), "The round ended with no winning team");
 		}
 	}
@@ -131,8 +122,7 @@ void Event_RoundEnd(Event event, const char[] name, bool dontBroadcast)
 	}
 }
 
-void Event_PlayerSpawn(Event event, const char[] name, bool dontBroadcast)
-{
+void Event_PlayerSpawn(Event event, const char[] name, bool dontBroadcast) {
 	int client = GetClientOfUserId(event.GetInt("userid"));
 
 	if (GameRules_GetRoundState() == RoundState_Preround || IsDeathrunRoundActive()) {
@@ -140,14 +130,12 @@ void Event_PlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 	}
 }
 
-void Event_InventoryApplied(Event event, const char[] name, bool dontBroadcast)
-{
+void Event_InventoryApplied(Event event, const char[] name, bool dontBroadcast) {
 	int client = GetClientOfUserId(event.GetInt("userid"));
 	RequestFrame(RF_InventoryApplied, client);
 }
 
-void RF_InventoryApplied(int client)
-{
+void RF_InventoryApplied(int client) {
 	// Restrict Items
 	if (g_ConVars[P_RestrictItems].BoolValue) {
 		CheckItems(client);
@@ -156,8 +144,7 @@ void RF_InventoryApplied(int client)
 	RequestFrame(RF_InventoryApplied2, client);
 }
 
-void RF_InventoryApplied2(int client)
-{
+void RF_InventoryApplied2(int client) {
 	DRPlayer player = DRPlayer(client);
 
 	// Red melee-only
@@ -175,8 +162,7 @@ void RF_InventoryApplied2(int client)
 	}
 }
 
-void Event_ChangeClass(Event event, const char[] name, bool dontBroadcast)
-{
+void Event_ChangeClass(Event event, const char[] name, bool dontBroadcast) {
 	int client = GetClientOfUserId(event.GetInt("userid"));
 
 	// Welcome the player
@@ -189,8 +175,7 @@ void Event_ChangeClass(Event event, const char[] name, bool dontBroadcast)
 	}
 }
 
-Action Event_PlayerDeath(Event event, const char[] name, bool dontBroadcast)
-{
+Action Event_PlayerDeath(Event event, const char[] name, bool dontBroadcast) {
 	int victim = GetClientOfUserId(event.GetInt("userid"));
 
 	if (g_ConVars[P_ChatKillFeed].BoolValue && event.GetInt("attacker") == 0) {
@@ -216,8 +201,7 @@ Action Event_PlayerDeath(Event event, const char[] name, bool dontBroadcast)
 	return Plugin_Handled;
 }
 
-Action Event_TeamsChanged(Event event, const char[] name, bool dontBroadcast)
-{
+Action Event_TeamsChanged(Event event, const char[] name, bool dontBroadcast) {
 	DRPlayer player = DRPlayer(GetClientOfUserId(event.GetInt("userid")));
 
 	// Player switches away from Blue
@@ -246,16 +230,22 @@ Action Event_TeamsChanged(Event event, const char[] name, bool dontBroadcast)
 		//}
 	}
 
-	// Non-Activator switches to Blue during a running game
+	/*
+	// a non-activator player moves to the blue team while a game is running.
+	// move the changer to the red team, but only if the round is not active, so vscripts and plugins can move people.
+	// we can assume the game is running if there are at least two players on teams already
 	if (event.GetInt("team") == Team_Blue && !player.Activator && GetActiveClientCount() > 2) {
-		RequestFrame(RF_MoveToRed, player.Index);
+		if (GameRules_GetRoundState != RoundState_Stalemate && GameRules_GetRoundState != RoundState_RoundRunning) {
+			RequestFrame(RF_MoveToRed, player.Index);
+		}
 	}
-	// Non-Activator switches to Blue while the game is not running
+	// else if blue team already has a player, put the changer on red to start a round
 	else if (event.GetInt("team") == Team_Blue && !player.Activator && TFTeam_Blue.Count()) {
 		// If a player somehow switches to Blue while there is already a player there
 		// they will be moved to Red
 		RequestFrame(RF_MoveToRed, player.Index);
 	}
+	*/
 
 	// Check teams on any change
 	RequestFrame(CheckTeams);
@@ -263,7 +253,6 @@ Action Event_TeamsChanged(Event event, const char[] name, bool dontBroadcast)
 	return Plugin_Handled;
 }
 
-void RF_MoveToRed(int client)
-{
+void RF_MoveToRed(int client) {
 	DRPlayer(client).SetTeam(Team_Red);
 }

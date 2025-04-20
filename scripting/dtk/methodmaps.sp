@@ -21,7 +21,6 @@ enum {
 // Game Flags
 enum {
 	GF_WatchMode = 0x1,				// We're in team watch mode during pre-round freeze time
-	GF_Restarting = 0x2				// Counting down to round restart (OF)
 }
 
 // Player Flags

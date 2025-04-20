@@ -16,34 +16,32 @@ void CheckTeams()
 		This prevents it from reacting to changes as if they were caused by players,
 		or from going into an infinite loop of activator selection.
 
-		Disable Watch Mode before performing team distrubution, and enable it when you're done.
+		Disable Watch Mode before performing team distribution, and enable it when you're done.
 	*/
 
 	// Monitor Activators During Freeze Time
-	if (DRGame.InWatchMode) {
+	if (g_bInWatchMode) {
 		int activatorsNeeded = GetNumActivatorsRequired();
 
 		if (g_Activators.Length < activatorsNeeded && GetActiveClientCount() > activatorsNeeded) {
-			DRGame.InWatchMode = false;
+			g_bInWatchMode = false;
 			RequestFrame(SelectActivators);
 		}
 	}
-	/*
-	// Fixed by enabling the Unbalance cvar at < 2 participants, forcing the next player onto the opposing team
-	else if (!DRGame.InWatchMode && DRGame.Participants < 2)	// Go into Watch Mode when insufficient participants
+	else if (!g_bInWatchMode && GetActiveClientCount() < 2)	// Go into Watch Mode when insufficient participants
 	{
 		Debug("Insufficient participants for a round, so Watch Mode will be enabled");
-		DRGame.InWatchMode = true;
+		g_bInWatchMode = true;
 	}
-	*/
 
+	// commented out the below because we intercept player join commands now and switch blue to red
 	// The Unbalancing ConVar helps manage Round Restart when the server is empty
-	if (GetActiveClientCount() > 1) {
-		g_ConVars[S_Unbalance].IntValue = 0;
-	}
-	else {
-		g_ConVars[S_Unbalance].RestoreDefault();
-	}
+	// if (GetActiveClientCount() > 1) {
+	// 	g_ConVars[S_Unbalance].IntValue = 0;
+	// }
+	// else {
+	// 	g_ConVars[S_Unbalance].RestoreDefault();
+	// }
 }
 
 /**
@@ -87,7 +85,7 @@ void SelectActivators()
 	}
 
 	// Go into watch mode to replace activator if needed
-	DRGame.InWatchMode = true;
+	g_bInWatchMode = true;
 }
 
 Action Timer_AnnounceActivatorToAll(Handle timer, int client)

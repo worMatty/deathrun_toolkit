@@ -1,6 +1,9 @@
 # Deathrun Toolkit
 ## Changelog
 
+### Version 0.5.5
+* Modified team change prevention code to allow VScripts and other plugins to freely switch players between teams
+
 ### Version 0.5.4
 * Added convar hook for `dtk_game_description` to update it immediately on change
 

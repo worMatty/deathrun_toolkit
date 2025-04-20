@@ -1,8 +1,7 @@
 
 
 // Engineer Buildings
-enum
-{
+enum {
 	Build_Sentry	= 0x1,
 	Build_Dispenser = 0x2,
 	Build_TeleEnt	= 0x4,
@@ -10,8 +9,7 @@ enum
 }
 
 void
-	Commands_Init()
-{
+	Commands_Init() {
 	// Console Commands
 	RegConsoleCmd("sm_dr", Command_Menu, "Open the deathrun menu");
 	RegConsoleCmd("sm_drmenu", Command_Menu, "Open the deathrun menu");
@@ -48,8 +46,7 @@ void
  *
  * Toggle activator preference
  */
-Action Command_ToggleActivator(int client, int args)
-{
+Action Command_ToggleActivator(int client, int args) {
 	if (!g_ConVars[P_Enabled].BoolValue)
 		return Plugin_Handled;
 
@@ -59,8 +56,7 @@ Action Command_ToggleActivator(int client, int args)
 		player.PrefersActivator = false;
 		TF2_PrintToChat(client, _, "%t", "opted_out_activator");
 		EmitMessageSoundToClient(client);
-	}
-	else {
+	} else {
 		player.PrefersActivator = true;
 		TF2_PrintToChat(client, _, "%t", "opted_in_activator");
 		EmitMessageSoundToClient(client);
@@ -75,8 +71,7 @@ Action Command_ToggleActivator(int client, int args)
  * Show the next activator(s).
  * Set the next activator.
  */
-Action Command_NextActivators(int client, int args)
-{
+Action Command_NextActivators(int client, int args) {
 	if (!g_ConVars[P_Enabled].BoolValue)
 		return Plugin_Handled;
 
@@ -88,8 +83,7 @@ Action Command_NextActivators(int client, int args)
 			TF2_PrintToChat(client, _, buffer);
 			EmitMessageSoundToClient(client);
 		}
-	}
-	else if (args == 1 && DRPlayer(client).IsAdmin) {
+	} else if (args == 1 && DRPlayer(client).IsAdmin) {
 		bool tn_is_ml;
 		char pattern[64], target_name[64];
 		int	 result, max_targets, tn_maxlength;
@@ -103,15 +97,12 @@ Action Command_NextActivators(int client, int args)
 			int target = targets[0];
 			DRPlayer(target).MakeNextActivator();
 			TF2_ReplyToCommand(client, target, "\x02%N will be the next activator", target);
-		}
-		else if (tn_is_ml) {
+		} else if (tn_is_ml) {
 			ReplyToCommand(client, "Can't use this command with a multi-target specifier");
-		}
-		else if (result < 1) {
+		} else if (result < 1) {
 			ReplyToTargetError(client, result);
 		}
-	}
-	else {
+	} else {
 		ReplyToCommand(client, "\x01Usage: \x04/na\x01 or \x04/na *name*\x01 (admin)");
 		return Plugin_Handled;
 	}
@@ -122,8 +113,7 @@ Action Command_NextActivators(int client, int args)
 /**
  * sm_drhelp
  */
-Action Command_Help(int client, int args)
-{
+Action Command_Help(int client, int args) {
 	TF2_PrintToChat(client, _, "Opening the help page. You need HTML MOTD enabled");
 	TF2_PrintToChat(client, _, "%s", HELP_URL);
 
@@ -147,8 +137,7 @@ Action Command_Help(int client, int args)
  *
  * Remove the DTK table from the SQL database
  */
-Action ServerCommand_RemoveDBTable(int args)
-{
+Action ServerCommand_RemoveDBTable(int args) {
 	char confirm[8];
 	GetCmdArg(1, confirm, sizeof(confirm));
 
@@ -158,12 +147,10 @@ Action ServerCommand_RemoveDBTable(int args)
 		if (DBDeleteTable()) {
 			PrintToServer("Reset player database. Changing the map will reinitialise it");
 			LogMessage("Server console deleted table %s from the database %s", SQLITE_TABLE, SQLITE_DATABASE);
-		}
-		else {
+		} else {
 			PrintToServer("Failed to reset database. See the SourceMod logs for the SQL error");
 		}
-	}
-	else {
+	} else {
 		PrintToServer("To reset the database, supply the argument 'confirm'");
 	}
 
@@ -180,8 +167,7 @@ Action ServerCommand_RemoveDBTable(int args)
  *
  * Set the class of a player or players
  */
-Action AdminCommand_SetClass(int client, int args)
-{
+Action AdminCommand_SetClass(int client, int args) {
 	if (args < 1 || args > 2) {
 		ReplyToCommand(client, "Usage: sm_setclass <target(s)> [class] (blank for random)");
 		return Plugin_Handled;
@@ -212,8 +198,7 @@ Action AdminCommand_SetClass(int client, int args)
 
 	if (iTargetCount <= 0) {
 		ReplyToTargetError(client, iTargetCount);
-	}
-	else {
+	} else {
 		for (int i = 0; i < iTargetCount; i++) {
 			int target = iTarget[i];
 			// float pos[3];
@@ -231,8 +216,7 @@ Action AdminCommand_SetClass(int client, int args)
 			if (client == target) {
 				TF2_PrintToChat(target, _, "You are now a %s", sClass);
 				EmitMessageSoundToClient(target);
-			}
-			else {
+			} else {
 				TF2_PrintToChat(target, client, "\x02%N has made you a %s", client, sClass);
 				EmitMessageSoundToClient(target);
 			}
@@ -250,8 +234,7 @@ Action AdminCommand_SetClass(int client, int args)
  * Regenerate all live players
  * Useful for testing changes to the restriction config after reloading it
  */
-Action AdminCommand_RegenAll(int client, int args)
-{
+Action AdminCommand_RegenAll(int client, int args) {
 	int maxplayers = MaxClients;
 	int count;
 
@@ -271,8 +254,7 @@ Action AdminCommand_RegenAll(int client, int args)
  * Print your weapons/items to console to identify classnames and item definition
  * indexes for working with the restriction system
  */
-Action AdminCommand_PrintItems(int client, int args)
-{
+Action AdminCommand_PrintItems(int client, int args) {
 	if (client == 0) {
 		ReplyToCommand(client, "You can't use this command from the console because you aren't a player so you have no items");
 		return Plugin_Handled;
@@ -291,8 +273,7 @@ Action AdminCommand_PrintItems(int client, int args)
 			GetEntityNetClass(item, netclass, sizeof(netclass));
 			idef = GetEntProp(item, Prop_Send, "m_iItemDefinitionIndex");
 			PrintToConsole(client, "Weapon in slot %d: Classname & netclass: %s, %s; IDI: %d; Entindex: %d", slot, classname, netclass, idef, item);
-		}
-		else {
+		} else {
 			PrintToConsole(client, "No weapon found in slot %d", slot);
 		}
 	}
@@ -317,8 +298,7 @@ Action AdminCommand_PrintItems(int client, int args)
  *
  * Remove a player record from the database
  */
-Action AdminCommand_RemoveDBRecord(int client, int args)
-{
+Action AdminCommand_RemoveDBRecord(int client, int args) {
 	if (args < 1) {
 		ReplyToCommand(client, "Usage: dtk_remove_database_record <steamid>");
 		return Plugin_Handled;
@@ -340,8 +320,7 @@ Action AdminCommand_RemoveDBRecord(int client, int args)
 	if (deleted) {
 		ShowActivity(client, "Deleted Steam account Id %d from the database. A new one will not be created until they rejoin", steam_account);
 		LogMessage("%L deleted Steam account Id %d from the database", client, steam_account);
-	}
-	else {
+	} else {
 		ReplyToCommand(client, "Failed to delete Steam account Id %d from the database", steam_account);
 	}
 
@@ -353,8 +332,7 @@ Action AdminCommand_RemoveDBRecord(int client, int args)
  *
  * Reload the item restriction config files
  */
-Action AdminCommand_ReloadConfigs(int client, int args)
-{
+Action AdminCommand_ReloadConfigs(int client, int args) {
 	ReplyToCommand(client, "Reloading the config files");
 
 	LoadConfigs();
@@ -367,8 +345,7 @@ Action AdminCommand_ReloadConfigs(int client, int args)
  *
  * Add an activator ban to the database
  */
-Action AdminCommand_AddActivatorBan(int client, int args)
-{
+Action AdminCommand_AddActivatorBan(int client, int args) {
 	if (args < 1) {
 		ReplyToCommand(client, "Usage: dtk_addban <steamid>");
 		return Plugin_Handled;
@@ -390,8 +367,7 @@ Action AdminCommand_AddActivatorBan(int client, int args)
 	if (banned) {
 		LogAction(client, -1, "%L activator banned Steam ID %s", client, authid);
 		ReplyToCommand(client, "%t: %s", "Ban added", authid);
-	}
-	else {
+	} else {
 		ReplyToCommand(client, "%t", "Failed to query database");
 	}
 
@@ -403,8 +379,7 @@ Action AdminCommand_AddActivatorBan(int client, int args)
  *
  * Remove an activator ban from the database
  */
-Action AdminCommand_RemActivatorBan(int client, int args)
-{
+Action AdminCommand_RemActivatorBan(int client, int args) {
 	if (args < 1) {
 		ReplyToCommand(client, "Usage: dtk_removeban <steamid>");
 		return Plugin_Handled;
@@ -427,8 +402,7 @@ Action AdminCommand_RemActivatorBan(int client, int args)
 	if (unbanned) {
 		LogAction(client, -1, "%L removed activator ban for Steam ID %s", client, authid);
 		ReplyToCommand(client, "%t", "Removed bans matching", authid);
-	}
-	else {
+	} else {
 		ReplyToCommand(client, "%t", "Failed to query database");
 	}
 
@@ -440,8 +414,7 @@ Action AdminCommand_RemActivatorBan(int client, int args)
  *
  * Check if a player is activator banned
  */
-Action AdminCommand_IsActivatorBanned(int client, int args)
-{
+Action AdminCommand_IsActivatorBanned(int client, int args) {
 	if (args < 1) {
 		ReplyToCommand(client, "Usage: dtk_isbanned <steamid>");
 		return Plugin_Handled;
@@ -462,8 +435,7 @@ Action AdminCommand_IsActivatorBanned(int client, int args)
 
 	if (banned) {
 		ReplyToCommand(client, "Player with Steam ID %s is currently activator-banned", authid);
-	}
-	else {
+	} else {
 		ReplyToCommand(client, "Player with Steam ID %s is not activator-banned", authid);
 	}
 
@@ -478,8 +450,7 @@ Action AdminCommand_IsActivatorBanned(int client, int args)
 /**
  * dtk_data
  */
-Action AdminCommand_PlayerData(int client, int args)
-{
+Action AdminCommand_PlayerData(int client, int args) {
 	PrintToConsole(client, "\nPlayer points and preference flags\n  Please note: The table will show values for unoccupied slots. These are from\n  previous players and are reset when someone new takes the slot.\n");
 
 	for (int i = 1; i <= MaxClients; i++) {
@@ -538,8 +509,7 @@ Action AdminCommand_PlayerData(int client, int args)
  * @param	command		Command used
  * @param	args		Command args
  */
-Action CmdListener_LockBlue(int client, const char[] command, int args)
-{
+Action CmdListener_LockBlue(int client, const char[] command, int args) {
 	DRPlayer player = DRPlayer(client);
 
 	if (IsDeathrunRoundActive() && player.Team == Team_Blue && player.IsAlive && player.Activator && g_ConVars[P_LockActivator].BoolValue) {
@@ -560,8 +530,7 @@ Action CmdListener_LockBlue(int client, const char[] command, int args)
  * @param	command		Command used
  * @param	args		Command args
  */
-Action CmdListener_Teams(int client, const char[] command, int args)
-{
+Action CmdListener_Teams(int client, const char[] command, int args) {
 	char arg1[32], arg2[32];
 	GetCmdArg(1, arg1, sizeof(arg1));
 	GetCmdArg(2, arg2, sizeof(arg2));
@@ -569,38 +538,38 @@ Action CmdListener_Teams(int client, const char[] command, int args)
 	if (StrEqual(command, "jointeam", false)) {
 		DRPlayer player = DRPlayer(client);
 
-		// Prevent Activators Escaping
+		// prevent activators from switching away from blue
 		if (player.Team == Team_Blue && player.Activator) {
-			// if ((IsDeathrunRoundActive() && g_ConVars[P_LockActivator].BoolValue) ||
-			// 	(DRGame.RoundState == Round_Freeze && g_ConVars[P_LockActivator].IntValue == 2))
-			if ((IsDeathrunRoundActive() && g_ConVars[P_LockActivator].BoolValue) || (GameRules_GetRoundState() == RoundState_Pregame && g_ConVars[P_LockActivator].IntValue == 2)) {
+			if ((IsDeathrunRoundActive() && g_ConVars[P_LockActivator].BoolValue)
+				|| (GameRules_GetRoundState() == RoundState_Preround && g_ConVars[P_LockActivator].IntValue == 2)) {
 				TF2_PrintToChat(client, _, "%t", "activator_no_escape");
 				EmitMessageSoundToClient(client);
 				return Plugin_Handled;
 			}
 		}
 
-		// Prevent Players Joining Blue - Commented out as the Event-based system works
-		/*
-		if (StrEqual(arg1, "blue", false) && (IsDeathrunRoundActive() || DRGame.RoundState == Round_Freeze))
-		{
-			ChangeClientTeam(client, Team_Red);	// Best for TF2C as blocking the command prevents them choosing a team
-			Debug("%N tried to join Blue but was moved instead to Red", client);
-			return Plugin_Handled;
+		// prevent anyone joining blue directly or randomly
+		if (StrEqual(arg1, "blue", false) || StrEqual(arg1, "auto", false)) {
+			if (player.Team == Team_Red) {
+				return Plugin_Handled;
+			} else {
+				// player.SetTeam(Team_Red);	 // doesn't seem to work. probably too quick
+				RequestFrame(RF_MoveToRed, player.Index);	 // this works but if player was randomly put on blue, they see blue character models in class selection menu
+				return Plugin_Continue;
+			}
 		}
-		*/
 	}
 
-	// Block the 'autoteam' command at all times because it bypasses team balancing
-	if (StrEqual(command, "autoteam", false)) {
+	// block "autoteam" because it bypasses team balancing
+	// this command must be entered directly in console
+	else if (StrEqual(command, "autoteam", false)) {
 		return Plugin_Handled;
 	}
 
 	return Plugin_Continue;
 }
 
-Action CmdListener_Builds(int client, const char[] command, int args)
-{
+Action CmdListener_Builds(int client, const char[] command, int args) {
 	/* TODO Translation phrases
 
 	build 0 0 will build a Dispenser (Engineer only)
