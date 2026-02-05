@@ -140,10 +140,12 @@ public void OnPluginEnd() {
 public void OnConfigsExecuted() {
 	// auto enable
 	if (g_ConVars[P_AutoEnable].BoolValue) {
-		char mapname[32];
+		char mapname[96]; // 96 = max mapname size
+		char displayname[64]; // 64 = max clean mapname size
 		GetCurrentMap(mapname, sizeof(mapname));
+		GetMapDisplayName(mapname, displayname, sizeof(displayname)); // "workshop/mapname.ugc123456789" -> "mapname"
 
-		if (StrContains(mapname, "dr_", false) != -1 || StrContains(mapname, "deathrun_", false) != -1)
+		if (StrContains(displayname, "dr_", false) == 0 || StrContains(displayname, "deathrun_", false) == 0 || StrContains(displayname, "vsh_dr_", false) == 0)
 			g_ConVars[P_Enabled].SetBool(true);
 	}
 }
